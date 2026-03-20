@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum ProblemDifficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model User {
+  id String @id @default(uuid())
+
+  avatarUrl       String @default("https://via.placeholder.com/200x200.png")
+  avatarLocalPath String @default("")
+
+  username String? @unique
+  email    String  @unique
+  name     String?
+  password String
+
+  bio String?
+
+  role UserRole @default(USER)
+
+  isEmailVerified Boolean @default(false)
+
+  refreshToken String?
+  accessToken  String?
+
+  forgotPasswordToken  String?
+  forgotPasswordExpiry DateTime?
+
+  emailVerificationToken  String?
+  emailVerificationExpiry DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Problem {
+  id          String            @id @default(uuid())
+  title       String
+  description String
+  difficulty  ProblemDifficulty
+  tags        String[]
+  userId      String
+  examples    Json
+  constraints String
+  hints       String?
+  editorial   String?
+
+  testCases Json
+  codeSnippets Json
+  referenceSolutions Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //Relations
+
+  user User @relation(fields: [userId], references: [id])
+}
