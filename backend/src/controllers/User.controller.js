@@ -33,6 +33,7 @@ export const registerUser = asyncHandler(async (req, res) => {
       email,
       username,
       password: hashedPassword,
+      role: "ADMIN",
     },
   });
 

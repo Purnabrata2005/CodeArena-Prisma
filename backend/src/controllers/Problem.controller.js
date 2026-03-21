@@ -26,7 +26,7 @@ export const createProblem = asyncHandler(async (req, res) => {
     referenceSolutions,
   } = req.body;
 
-  if (req.user.role !== "admin") {
+  if (req.user.role !== "ADMIN") {
     throw new ApiError(403, "You are not authorized to create a problem", []);
   }
 
@@ -34,14 +34,14 @@ export const createProblem = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid reference solutions", []);
   }
 
-  for ([language, solution] of Object.entries(referenceSolutions)) {
+  for (const [language, solution] of Object.entries(referenceSolutions)) {
     const languageId = await getJudge0LanguageId(language);
     if (!languageId) {
       throw new ApiError(400, `Language ${language} not supported`, []);
     }
 
     const submissions = testCases.map(({ input, output }) => ({
-      source_code: solutionCode,
+      source_code: solution,
       language_id: languageId,
       stdin: input,
       expected_output: output,
@@ -49,11 +49,14 @@ export const createProblem = asyncHandler(async (req, res) => {
 
     const submissionResults = await submitBatch(submissions);
 
+    console.log("Submission Results:", submissionResults);
+
     const tokens = submissionResults.map((result) => result.token);
 
     const results = await pullBatchResults(tokens);
 
     for (let i = 0; i < results.length; i++) {
+        console.log("results.......",results)
       const result = results[i];
       if (result.status.id !== 3) {
         console.log("Expected Output:", testCases[i].output);
@@ -97,7 +100,7 @@ export const createProblem = asyncHandler(async (req, res) => {
 
   return res.status(201).json(
     new ApiResponse(201, "Problem created successfully", {
-      problem,
+      data:problem,
     }),
   );
 });

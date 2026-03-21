@@ -22,7 +22,7 @@ export const verifyToken=asyncHandler(async (req, res, next) => {
         throw new ApiError(401, "Unauthorized", []);
       }
 
-      console.log(user);
+      // console.log(user);
       req.user = user;
       next();
       

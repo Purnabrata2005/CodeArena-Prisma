@@ -12,7 +12,7 @@ import {
   updateProblem,
   deleteProblem,
   getSovleProblem,
-} from "../controllers/problem.controller.js";
+} from "../controllers/Problem.controller.js";
 
 router.route("/create-problem").post(verifyToken, checkAdmin, createProblem);
 router.route("/get-all-problem").get(verifyToken,getAllProblem);

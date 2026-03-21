@@ -1,15 +1,16 @@
-import { asyncHandler } from "../async-handler.js";
 
-export const getJudge0LanguageId = asyncHandler(async (language) => {
-  const languageMap = {
-    PYTHON: 72,
-    JAVA: 62,
-    JAVASCRIPT: 63,
-  };
-  return languageMap[language.toUpperCase()];
-});
+import axios from "axios";
 
-export const submitBatch = asyncHandler(async (submissions) => {
+export const getJudge0LanguageId = (language)=>{
+    const languageMap = {
+        "PYTHON":71,
+        "JAVA":62,
+        "JAVASCRIPT":63,
+    }
+    return languageMap[language.toUpperCase()]
+}
+
+export const submitBatch =async (submissions) => {
   const { data } = await axios.post(
     `${process.env.JUDGE0_API_URL}/submissions/batch?base64_encoded=false`,
     {
@@ -17,16 +18,16 @@ export const submitBatch = asyncHandler(async (submissions) => {
     },
   );
 
-  console.log("Submissions Result :", data);
+  console.log("Submission Tokens :", data);
 
   return data;
-});
+};
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export const pullBatchResults = asyncHandler(async (batchId) => {
+export const pullBatchResults =async (tokens) => {
   while (true) {
     const { data } = await axios.get(
       `${process.env.JUDGE0_API_URL}/submissions/batch`,
@@ -46,4 +47,4 @@ export const pullBatchResults = asyncHandler(async (batchId) => {
     if (isAllCompleted) return result;
     await sleep(1000); // Wait for 2 seconds before checking again
   }
-});
+};
