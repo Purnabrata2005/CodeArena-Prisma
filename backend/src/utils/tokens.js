@@ -2,7 +2,6 @@ import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
-console.log(process.env.ACCESS_TOKEN_SECRET);
 
 export const genateAccessToken = (userId, email) => {
   return jwt.sign({ userId, email }, process.env.ACCESS_TOKEN_SECRET, {

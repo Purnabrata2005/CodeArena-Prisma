@@ -67,11 +67,15 @@ Required variables:
 
 			 pnpm install
 
-3. Apply migrations.
+3. Create Generated Prisma Client.
 
-			 pnpm prisma migrate dev
+             npx prisma generate
 
-4. Start development server.
+4. Apply migrations.
+
+			 npx prisma migrate dev
+
+5. Start development server.
 
 			 pnpm dev
 

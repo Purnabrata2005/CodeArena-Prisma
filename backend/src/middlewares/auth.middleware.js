@@ -30,3 +30,15 @@ export const verifyToken=asyncHandler(async (req, res, next) => {
       throw new ApiError(401, "Unauthorized", []);
     }
 })
+
+
+export const checkAdmin=asyncHandler(async (req, res, next) => {
+  const user = req.user;
+  if (!user) {
+    throw new ApiError(401, "Unauthorized", []);
+  }
+  if (user.role !== "ADMIN") {
+    throw new ApiError(403, "Forbidden", []);
+  }
+  next();
+})

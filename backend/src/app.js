@@ -22,8 +22,10 @@ app.use(
 );
 
 import userRouter from "./routes/user.route.js";
+import problemRouter from "./routes/problem.route.js"
 
 app.use("/api/v1/auth", userRouter);
+app.use("/api/v1/problem",problemRouter)
 
 app.use(errorHandler);
 
