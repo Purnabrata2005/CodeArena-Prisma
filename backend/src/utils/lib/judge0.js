@@ -1,5 +1,6 @@
 
 import axios from "axios";
+import {judge0Client} from "../lib/axios.judge0.js"
 
 export const getJudge0LanguageId = (language)=>{
     const languageMap = {
@@ -11,9 +12,10 @@ export const getJudge0LanguageId = (language)=>{
 }
 
 export const submitBatch =async (submissions) => {
-  const { data } = await axios.post(
-    `${process.env.JUDGE0_API_URL}/submissions/batch?base64_encoded=false`,
-    {
+  console.log("Submission Data:", submissions);
+  const { data } = await judge0Client.post(
+    `/submissions/batch?base64_encoded=false`,
+    { 
       submissions,
     },
   );
@@ -28,9 +30,10 @@ function sleep(ms) {
 }
 
 export const pullBatchResults =async (tokens) => {
+  console.log("Tokens:", tokens);
   while (true) {
-    const { data } = await axios.get(
-      `${process.env.JUDGE0_API_URL}/submissions/batch`,
+    const { data } = await judge0Client.get(
+      `/submissions/batch`,
       {
         params: {
           tokens: tokens.join(","),

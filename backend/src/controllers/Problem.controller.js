@@ -47,6 +47,8 @@ export const createProblem = asyncHandler(async (req, res) => {
       expected_output: output,
     }));
 
+    console.log("Submission Data:", submissions);
+
     const submissionResults = await submitBatch(submissions);
 
     console.log("Submission Results:", submissionResults);
