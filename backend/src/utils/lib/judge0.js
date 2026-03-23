@@ -51,3 +51,13 @@ export const pullBatchResults =async (tokens) => {
     await sleep(1000); // Wait for 2 seconds before checking again
   }
 };
+
+export function getLanguageName(languageId){
+  const languageMap= {
+    71: "Python",
+    62: "Java",
+    63: "JavaScript",
+    74: "TypeScript",
+  };
+  return languageMap[languageId] || "Unknown";
+}
