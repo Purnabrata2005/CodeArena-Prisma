@@ -12,7 +12,7 @@ export const getJudge0LanguageId = (language)=>{
 }
 
 export const submitBatch =async (submissions) => {
-  console.log("Submission Data:", submissions);
+  // console.log("Submission Data:", submissions);
   const { data } = await judge0Client.post(
     `/submissions/batch?base64_encoded=false`,
     { 
@@ -20,7 +20,7 @@ export const submitBatch =async (submissions) => {
     },
   );
 
-  console.log("Submission Tokens :", data);
+  // console.log("Submission Tokens :", data);
 
   return data;
 };
@@ -30,7 +30,7 @@ function sleep(ms) {
 }
 
 export const pullBatchResults =async (tokens) => {
-  console.log("Tokens:", tokens);
+  // console.log("Tokens:", tokens);
   while (true) {
     const { data } = await judge0Client.get(
       `/submissions/batch`,

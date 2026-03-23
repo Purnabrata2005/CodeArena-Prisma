@@ -38,7 +38,7 @@ export const checkAdmin=asyncHandler(async (req, res, next) => {
     throw new ApiError(401, "Unauthorized", []);
   }
   if (user.role !== "ADMIN") {
-    throw new ApiError(403, "Forbidden", []);
+    throw new ApiError(403, "Forbidden: ADMIN role required", []);
   }
   next();
 })

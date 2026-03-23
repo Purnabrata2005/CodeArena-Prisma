@@ -90,8 +90,8 @@ export const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid credentials", []);
   }
 
-  const accessToken = genateAccessToken(user.userId, user.email);
-  const refreshToken = genateRefreshToken(user.userId, user.email);
+  const accessToken = genateAccessToken(user.id, user.email);
+  const refreshToken = genateRefreshToken(user.id, user.email);
 
   await db.user.update({
     where: { email },
