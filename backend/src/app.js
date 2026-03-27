@@ -24,10 +24,12 @@ app.use(
 import userRouter from "./routes/user.route.js";
 import problemRouter from "./routes/problem.route.js"
 import executionRouter from "./routes/execution.routes.js"
+import submissionRouter from "./routes/submission.routes.js"
 
 app.use("/api/v1/auth", userRouter);
 app.use("/api/v1/problem",problemRouter)
 app.use("/api/v1/execute-code", executionRouter);
+app.use("/api/v1/submission", submissionRouter);
 
 app.use(errorHandler);
 
