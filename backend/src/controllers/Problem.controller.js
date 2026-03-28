@@ -269,4 +269,30 @@ export const deleteProblem = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "Problem deleted successfully", {}));
 });
 
-export const getSovleProblem = asyncHandler(async (req, res) => {});
+export const getSovleProblem = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+
+  const problems = await db.problem.findMany({
+    where: {
+      solvedBy: {
+        some: {
+          userId,
+        },
+      },
+    },
+    include: {
+      where: {
+        solvedBy: {
+          some: {
+            userId,
+          },
+        },
+      },
+    },
+  });
+  return res.status(200).json(
+    new ApiResponse(200, "Problems fetched successfully", {
+      data: problems,
+    }),
+  );
+});
