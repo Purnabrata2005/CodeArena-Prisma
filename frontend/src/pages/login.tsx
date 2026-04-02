@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { ThemeToggle } from "@/components/landing/ThemeToggle";
-import loginForm from "@/features/auth/components/loginForm";
+import LoginForm from "@/features/auth/components/loginForm";
 import { Link } from "react-router-dom";
 import GoogleSignInButton from "../features/auth/components/googleButton";
 
@@ -33,7 +33,9 @@ const Login = () => {
         </span>
         <div className="flex-1 h-px bg-border" />
       </div>
-      <div className="flex flex-col gap-4">{loginForm()}</div>
+      <div className="flex flex-col gap-4">
+        <LoginForm/>
+      </div>
       <p className="text-center text-sm text-muted-foreground">
         Don't have an account?{" "}
         <Link to="/signup" className="text-accent hover:underline font-medium">

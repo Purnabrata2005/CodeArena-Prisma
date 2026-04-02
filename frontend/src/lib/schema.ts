@@ -11,12 +11,12 @@ export const signUpSchema = z
       .regex(/[a-z]/, "Password at least one lowercase")
       .regex(/[0-9]/, "Password at least one number")
       .regex(/[@#$%^&*]/, "Password at least one special character"),
-    confirmPassword: z.string({ message: "Confirm password is required" }),
+    // confirmPassword: z.string({ message: "Confirm password is required" }),
   })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Password and confirm password must be same",
-    path: ["confirmPassword"],
-  });
+  // .refine((data) => data.password === data.confirmPassword, {
+  //   message: "Password and confirm password must be same",
+  //   path: ["confirmPassword"],
+  // });
 export type SignUpValues = z.infer<typeof signUpSchema>;
 
 export const loginSchema = z.object({

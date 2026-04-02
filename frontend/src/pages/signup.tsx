@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "@/components/landing/ThemeToggle";
 import GoogleSignInButton from "@/features/auth/components/googleButton";
-import signupForm from "@/features/auth/components/signupForm";
+import SignupForm from "@/features/auth/components/signupForm";
 
 const Signup = () => {
   return (
@@ -38,7 +38,9 @@ const Signup = () => {
           <div className="flex-1 h-px bg-border" />
         </div>
 
-        <div className="flex flex-col gap-4">{signupForm()}</div>
+        <div className="flex flex-col gap-4">
+          <SignupForm />
+        </div>
 
         <p className="text-center text-sm text-muted-foreground">
           Already have an account?{" "}

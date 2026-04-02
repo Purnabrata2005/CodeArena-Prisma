@@ -1,42 +1,20 @@
 import { motion } from "framer-motion";
 import { Code2 } from "lucide-react";
-import { useState, useEffect } from "react";
+import TextAnimationHeading from "@/components/landing/TextAnimationHeading";
 import { Outlet } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
-const typingTexts = ["Build Space", "One Platform", "Master DSA", "Code Daily"];
+
 
 const AuthLayout = () => {
-  const [displayText, setDisplayText] = useState("");
-  const [textIndex, setTextIndex] = useState(0);
-  const [charIndex, setCharIndex] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
-
-  useEffect(() => {
-    const current = typingTexts[textIndex];
-    const timeout = setTimeout(() => {
-      if (!isDeleting) {
-        setDisplayText(current.slice(0, charIndex + 1));
-        if (charIndex + 1 === current.length) {
-          setTimeout(() => setIsDeleting(true), 1500);
-        } else {
-          setCharIndex(charIndex + 1);
-        }
-      } else {
-        setDisplayText(current.slice(0, charIndex - 1));
-        if (charIndex - 1 === 0) {
-          setIsDeleting(false);
-          setTextIndex((prev) => (prev + 1) % typingTexts.length);
-          setCharIndex(0);
-        } else {
-          setCharIndex(charIndex - 1);
-        }
-      }
-    }, isDeleting ? 50 : 100);
-    return () => clearTimeout(timeout);
-  }, [charIndex, isDeleting, textIndex]);
+  const isAuthenticated = false;
 
   return (
-    <div className="min-h-screen flex">
+    <>
+      {isAuthenticated ? (
+        <Navigate to="/" />
+      ) : (
+        <div className="min-h-screen flex">
       {/* Left Panel - Persistent Branding */}
       <motion.div
         initial={{ opacity: 0, x: -40 }}
@@ -50,8 +28,8 @@ const AuthLayout = () => {
 
         <div className="space-y-4">
           <h2 className="text-4xl xl:text-5xl font-bold text-foreground leading-tight">
-            <span className="text-accent">{displayText}</span>
-            <span className="animate-pulse">|</span>
+            <TextAnimationHeading className="mx-0 flex-row lg:gap-1" />
+            
           </h2>
           <p className="text-muted-foreground text-lg max-w-md">
             Continue your journey mastering Data Structures & Algorithms on LeetLab.
@@ -64,7 +42,9 @@ const AuthLayout = () => {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-10 bg-background">
         <Outlet />
       </div>
-    </div>
+    </div>     
+      )}
+    </>
   );
 };
 
