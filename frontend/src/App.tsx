@@ -8,6 +8,7 @@ import { Toaster } from "sonner";
 import { useAuthStore } from "./store/useAuthStore";
 import { useEffect } from "react";
 import Home from "./pages/Home";
+import RootLayout from "./components/shared/RootLayout";
 
 /**
  * CodeArena Main Application Shell
@@ -28,7 +29,10 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
           </Route>
-          <Route path="/" element={<Home />} />
+          <Route element={<RootLayout />}>
+            <Route path="/" element={<Home />} />
+          </Route>
+          
         </Routes>
       </div>
     </ThemeProvider>

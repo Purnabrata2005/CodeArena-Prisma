@@ -35,6 +35,7 @@ export const useAuthStore = create<AuthState>()(
         try {
           const res = (await axiosInstance.get("/auth/me")).data;
           set({ authUser: res.data.user, isAuthenticated: true });
+          console.log(res);
         } catch (error) {
           console.log(error);
           set({ authUser: null, isAuthenticated: false });

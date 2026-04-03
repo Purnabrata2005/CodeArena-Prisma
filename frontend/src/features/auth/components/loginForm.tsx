@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { loginSchema, type LoginData } from "@/lib/schema";
@@ -8,12 +8,13 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import LoadingButton from "@/components/landing/LoadingButton";
 
 const loginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-   const { login, isLoggingIn: isPending } = useAuthStore();
+  const { login, isLoggingIn: isPending } = useAuthStore();
 
   const {
     register,
@@ -81,13 +82,15 @@ const loginForm = () => {
           )}
         </div>
 
-        <Button
+        <LoadingButton
           type="submit"
-          disabled={isSubmitting}
+          isDisabled={isSubmitting}
+          isLoading={isSubmitting}
+          loadingText="Logging in..."
           className="w-full h-12 text-base font-semibold bg-accent hover:bg-accent/90 text-accent-foreground transition-all"
         >
-          {isSubmitting ? "Logging in..." : "Log in"}
-        </Button>
+          Login
+        </LoadingButton>
       </form>
     </div>
   );

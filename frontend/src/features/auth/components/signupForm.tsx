@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { signUpSchema, type SignupData,  } from "@/lib/schema";
@@ -8,6 +8,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import {Button, Spinner} from "@heroui/react";
 
 const signupForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -104,11 +105,14 @@ const signupForm = () => {
         </div>
 
         <Button
+          isDisabled={isSubmitting}
           type="submit"
           className="w-full h-12 bg-accent hover:bg-accent/90 text-accent-foreground transition-all"
-          disabled={isSubmitting}
         >
-          {isSubmitting ? "Creating Account..." : "Create Account"}
+           <>
+          {isPending ? <Spinner color="current" size="sm" /> : null}
+          Uploading...
+        </>
         </Button>
       </form>
     </div>
