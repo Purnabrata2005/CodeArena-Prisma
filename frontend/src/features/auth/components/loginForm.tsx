@@ -1,28 +1,36 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { loginSchema, type LoginFormData } from "@/lib/schema";
+import { loginSchema, type LoginData } from "@/lib/schema";
+import { useAuthStore } from "@/store/useAuthStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 const loginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+
+   const { login, isLoggingIn: isPending } = useAuthStore();
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<LoginFormData>({
+  } = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (data: LoginFormData) => {
-    // Simulate API call
-    console.log("Login Data:", data);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  };
+  async function onSubmit(data: LoginData) {
+    try {
+      await login(data);
+      navigate("/");
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
+  }
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -32,6 +40,7 @@ const loginForm = () => {
             id="email"
             type="email"
             placeholder="you@gmail.com"
+            disabled={isPending}
             {...register("email")}
             className={`h-12 bg-accent/10 ${errors.email ? "border-destructive" : "border-border"}`}
           />
@@ -49,6 +58,7 @@ const loginForm = () => {
               id="password"
               type={showPassword ? "text" : "password"}
               placeholder="••••••••"
+              disabled={isPending}
               {...register("password")}
               className={`h-12 pr-11 bg-accent/10 ${errors.password ? "border-destructive" : "border-border"}`}
             />

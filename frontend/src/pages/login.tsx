@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { ThemeToggle } from "@/components/landing/ThemeToggle";
 import LoginForm from "@/features/auth/components/loginForm";
 import { Link } from "react-router-dom";
-import GoogleSignInButton from "../features/auth/components/googleButton";
+import GoogleSignInButton from "../components/landing/googleButton";
 
 const Login = () => {
   return (

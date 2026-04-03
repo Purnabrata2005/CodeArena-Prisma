@@ -1,18 +1,18 @@
 import { motion } from "framer-motion";
 import { Code2 } from "lucide-react";
 import TextAnimationHeading from "@/components/landing/TextAnimationHeading";
-import { Outlet } from "react-router-dom";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
+import { useAuthStore } from "@/store/useAuthStore";
 
 
 
 const AuthLayout = () => {
-  const isAuthenticated = false;
+  const { authUser } = useAuthStore();
 
   return (
     <>
-      {isAuthenticated ? (
-        <Navigate to="/" />
+      {authUser ? (
+        <Navigate to="/" replace />
       ) : (
         <div className="min-h-screen flex">
       {/* Left Panel - Persistent Branding */}

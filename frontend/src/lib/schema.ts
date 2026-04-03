@@ -17,7 +17,7 @@ export const signUpSchema = z
   //   message: "Password and confirm password must be same",
   //   path: ["confirmPassword"],
   // });
-export type SignUpValues = z.infer<typeof signUpSchema>;
+export type SignupData = z.infer<typeof signUpSchema>;
 
 export const loginSchema = z.object({
   email: z.string({ message: "Email is required" }).email().min(5).max(50),
@@ -29,4 +29,24 @@ export const loginSchema = z.object({
     .regex(/[0-9]/, "Password at least one number")
     .regex(/[@#$%^&*]/, "Password at least one special character"),
 });
-export type LoginFormData = z.infer<typeof loginSchema>;
+export type LoginData = z.infer<typeof loginSchema>;
+
+const imageMimeTypes = ["image/jpeg", "image/png", "image/webp", "image/jpg"];
+
+export const updateUserProfileSchema = z.object({
+  name: z.string().max(255),
+  bio: z.string().max(255).optional(),
+  avatar: z
+    .custom<File | undefined>(
+      (file) => {
+        if (!file) return true; // allow optional
+        return file instanceof File && imageMimeTypes.includes(file.type);
+      },
+      {
+        message: "Avatar must be a valid image file (jpg, png, webp).",
+      },
+    )
+    .optional(),
+});
+
+export type UpdateUserProfileValues = z.infer<typeof updateUserProfileSchema>;
