@@ -10,6 +10,7 @@ import {
 
 import React, { useRef, useState } from "react";
 import  Logo  from "@/components/landing/Logo";
+import { useLocation } from "react-router-dom";
 
 interface NavbarProps {
   children: React.ReactNode;
@@ -115,6 +116,15 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => {
 
 export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
   const [hovered, setHovered] = useState<number | null>(null);
+  const location = useLocation();
+  const textRefs = useRef<(HTMLSpanElement | null)[]>([]);
+
+  const getActiveIndex = () => {
+    return items.findIndex((item) => item.link === location.pathname);
+  };
+
+  const activeIndex = getActiveIndex();
+  const displayIndex = hovered !== null ? hovered : activeIndex;
 
   return (
     <motion.div
@@ -138,7 +148,31 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
               className="absolute inset-0 h-full w-full rounded-full bg-gray-100 dark:bg-neutral-800"
             />
           )}
-          <span className="relative z-20">{item.name}</span>
+          <span 
+            ref={(el) => {
+              textRefs.current[idx] = el;
+            }}
+            className="relative z-20 inline-block"
+          >
+            {item.name}
+            
+            {/* Animated underline for active/hovered item */}
+            {displayIndex === idx && (
+              <motion.div 
+                layoutId="underline"
+                className="absolute bottom-0 left-1.5 right-1.5 h-px rounded-full"
+                style={{
+                  background: `linear-gradient(to right, var(--primary), var(--accent))`
+                }}
+                transition={{
+                  type: "spring",
+                  stiffness: 150,
+                  damping: 20,
+                  mass: 1,
+                }}
+              />
+            )}
+          </span>
         </a>
       ))}
     </motion.div>
