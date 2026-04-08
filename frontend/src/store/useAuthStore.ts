@@ -2,7 +2,7 @@ import {create} from "zustand";
 import { axiosInstance } from "../lib/axios";
 import { persist } from "zustand/middleware";
 import { toast } from "sonner";
-import type {LoginData,  SignupData,  UpdateUserProfileValues} from "../lib/schema";
+import type {LoginData,  SignupData,  UpdateUserProfileValues} from "../lib/schemas/authSchema";
 import type { AuthUser } from "../types/index";
 import { getErrorMessage } from "@/lib/utils";
 
@@ -35,11 +35,9 @@ export const useAuthStore = create<AuthState>()(
         try {
           const res = (await axiosInstance.get("/auth/me")).data;
           set({ authUser: res.data.user, isAuthenticated: true });
-          console.log(res);
         } catch (error) {
           console.log(error);
           set({ authUser: null, isAuthenticated: false });
-          toast.error(getErrorMessage(error))
         } finally {
           set({ isFetchingUser: false });
         }

@@ -22,22 +22,22 @@ export default function NavbarDemo({ children }: NavbarProps) {
   const { authUser: user } = useAuthStore();
   const navItems = [
     {
-      name: "Features",
-      link: "#features",
+      name: "Home",
+      link: "/",
     },
     {
-      name: "Pricing",
-      link: "#pricing",
+      name: "Problems",
+      link: "/problems",
     },
     {
-      name: "Contact",
-      link: "#contact",
+      name: "About",
+      link: "/about",
     },
     ...(user?.role === "ADMIN"
       ? [
           {
             name: "Add Problem",
-            link: "#add-problem",
+            link: "/add-problem",
           },
         ]
       : []),

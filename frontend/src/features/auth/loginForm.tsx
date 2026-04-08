@@ -1,71 +1,49 @@
 // import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signUpSchema, type SignupData,  } from "@/lib/schema";
+import { loginSchema, type LoginData } from "@/lib/schemas/authSchema";
 import { useAuthStore } from "@/store/useAuthStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import {Button, Spinner} from "@heroui/react";
+import LoadingButton from "@/components/landing/LoadingButton";
 
-const signupForm = () => {
+const loginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const { signup, isSigninUp: isPending } = useAuthStore();
   const navigate = useNavigate();
 
-  // 2. Initialize React Hook Form
+  const { login, isLoggingIn: isPending } = useAuthStore();
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<SignupData>({
-    resolver: zodResolver(signUpSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-    },
+  } = useForm<LoginData>({
+    resolver: zodResolver(loginSchema),
   });
 
-  // Handle Form Submission
- async function onSubmit(data:SignupData ) {
-     try {
-       await signup(data);
-       navigate("/");
-     } catch (error) {
-       console.error("Error during login:", error);
-     }
-   }
+  async function onSubmit(data: LoginData) {
+    try {
+      await login(data);
+      navigate("/");
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
+  }
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="name">Full Name</Label>
-          <Input
-            id="name"
-            placeholder="Enter your name"
-            {...register("name")}
-            className={`h-12 bg-accent/10 ${errors.name ? "border-destructive" : "border-border"}`}
-            disabled={isPending}
-          />
-          {errors.name && (
-            <p className="text-xs font-medium text-destructive">
-              {errors.name.message}
-            </p>
-          )}
-        </div>
-
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <Input
             id="email"
             type="email"
-            placeholder="Enter your email"
+            placeholder="you@gmail.com"
+            disabled={isPending}
             {...register("email")}
             className={`h-12 bg-accent/10 ${errors.email ? "border-destructive" : "border-border"}`}
-            disabled={isPending}
           />
           {errors.email && (
             <p className="text-xs font-medium text-destructive">
@@ -81,9 +59,9 @@ const signupForm = () => {
               id="password"
               type={showPassword ? "text" : "password"}
               placeholder="••••••••"
+              disabled={isPending}
               {...register("password")}
               className={`h-12 pr-11 bg-accent/10 ${errors.password ? "border-destructive" : "border-border"}`}
-              disabled={isPending}
             />
             <button
               type="button"
@@ -104,19 +82,18 @@ const signupForm = () => {
           )}
         </div>
 
-        <Button
-          isDisabled={isSubmitting}
+        <LoadingButton
           type="submit"
-          className="w-full h-12 bg-accent hover:bg-accent/90 text-accent-foreground transition-all"
+          isDisabled={isSubmitting}
+          isLoading={isSubmitting}
+          loadingText="Logging in..."
+          className="w-full h-12 text-base font-semibold bg-accent hover:bg-accent/90 text-accent-foreground transition-all"
         >
-           <>
-          {isPending ? <Spinner color="current" size="sm" /> : null}
-          Uploading...
-        </>
-        </Button>
+          Login
+        </LoadingButton>
       </form>
     </div>
   );
 };
 
-export default signupForm;
+export default loginForm;
