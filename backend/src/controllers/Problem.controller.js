@@ -38,6 +38,9 @@ export const createProblem = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid reference solutions", []);
   }
 
+  const normalizeTextOutput = (value) =>
+    typeof value === "string" ? value.trim() : "";
+
   for (const [language, solution] of Object.entries(referenceSolutions)) {
     const languageId = await getJudge0LanguageId(language);
     if (!languageId) {
@@ -64,23 +67,31 @@ export const createProblem = asyncHandler(async (req, res) => {
     for (let i = 0; i < results.length; i++) {
       // console.log("results.......", results);
       const result = results[i];
+      const actualOutput = normalizeTextOutput(result?.stdout);
+      const expectedOutput = normalizeTextOutput(testCases[i]?.output);
       if (
         result.status.id === 4 &&
-        result.stdout.trim() !== testCases[i].output.trim()
+        actualOutput !== expectedOutput
       ) {
         throw new ApiError(
           400,
-          `Test case ${i + 1} failed: Wrong Answer (Output Mismatch)`,
+          `Test case ${i + 1} failed in ${language}: Wrong Answer (Output Mismatch). Expected='${expectedOutput}', Actual='${actualOutput}'`,
           "TEST_CASE_FAILED",
         );
       }
       if (result.status.id !== 3) {
-        console.log("Expected Output:", testCases[i].output);
-        console.log("Actual Output (stdout):", result.stdout);
-        console.log("Status Description:", result.status.description);
+        const stderr =
+          typeof result?.stderr === "string" ? result.stderr.trim() : "";
+        const compileOutput =
+          typeof result?.compile_output === "string"
+            ? result.compile_output.trim()
+            : "";
+        const message =
+          stderr || compileOutput || `stdout='${actualOutput || ""}'`;
+
         throw new ApiError(
           400,
-          `Test case ${i + 1} failed: ${result.status.description}`,
+          `Test case ${i + 1} failed in ${language}: ${result.status.description}. ${message}`,
           "TEST_CASE_FAILED",
         );
       }
@@ -172,6 +183,9 @@ export const updateProblem = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid reference solutions", []);
   }
 
+  const normalizeTextOutput = (value) =>
+    typeof value === "string" ? value.trim() : "";
+
   for (const [language, solution] of Object.entries(referenceSolutions)) {
     const languageId = await getJudge0LanguageId(language);
     if (!languageId) {
@@ -198,23 +212,31 @@ export const updateProblem = asyncHandler(async (req, res) => {
     for (let i = 0; i < results.length; i++) {
       // console.log("results.......", results);
       const result = results[i];
+      const actualOutput = normalizeTextOutput(result?.stdout);
+      const expectedOutput = normalizeTextOutput(testCases[i]?.output);
       if (
         result.status.id === 4 &&
-        result.stdout.trim() !== testCases[i].output.trim()
+        actualOutput !== expectedOutput
       ) {
         throw new ApiError(
           400,
-          `Test case ${i + 1} failed: Wrong Answer (Output Mismatch)`,
+          `Test case ${i + 1} failed in ${language}: Wrong Answer (Output Mismatch). Expected='${expectedOutput}', Actual='${actualOutput}'`,
           "TEST_CASE_FAILED",
         );
       }
       if (result.status.id !== 3) {
-        console.log("Expected Output:", testCases[i].output);
-        console.log("Actual Output (stdout):", result.stdout);
-        console.log("Status Description:", result.status.description);
+        const stderr =
+          typeof result?.stderr === "string" ? result.stderr.trim() : "";
+        const compileOutput =
+          typeof result?.compile_output === "string"
+            ? result.compile_output.trim()
+            : "";
+        const message =
+          stderr || compileOutput || `stdout='${actualOutput || ""}'`;
+
         throw new ApiError(
           400,
-          `Test case ${i + 1} failed: ${result.status.description}`,
+          `Test case ${i + 1} failed in ${language}: ${result.status.description}. ${message}`,
           "TEST_CASE_FAILED",
         );
       }
