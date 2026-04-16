@@ -25,7 +25,6 @@ import {
   Lightbulb,
   Loader2,
 } from "lucide-react";
-import { axiosInstance } from "@/lib/axios";
 import { getErrorMessage } from "@/lib/utils";
 import { useProblemStore } from "@/store/useProblemStore";
 import { useNavigate } from "react-router-dom";
@@ -94,7 +93,13 @@ export default function CreateProblemForm({
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { getProblemById, problem, isProblemLoading } = useProblemStore();
+  const {
+    getProblemById,
+    problem,
+    isProblemLoading,
+    createProblem,
+    updateProblem,
+  } = useProblemStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -199,21 +204,19 @@ export default function CreateProblemForm({
       };
 
       if (action === "create") {
-        const res = await axiosInstance.post(
-          "/problem/create-problem",
-          payload,
-        );
-        toast.success(res.data.message || "Problem Created successfully⚡");
+        const res = await createProblem(payload);
+        toast.success(res?.message || "Problem Created successfully⚡");
+        form.reset(defaultValues);
+        setCurrentStep(0);
+        setCompletedSteps(new Set());
+        return;
       }
       if (action === "update" && problemId) {
-        const res = await axiosInstance.put(
-          `/problem/update-problem/${problemId}`,
-          payload,
-        );
-        toast.success(res.data.message || "Problem Updated successfully⚡");
+        const res = await updateProblem(problemId, payload);
+        toast.success(res?.message || "Problem Updated successfully⚡");
+        setCompletedSteps(new Set([0, 1, 2, 3, 4]));
+        navigate("/");
       }
-      setCompletedSteps(new Set([0, 1, 2, 3, 4]));
-      navigate("/");
     } catch (error) {
       console.log(error);
       toast.error(getErrorMessage(error));

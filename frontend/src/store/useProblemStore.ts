@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { axiosInstance } from "@/lib/axios";
-import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/utils";
 import type {
   Problem,
@@ -8,6 +7,12 @@ import type {
   ProblemWithSolvedStatus,
   UserRankForSolvedProblems,
 } from "@/lib/schemas/problem.schema";
+import { toast } from "sonner";
+
+type ApiResponse = {
+  message?: string;
+  [key: string]: unknown;
+};
 
 
 interface ProblemStore {
@@ -21,8 +26,11 @@ interface ProblemStore {
   isCreatingProblem: boolean;
   isUpdatingProblem: boolean;
 
-  createProblem: (data: ProblemValues) => Promise<void>;
-  updateProblem: (id: string, data: Partial<ProblemValues>) => Promise<void>;
+  createProblem: (data: ProblemValues) => Promise<ApiResponse>;
+  updateProblem: (
+    id: string,
+    data: Partial<ProblemValues>,
+  ) => Promise<ApiResponse>;
   getAllProblems: () => Promise<void>;
   getProblemById: (id: string) => Promise<void>;
   getSolvedProblemsByUser: () => Promise<void>;
@@ -43,13 +51,11 @@ export const useProblemStore = create<ProblemStore>((set) => ({
   createProblem: async (data) => {
     try {
       set({ isCreatingProblem: true });
-      const res = (
-        await axiosInstance.post("/problem/create-problem", data)
-      ).data;
-      toast.success(res.message);
+      const res = await axiosInstance.post("/problem/create-problem", data);
+      return res.data;
     } catch (error) {
       console.error("Error creating problem:", error);
-      toast.error(getErrorMessage(error));
+      throw error;
     } finally {
       set({ isCreatingProblem: false });
     }
@@ -62,13 +68,14 @@ export const useProblemStore = create<ProblemStore>((set) => ({
         ...data,
         ...(data.testCases ? { testCases: data.testCases } : {}),
       };
-      const res = (
-        await axiosInstance.put(`/problem/update-problem/${id}`, payload)
-      ).data;
-      toast.success(res.message);
+      const res = await axiosInstance.put(
+        `/problem/update-problem/${id}`,
+        payload,
+      );
+      return res.data;
     } catch (error) {
       console.error("Error updating problem:", error);
-      toast.error(getErrorMessage(error));
+      throw error;
     } finally {
       set({ isUpdatingProblem: false });
     }
@@ -109,6 +116,7 @@ export const useProblemStore = create<ProblemStore>((set) => ({
       set({ isProblemLoading: false });
     }
   },
+
 
   getSolvedProblemsByUser: async () => {
     try {
