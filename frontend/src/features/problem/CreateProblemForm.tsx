@@ -8,13 +8,13 @@ import {
 } from "@/lib/schemas/problem.schema";
 import { Form } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import WizardProgress from "@/components/create-problem/WizardProgress";
-import WizardNavigation from "@/components/create-problem/WizardNavigation";
-import StepBasicInfo from "@/components/create-problem/StepBasicInfo";
-import StepTestCases from "@/components/create-problem/StepTestCases";
-import StepCodeTemplates from "@/components/create-problem/StepCodeTemplates";
-import StepExamples from "@/components/create-problem/StepExamples";
-import StepAdditional from "@/components/create-problem/StepAdditional";
+import WizardProgress from "@/components/createProblem/WizardProgress";
+import WizardNavigation from "@/components/createProblem/WizardNavigation";
+import StepBasicInfo from "@/components/createProblem/StepBasicInfo";
+import StepTestCases from "@/components/createProblem/StepTestCases";
+import StepCodeTemplates from "@/components/createProblem/StepCodeTemplates";
+import StepExamples from "@/components/createProblem/StepExamples";
+import StepAdditional from "@/components/createProblem/StepAdditional";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import {

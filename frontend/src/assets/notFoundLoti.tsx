@@ -1,7 +1,7 @@
 
 import { DotLottiePlayer } from "@dotlottie/react-player";
 
-const notFound = () => {
+const NotFoundLoti = () => {
   return (
     <div className="w-full max-w-lg">
       <DotLottiePlayer src="/Error 404.lottie" autoplay loop />
@@ -9,4 +9,4 @@ const notFound = () => {
   );
 };
 
-export default notFound;
+export default NotFoundLoti;

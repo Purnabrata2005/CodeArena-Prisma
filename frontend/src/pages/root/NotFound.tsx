@@ -1,12 +1,12 @@
 
 import { Link } from 'react-router-dom'
-import NotFoundLoti from '../../assets/notFoundLoti'
+import NotFoundLoti from '@/assets/notFoundLoti'
 import { Button } from '@heroui/react'
 
 const NotFound = () => {
   return (
     <div className="flex min-h-[80vh] flex-col items-center justify-center p-4 text-center text-foreground">
-      <NotFoundLoti />
+      <NotFoundLoti/>
       
       <h1 className="mt-6 text-3xl font-bold">Page Not Found</h1>
       <p className="mt-2 mb-6 text-muted-foreground">
