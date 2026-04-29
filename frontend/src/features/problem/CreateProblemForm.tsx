@@ -205,7 +205,7 @@ export default function CreateProblemForm({
 
       if (action === "create") {
         const res = await createProblem(payload);
-        toast.success(res?.message || "Problem Created successfully⚡");
+        toast.success(res?.message ?? "Problem Created successfully⚡");
         form.reset(defaultValues);
         setCurrentStep(0);
         setCompletedSteps(new Set());
@@ -213,7 +213,7 @@ export default function CreateProblemForm({
       }
       if (action === "update" && problemId) {
         const res = await updateProblem(problemId, payload);
-        toast.success(res?.message || "Problem Updated successfully⚡");
+        toast.success(res?.message ?? "Problem Updated successfully⚡");
         setCompletedSteps(new Set([0, 1, 2, 3, 4]));
         navigate("/");
       }

@@ -14,7 +14,6 @@ type ApiResponse = {
   [key: string]: unknown;
 };
 
-
 interface ProblemStore {
   problems: ProblemWithSolvedStatus[];
   problem: Problem | null;
@@ -86,12 +85,12 @@ export const useProblemStore = create<ProblemStore>((set) => ({
       set({ isProblemsLoading: true });
       const res = (await axiosInstance.get("/problem/get-all-problem")).data;
 
-      const normalizedProblems = (res.data.data as Array<Problem & { isSolved?: boolean }>).map(
-        (raw) => ({
-          ...raw,
-          isSolved: raw.isSolved ?? false,
-        }),
-      );
+      const normalizedProblems = (
+        res.data.data as Array<Problem & { isSolved?: boolean }>
+      ).map((raw) => ({
+        ...raw,
+        isSolved: raw.isSolved ?? false,
+      }));
 
       set({ problems: normalizedProblems });
     } catch (error) {
@@ -116,7 +115,6 @@ export const useProblemStore = create<ProblemStore>((set) => ({
       set({ isProblemLoading: false });
     }
   },
-
 
   getSolvedProblemsByUser: async () => {
     try {
