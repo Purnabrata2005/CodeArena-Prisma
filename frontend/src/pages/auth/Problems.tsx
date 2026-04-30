@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { useProblemStore } from "@/store/useProblemStore"
 import PageLoderLoti from "@/assets/pageLoderLoti"
-import ProblemsTable from "@/components/problemTable/ProblemsTable"
+import ProblemsTable from "@/components/problemTable/problemsTable"
 
 
 const Problems = () => {
