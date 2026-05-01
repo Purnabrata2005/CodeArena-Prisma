@@ -5,16 +5,16 @@ import { getErrorMessage } from "@/lib/utils";
 import { toast } from "sonner";
 
 interface ActionsState {
-  isDeletingProblem: boolean;
+  deletingProblemId: string | null;
   onDeleteProblem: (id: string) => Promise<void>;
 }
 
 export const useActions = create<ActionsState>((set) => ({
-  isDeletingProblem: false,
+  deletingProblemId: null,
 
   onDeleteProblem: async (id: string) => {
     try {
-      set({ isDeletingProblem: true });
+      set({ deletingProblemId: id });
       await axiosInstance.delete(`/problem/delete-problem/${id}`);
       useProblemStore.getState().removeProblem(id);
       toast.success("Problem deleted successfully");
@@ -22,7 +22,7 @@ export const useActions = create<ActionsState>((set) => ({
       console.log("Error deleting problem", error);
       toast.error(getErrorMessage(error));
     } finally {
-      set({ isDeletingProblem: false });
+      set({ deletingProblemId: null });
     }
   },
 }));

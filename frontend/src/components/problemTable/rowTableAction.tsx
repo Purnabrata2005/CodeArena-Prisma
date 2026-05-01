@@ -13,7 +13,7 @@ export default function RowActions({
   row: Row<ProblemWithSolvedStatus>;
 }) {
   const { authUser } = useAuthStore();
-  const { onDeleteProblem, isDeletingProblem } = useActions();
+  const { onDeleteProblem, deletingProblemId } = useActions();
   //   const { openDialog } = usePlaylistDialog();
   const handleDeleteProblem = (id: string) => {
     onDeleteProblem(id);
@@ -28,7 +28,7 @@ export default function RowActions({
             className=""
             onClick={() => handleDeleteProblem(row.original.id)}
           >
-            {isDeletingProblem ? (
+            {deletingProblemId === row.original.id ? (
               <Loader2 className="h-4 w-4 animate-spin text-white" />
             ) : (
               <TrashIcon className="h-4 w-4 text-white" />
