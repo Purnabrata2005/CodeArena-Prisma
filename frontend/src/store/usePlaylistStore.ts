@@ -15,7 +15,7 @@ interface PlaylistStore {
   error: string | null;
 
   createPlaylist: (playlistData: PlaylistValues) => Promise<BasicPlaylist>;
-  getAllPlaylists: (id: string) => Promise<void>;
+  getAllPlaylists: () => Promise<void>;
   getPlaylistDetailsByID: (playlistId: string) => Promise<void>;
   addProblemToPlaylist: (
     playlistId: string,
@@ -52,7 +52,7 @@ export const usePlaylistStore = create<PlaylistStore>((set, get) => ({
       set({ isLoading: true });
       const res = (await axiosInstance.post("/playlist/create", playlistData)).data;
       set((state) => ({
-        playlists: [...state.playlists, res.data],
+        playlists: [...state.playlists, res.data.data],
       }));
 
       toast.success("Playlist created successfully");
@@ -66,11 +66,12 @@ export const usePlaylistStore = create<PlaylistStore>((set, get) => ({
     }
   },
 
-  getAllPlaylists: async (id) => {
+  getAllPlaylists: async () => {
     try {
       set({ isLoading: true });
-      const res = (await axiosInstance.get(`/playlist/details/${id}`)).data;
-      set({ playlists: res.data });
+      const res = (await axiosInstance.get(`/playlist/details`)).data;
+      console.log(res);
+      set({ playlists: res.data.data });
     } catch (error) {
       console.error("Error fetching playlists:", error);
       toast.error(getErrorMessage(error));
@@ -83,7 +84,7 @@ export const usePlaylistStore = create<PlaylistStore>((set, get) => ({
     try {
       set({ isLoadingUserPlaylists: true });
       const res = (await axiosInstance.get("/playlist")).data;
-      set({ userPlaylists: res.data });
+      set({ userPlaylists: res.data.data });
     } catch (error) {
       console.error("Error fetching user playlists:", error);
       toast.error(getErrorMessage(error));
@@ -97,7 +98,7 @@ export const usePlaylistStore = create<PlaylistStore>((set, get) => ({
       set({ isLoading: true });
       const res = (await axiosInstance.get(`/playlist/details/${playlistId}`))
         .data;
-      set({ currentPlaylist: res.data });
+      set({ currentPlaylist: res.data.data });
     } catch (error) {
       console.error("Error fetching playlist details:", error);
       toast.error(getErrorMessage(error));
@@ -109,7 +110,7 @@ export const usePlaylistStore = create<PlaylistStore>((set, get) => ({
   addProblemToPlaylist: async (playlistId, problemIds) => {
     try {
       set({ isLoading: true });
-      await axiosInstance.post(`/playlist/${playlistId}/add-problem`, {
+      await axiosInstance.post(`/playlist/details/${playlistId}/add-problem`, {
         problemIds,
       });
 
@@ -170,11 +171,11 @@ export const usePlaylistStore = create<PlaylistStore>((set, get) => ({
 
       set((state) => ({
         userPlaylists: state.userPlaylists.map((p) =>
-          p.id === playlistId ? { ...p, ...res.data } : p,
+          p.id === playlistId ? { ...p, ...res.data.data } : p,
         ),
       }));
       if (get().currentPlaylist?.id === playlistId) {
-        set({ currentPlaylist: { ...get().currentPlaylist, ...res.data } });
+        set({ currentPlaylist: { ...get().currentPlaylist, ...res.data.data } });
       }
       toast.success("Playlist updated successfully");
     } catch (error) {

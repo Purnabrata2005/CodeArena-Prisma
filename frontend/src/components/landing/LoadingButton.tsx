@@ -7,12 +7,14 @@ type LoadingButtonProps = Omit<ComponentProps<typeof Button>, "children"> & {
 	children: ReactNode;
 	isLoading?: boolean;
 	loadingText?: ReactNode;
+	startContent?: ReactNode;
 };
 
 export default function LoadingButton({
 	children,
 	isLoading = false,
 	loadingText = "Loading...",
+	startContent,
 	className,
 	...props
 }: LoadingButtonProps) {
@@ -27,7 +29,7 @@ export default function LoadingButton({
 		>
 			{({ isPending }) => (
 				<span className="flex items-center gap-2 whitespace-nowrap">
-					{isPending ? <Spinner color="current" size="sm" /> : null}
+					{isPending ? <Spinner color="current" size="sm" /> : startContent}
 					<span>{isPending ? loadingText : children}</span>
 				</span>
 			)}

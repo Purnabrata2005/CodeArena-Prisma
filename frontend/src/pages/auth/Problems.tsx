@@ -2,11 +2,15 @@ import { useEffect } from "react"
 import { useProblemStore } from "@/store/useProblemStore"
 import PageLoderLoti from "@/assets/pageLoderLoti"
 import ProblemsTable from "@/components/problemTable/problemsTable"
+import AddToPlaylistModal from "@/components/playList/AddToPlaylistPage"
+import { usePlaylistDialog } from "@/store/usePlaylistDialogStore"
 
 
 const Problems = () => {
 
   const{getAllProblems,problems,isProblemsLoading}=useProblemStore()
+
+  const{closeDialog,problemId}=usePlaylistDialog()
 
   useEffect(() => {
     getAllProblems()
@@ -33,11 +37,11 @@ const Problems = () => {
         interviews and helps you to improve your coding skills by solving coding
         problems
       </p>
-      {/* <AddToPlaylistModal
-        isOpen={open}
+      <AddToPlaylistModal
+        isOpen={problemId ? true : false}
         onClose={closeDialog}
         problemId={problemId || ""}
-      /> */}
+      />
       {problems.length > 0 ? (
         <ProblemsTable problems={problems} />
       ) : (

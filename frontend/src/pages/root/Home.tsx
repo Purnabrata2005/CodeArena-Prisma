@@ -2,9 +2,11 @@ import React from 'react'
 import { Button } from '@heroui/react';
 
 const Home = () => {
+  
   return (
     <div className=''>
       <h1>Home</h1>
+      
       <Button>Button</Button>
       <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Suscipit placeat in, quo reprehenderit similique voluptatem earum soluta quod amet, nemo, eum repellat id iure molestias neque? Id beatae repellendus sed.
       Omnis dignissimos odit, accusantium nostrum magnam dolores ducimus ipsum dolorum exercitationem dolorem commodi adipisci, earum qui perspiciatis esse porro distinctio aut? Repudiandae reiciendis sed excepturi dicta illum maxime placeat ratione!
