@@ -1,11 +1,11 @@
 import { Bookmark, Loader2, PencilIcon, TrashIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import type { Row } from "@tanstack/react-table";
-import type { ProblemWithSolvedStatus } from "@/lib/schemas/problem.schema";
+import type { ProblemWithSolvedStatus } from "@/lib/schemas/problemSchema";
 import { useAuthStore } from "@/store/useAuthStore";
-// import { usePlaylistDialog } from "@/store";
+import { usePlaylistDialog } from "@/store/usePlaylistDialogStore";
 import { Link } from "react-router-dom";
-import { useActions } from "@/store/useActions";
+import { useActions } from "@/store/useActionsStore";
 
 export default function RowActions({
   row,
@@ -14,7 +14,7 @@ export default function RowActions({
 }) {
   const { authUser } = useAuthStore();
   const { onDeleteProblem, deletingProblemId } = useActions();
-  //   const { openDialog } = usePlaylistDialog();
+    const { openDialog } = usePlaylistDialog();
   const handleDeleteProblem = (id: string) => {
     onDeleteProblem(id);
   };
@@ -49,7 +49,7 @@ export default function RowActions({
         size="sm"
         variant="outline"
         className="hover:bg-primary gap-2 duration-300 ease-in hover:text-white"
-        // onClick={() => openDialog(row.original.id)}
+        onClick={() => openDialog(row.original.id)}
       >
         <Bookmark className="h-4 w-4" />
       </Button>

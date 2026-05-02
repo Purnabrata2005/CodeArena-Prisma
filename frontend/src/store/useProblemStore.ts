@@ -6,7 +6,7 @@ import type {
   ProblemValues,
   ProblemWithSolvedStatus,
   UserRankForSolvedProblems,
-} from "@/lib/schemas/problem.schema";
+} from "@/lib/schemas/problemSchema";
 import { toast } from "sonner";
 
 type ApiResponse = {

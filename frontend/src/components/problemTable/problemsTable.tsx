@@ -53,9 +53,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { ProblemWithSolvedStatus } from "@/lib/schemas/problem.schema";
+import type { ProblemWithSolvedStatus } from "@/lib/schemas/problemSchema";
 import { columns } from "@/components/problemTable/columnTableAction";
-// import CreatePlaylistDialog from "../CreatePlaylistDialog";
+import CreatePlaylistDialog from "@/components/playList/CreatePlaylistDialogPage";
 
 interface ProblemsTableProps {
   problems: ProblemWithSolvedStatus[];
@@ -167,7 +167,7 @@ export default function ProblemsTable({ problems = [] }: ProblemsTableProps) {
     <div className="mx-auto mt-10 w-full max-w-6xl space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Problems</h2>
-        {/* <CreatePlaylistDialog /> */}
+        <CreatePlaylistDialog />
       </div>
 
       {/* Filters */}

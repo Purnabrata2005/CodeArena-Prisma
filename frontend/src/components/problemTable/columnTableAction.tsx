@@ -1,4 +1,4 @@
-import type { ProblemWithSolvedStatus } from "@/lib/schemas/problem.schema";
+import type { ProblemWithSolvedStatus } from "@/lib/schemas/problemSchema";
 import { type ColumnDef, type FilterFn } from "@tanstack/react-table";
 // import { Badge } from "../ui/crazxy-ui/badge";
 import { Badge } from "@/components/ui/badge";

@@ -1,5 +1,5 @@
 import { useFormContext, useWatch } from "react-hook-form";
-import type { ProblemValues } from "@/lib/schemas/problem.schema";
+import type { ProblemValues } from "@/lib/schemas/problemSchema";
 import type { Difficulty } from "@/types";
 import {
   FormField,

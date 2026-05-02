@@ -18,3 +18,7 @@ export function getErrorMessage(error: unknown): string {
   }
   return "An unexpected error occurred";
 }
+
+export function capitalizeWord(sentence: string): string {
+  return sentence.charAt(0).toUpperCase() + sentence.slice(1);
+}

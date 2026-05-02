@@ -1,5 +1,5 @@
 import { useFormContext, useFieldArray } from "react-hook-form";
-import type { ProblemValues } from "@/lib/schemas/problem.schema";
+import type { ProblemValues } from "@/lib/schemas/problemSchema";
 import {
   FormField,
   FormItem,

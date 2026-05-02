@@ -62,4 +62,4 @@ export {
   type Problem,
   type ProblemWithSolvedStatus,
   type UserRankForSolvedProblems,
-} from "@/lib/schemas/problem.schema";
+} from "@/lib/schemas/problemSchema";

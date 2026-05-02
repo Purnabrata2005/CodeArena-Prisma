@@ -5,7 +5,7 @@ import {
   problemSchema,
   stepSchemas,
   type ProblemValues,
-} from "@/lib/schemas/problem.schema";
+} from "@/lib/schemas/problemSchema";
 import { Form } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import WizardProgress from "@/components/createProblem/WizardProgress";
