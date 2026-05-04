@@ -91,7 +91,7 @@ const AddToPlaylistModal = ({
                   }
                 />
               </SelectTrigger>
-              <SelectContent className="max-h-60 overflow-hidden">
+              <SelectContent position="popper" align="start" className="max-h-60 overflow-y-auto">
                 {playlists.map((playlist) => (
                   <SelectItem
                     key={playlist.id}
