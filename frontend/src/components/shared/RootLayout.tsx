@@ -4,11 +4,12 @@ import { Outlet } from "react-router-dom";
 
 const RootLayout = () => {
   return (
-   <div className="h-full w-full p-2">
-      <Navbar />
+   <div className="h-full w-full">
+      <Navbar>
       <div className="mb-4 pt-18 md:pt-22">
         <Outlet />
       </div>
+       </Navbar>
       <Footer />
     </div>
   );
