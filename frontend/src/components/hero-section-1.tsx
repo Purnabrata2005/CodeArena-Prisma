@@ -4,6 +4,7 @@ import { AnimatedGroup } from "@/components/ui/animated-group";
 
 import { Link } from "react-router-dom";
 import { useTheme } from "@/components/ui/theme-provider";
+import { Glow } from "@/components/ui/glow";
 
 const transitionVariants = {
   item: {
@@ -27,6 +28,7 @@ const transitionVariants = {
 
 export function HeroSection() {
   const { theme } = useTheme();
+
   return (
     <>
       <main className="overflow-hidden">
@@ -67,13 +69,13 @@ export function HeroSection() {
               }}
               className="absolute inset-0 -z-20"
             >
-              <img
+              {/* <img
                 src="https://ik.imagekit.io/lrigu76hy/tailark/night-background.jpg?updatedAt=1745733451120"
                 alt="background"
                 className="absolute inset-x-0 top-56 -z-20 hidden lg:top-32 dark:block"
                 width="3276"
                 height="4095"
-              />
+              /> */}
             </AnimatedGroup>
             <div
               aria-hidden
@@ -166,34 +168,30 @@ export function HeroSection() {
                 ...transitionVariants,
               }}
             >
-              <div className="relative mt-8 -mr-56 overflow-hidden px-2 sm:mt-12 sm:mr-0 md:mt-20">
-                <div
-                  aria-hidden
-                  className="to-background absolute inset-0 z-10 bg-gradient-to-b from-transparent from-35%"
+              <div className="relative mt-8 px-2 sm:mt-12 md:mt-20">
+                <Glow
+                  variant="above"
+                  className="animate-appear delay-700 blur-3xl"
                 />
-                <div className="ring-background bg-background relative mx-auto max-w-6xl overflow-hidden rounded-2xl border p-4 shadow-lg ring-1 inset-shadow-2xs shadow-zinc-950/15 dark:inset-shadow-white/20">
-                  <img
-                    className="bg-background relative hidden aspect-15/8 rounded-2xl dark:block"
-                    src={
-                      theme === "light"
-                        ? "/images/light-demo.webp"
-                        : "/images/dark-demo.webp"
-                    }
-                    alt="app screen"
-                    width="2700"
-                    height="1440"
+                <div className="relative overflow-hidden">
+                  <div
+                    aria-hidden
+                    className="to-background absolute inset-0 z-10 bg-gradient-to-b from-transparent from-35%"
                   />
-                  <img
-                    className="border-border/25 relative z-2 aspect-15/8 rounded-2xl border dark:hidden"
-                    src={
-                      theme === "light"
-                        ? "/images/light-demo.webp"
-                        : "/images/dark-demo.webp"
-                    }
-                    alt="app screen"
-                    width="2700"
-                    height="1440"
-                  />
+                  <div className="ring-background bg-background relative mx-auto max-w-6xl overflow-hidden rounded-2xl border p-4 shadow-lg ring-1 shadow-zinc-950/15 dark:shadow-zinc-950">
+                    {/* Dark theme image */}
+                    <img
+                      className="bg-background relative hidden w-full aspect-video object-cover rounded-lg dark:block"
+                      src="/dark-demo.webp"
+                      alt="app screen"
+                    />
+                    {/* Light theme image */}
+                    <img
+                      className="border-border/25 relative w-full aspect-video object-cover rounded-lg border dark:hidden"
+                      src="/light-demo.webp"
+                      alt="app screen"
+                    />
+                  </div>
                 </div>
               </div>
             </AnimatedGroup>
