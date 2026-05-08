@@ -61,6 +61,8 @@ model User {
   problemsSolved ProblemSolved[]
 
   playlists Playlist[]
+
+  discussions DiscussionTable[]
 }
 
 model Problem {
@@ -91,6 +93,8 @@ model Problem {
   solvedBy ProblemSolved[]
 
   problemsInPlaylists ProblemInPlaylist[]
+
+  discussions DiscussionTable[]
 }
 
 model Submission {
@@ -183,4 +187,19 @@ model ProblemInPlaylist {
   problem Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
 
   @@unique([playlistId, problemId])
+}
+
+model DiscussionTable{
+  id String @id @default(uuid())
+  userId String
+  problemId String
+  message String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //relations
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
 }
