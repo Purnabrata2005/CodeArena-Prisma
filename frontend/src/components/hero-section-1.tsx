@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { AnimatedGroup } from "@/components/ui/animated-group";
 
 import { Link } from "react-router-dom";
-import { useTheme } from "@/components/ui/theme-provider";
+// import { useTheme } from "@/components/ui/theme-provider";
 import { Glow } from "@/components/ui/glow";
 
 const transitionVariants = {
@@ -27,7 +27,7 @@ const transitionVariants = {
 };
 
 export function HeroSection() {
-  const { theme } = useTheme();
+  // const { theme } = useTheme();
 
   return (
     <>
@@ -69,13 +69,6 @@ export function HeroSection() {
               }}
               className="absolute inset-0 -z-20"
             >
-              {/* <img
-                src="https://ik.imagekit.io/lrigu76hy/tailark/night-background.jpg?updatedAt=1745733451120"
-                alt="background"
-                className="absolute inset-x-0 top-56 -z-20 hidden lg:top-32 dark:block"
-                width="3276"
-                height="4095"
-              /> */}
             </AnimatedGroup>
             <div
               aria-hidden

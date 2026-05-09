@@ -1,6 +1,7 @@
 import type { Difficulty } from "@/types";
 import axios from "axios";
 import { clsx, type ClassValue } from "clsx"
+import { formatDate, formatDistanceToNowStrict } from "date-fns";
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
@@ -35,4 +36,94 @@ export const getDifficultyColor = (difficulty: Difficulty) => {
     default:
       return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300";
   }
+};
+
+export function getLanguageId(language: string): number {
+  const languageMap: Record<string, number> = {
+    PYTHON: 71,
+    JAVASCRIPT: 63,
+    JAVA: 62,
+    TYPESCRIPT: 74,
+  };
+  return languageMap[language.toUpperCase()];
+}
+
+export function formatNumber(n: number): string {
+  return Intl.NumberFormat("en-US", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(n);
+}
+
+export const safeParse = <T>(data: string | T[]): T[] => {
+  if (Array.isArray(data)) return data;
+  try {
+    return JSON.parse(data) as T[];
+  } catch {
+    return [];
+  }
+};
+export const calculateAverageMemory = (
+  memoryData: string[] | string,
+): number => {
+  const memoryArray = safeParse<string>(memoryData).map((m) => {
+    const value = parseFloat(m.split(" ")[0]);
+    return isNaN(value) ? 0 : value;
+  });
+
+  if (memoryArray.length === 0) return 0;
+  return memoryArray.reduce((acc, curr) => acc + curr, 0) / memoryArray.length;
+};
+
+export function formatRelativeDate(from: Date) {
+  const currentDate = new Date();
+  if (currentDate.getTime() - from.getTime() < 24 * 60 * 60 * 1000) {
+    return formatDistanceToNowStrict(from, { addSuffix: true });
+  } else {
+    if (currentDate.getFullYear() === from.getFullYear()) {
+      return formatDate(from, "MMM d");
+    } else {
+      return formatDate(from, "MMM d, yyy");
+    }
+  }
+}
+
+export const calculateAverageTime = (timeData: string[] | string): number => {
+  const timeArray = safeParse<string>(timeData).map((t) => {
+    const value = parseFloat(t.split(" ")[0]);
+    return isNaN(value) ? 0 : value;
+  });
+
+  if (timeArray.length === 0) return 0;
+  return timeArray.reduce((acc, curr) => acc + curr, 0) / timeArray.length;
+};
+
+export const formatMessage = (content: string) => {
+  const escapeHTML = (str: string) =>
+    str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  const codeBlockRegex = /```(\w+)?\n?([\s\S]*?)```/g;
+  const inlineCodeRegex = /`([^`]+)`/g;
+
+  let formatted = escapeHTML(content);
+
+  // Replace code blocks
+  formatted = formatted.replace(codeBlockRegex, (_, lang = "text", code) => {
+    return `
+          <div class="code-block">
+            <div class="code-header">${lang}</div>
+            <pre><code class="language-${lang}">${escapeHTML(code)}</code></pre>
+          </div>
+        `;
+  });
+  formatted = formatted.replace(inlineCodeRegex, (_, code) => {
+    return `<code class="inline-code">${escapeHTML(code)}</code>`;
+  });
+
+  return formatted;
 };
