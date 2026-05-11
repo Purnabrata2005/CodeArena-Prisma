@@ -283,7 +283,7 @@ export default function ProblemWorkspace() {
         successRate={submissionCount?.successRate}
       />
       <div className="mx-auto p-4">
-        <ResizablePanelGroup direction="horizontal" className="min-h-[550px]">
+        <ResizablePanelGroup className="min-h-[550px]">
           {/* Problem Description Panel */}
           <ResizablePanel defaultSize={45} minSize={35}>
             <Card className="h-full">
