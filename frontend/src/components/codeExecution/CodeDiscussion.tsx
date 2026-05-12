@@ -11,13 +11,11 @@ import { Textarea } from "@/components/ui/textarea";
 interface CodeDiscussionProps {
   messages: DiscussionWithUser[];
   problemId: string;
-
   isLoading: boolean;
 }
 export default function CodeDiscussion({
   messages,
   problemId,
-
   isLoading: isDiscussionLoading,
 }: CodeDiscussionProps) {
   const { createDiscussion, isLoading } = useDiscussionStore();

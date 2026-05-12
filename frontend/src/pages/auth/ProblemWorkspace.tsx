@@ -345,7 +345,7 @@ export default function ProblemWorkspace() {
                     onClick={handleRunCode}
                     isLoading={isExecuting}
                     variant="primary"
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 whitespace-nowrap"
                   >
                     <Play className="h-4 w-4" />
                     Run Code
@@ -354,7 +354,7 @@ export default function ProblemWorkspace() {
                     isLoading={isSubmitting}
                     onClick={handleSubmitCode}
                     variant="primary"
-                    className="bg-green-600 hover:bg-green-700"
+                    className="bg-green-600 hover:bg-green-700 whitespace-nowrap"
                   >
                     Submit Solution
                   </LoadingButton>

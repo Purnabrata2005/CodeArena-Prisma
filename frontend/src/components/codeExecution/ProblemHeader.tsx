@@ -57,7 +57,10 @@ export default function ProblemHeader({
                 <div className="flex items-center gap-1">
                   <Clock className="h-4 w-4" />
                   <span>
-                    Updated {problem.createdAt ? new Date(problem.createdAt).toLocaleDateString() : 'N/A'}
+                    Updated{" "}
+                    {problem.createdAt
+                      ? new Date(problem.createdAt).toLocaleDateString()
+                      : "N/A"}
                   </span>
                 </div>
                 <Separator orientation="vertical" className="h-4" />

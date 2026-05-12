@@ -1,15 +1,8 @@
 import { useCodeEditorStore } from "@/store/useCodeEditorStore";
 import type React from "react";
 import { motion } from "framer-motion";
-import {
-  CircleOff,
-  Cloud,
-  
-  Laptop,
-  Moon,
-  Palette,
-  Sun,
-} from "lucide-react";
+import { CircleOff, Cloud, Laptop, Moon, Palette, Sun } from "lucide-react";
+import { FaGithub } from "react-icons/fa";
 import useMounted from "@/hooks/useMounted";
 import type { Theme } from "@/types";
 import { THEMES } from "@/constants";
@@ -26,7 +19,7 @@ import { Button } from "@/components/ui/button";
 const THEME_ICONS: Record<string, React.ReactNode> = {
   "vs-dark": <Moon className="size-4" />,
   "vs-light": <Sun className="size-4" />,
-  "github-dark": <CircleOff className="size-4" />,
+  "github-dark": <FaGithub className="size-4" />,
   monokai: <Laptop className="size-4" />,
   "solarized-dark": <Cloud className="size-4" />,
 };

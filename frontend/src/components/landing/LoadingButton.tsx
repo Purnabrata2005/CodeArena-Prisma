@@ -23,7 +23,7 @@ export default function LoadingButton({
 			{...props}
 			isPending={isLoading}
 			className={cn(
-				"transition-all duration-300 ease-out data-[pending=true]:min-w-44 data-[pending=true]:px-6 data-[pending=true]:shadow-lg data-[pending=true]:scale-[1.02]",
+				"rounded-full px-6 py-2 font-medium transition-all duration-300 ease-out data-[pending=true]:min-w-44 data-[pending=true]:px-6 data-[pending=true]:shadow-lg data-[pending=true]:scale-[1.02]",
 				className,
 			)}
 		>
