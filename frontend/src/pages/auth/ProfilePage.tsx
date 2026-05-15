@@ -1,7 +1,9 @@
 import HeatmapCalendar from "@/components/profile/HeatmapCalendar";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import ProfileTabSubmissions from "@/components/profile/ProfileTabSubmissions";
-import { useAuthStore, useProblemStore, useSubmissionStore } from "@/store";
+import { useAuthStore } from "@/store/useAuthStore";
+import { useProblemStore} from "@/store/useProblemStore";
+import { useSubmissionStore  } from "@/store/useSubmissionStore";
 import { useEffect } from "react";
 export default function ProfilePage() {
   const { authUser: user } = useAuthStore();
