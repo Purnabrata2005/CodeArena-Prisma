@@ -5,6 +5,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { useProblemStore} from "@/store/useProblemStore";
 import { useSubmissionStore  } from "@/store/useSubmissionStore";
 import { useEffect } from "react";
+
 export default function ProfilePage() {
   const { authUser: user } = useAuthStore();
 
