@@ -138,6 +138,10 @@ export default function ProblemWorkspace() {
         language_id: language_id || "",
         problemId: id as string,
       });
+      if (id) {
+        await getSubmissionForProblem(id as string);
+        await getSubmissionCountForProblem(id as string);
+      }
       clearProblemCode(problem.id);
     } catch (error) {
       console.error("Error running code:", error);
@@ -337,7 +341,7 @@ export default function ProblemWorkspace() {
           <ResizablePanel defaultSize={55} minSize={40}>
             <div className="h-full gap-4">
               <div className="h-[550px] overflow-hidden rounded-lg">
-                <MonocoEditor problem={problem} />
+                <MonocoEditor problem={problem} code={code} setCode={setCode} />
               </div>
               <div className="bg-muted/50 border-t p-4">
                 <div className="flex items-center justify-between">

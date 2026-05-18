@@ -25,7 +25,7 @@ export const useExecutionStore = create<ExecutionState>((set) => ({
       set({ isSubmitting: true });
       const res = (await axiosInstance.post("/execute-code/submit-code", data))
         .data;
-      set({ submission: res.data });
+      set({ submission:res.data ?? null });
       toast.success(res.message);
     } catch (error) {
       console.log("Error executing code", error);
@@ -40,8 +40,8 @@ export const useExecutionStore = create<ExecutionState>((set) => ({
 
       const res = (await axiosInstance.post("/execute-code/run-code", data))
         .data;
-      set({ submission: res.data });
-      toast.success("🧪 Test cases executed successfully!");
+      set({ submission:res.data ?? null });
+      toast.success(res.message || "🧪 Test cases executed successfully!");
     } catch (error) {
       console.error("Error running code", error);
       toast.error(getErrorMessage(error));

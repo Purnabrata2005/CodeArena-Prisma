@@ -43,7 +43,7 @@ export const useSubmissionStore = create<SubmissionState>((set) => ({
       const res = (await axiosInstance.get("/submission/get-all-submissions"))
         .data;
       set({
-        submissions: res.data,
+        submissions: res.data.data,
         isLoading: false,
       });
     } catch (error) {
@@ -61,7 +61,7 @@ export const useSubmissionStore = create<SubmissionState>((set) => ({
       ).data;
 
       set({
-        submissionsForProblem: res.data,
+        submissionsForProblem: res.data.data,
         isLoading: false,
       });
     } catch (error) {
@@ -80,7 +80,7 @@ export const useSubmissionStore = create<SubmissionState>((set) => ({
       ).data;
 
       set({
-        submissionCount: res.data,
+        submissionCount: res.data.data,
         isLoading: false,
       });
     } catch (error) {
@@ -95,7 +95,7 @@ export const useSubmissionStore = create<SubmissionState>((set) => ({
       const res = (await axiosInstance.get("/submission/submission-stats"))
         .data;
       set({
-        submissionStats: res.data,
+        submissionStats: res.data.data,
         isSubmissionStatsLoading: false,
       });
     } catch (error) {
@@ -109,7 +109,7 @@ export const useSubmissionStore = create<SubmissionState>((set) => ({
       set({ isHetmapLoading: true });
       const res = (await axiosInstance.get("/submission/heatmap")).data;
       set({
-        hetmapData: res.data,
+        hetmapData: res.data.data,
         isHetmapLoading: false,
       });
     } catch (error) {

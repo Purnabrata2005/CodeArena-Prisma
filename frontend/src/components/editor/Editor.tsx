@@ -7,8 +7,10 @@ import { useCodeEditorStore } from "@/store/useCodeEditorStore";
 import type { Problem } from "@/lib/schemas/problemSchema";
 interface MonocoEditorProps {
   problem: Problem;
+  code?: string;
+  setCode?: (code: string) => void;
 }
-export default function MonocoEditor({ problem }: MonocoEditorProps) {
+export default function MonocoEditor({ problem, code, setCode }: MonocoEditorProps) {
   const { language, theme, fontSize, editor, setFontSize, setEditor } =
     useCodeEditorStore();
   const defaultCode = problem.codeSnippets[language];
@@ -36,6 +38,9 @@ export default function MonocoEditor({ problem }: MonocoEditorProps) {
   const handleEditorChange = (value: string | undefined) => {
     if (value !== undefined) {
       localStorage.setItem(`editor-code-${problem.id}-${language}`, value);
+      if (setCode) {
+        setCode(value);
+      }
     }
   };
 
