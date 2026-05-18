@@ -28,7 +28,7 @@ export default function LoadingButton({
 			)}
 		>
 			{({ isPending }) => (
-				<span className="flex items-center gap-2 whitespace-nowrap">
+				<span className="loading-button-content">
 					{isPending ? <Spinner color="current" size="sm" /> : startContent}
 					<span>{isPending ? loadingText : children}</span>
 				</span>

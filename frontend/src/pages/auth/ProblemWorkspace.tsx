@@ -349,9 +349,9 @@ export default function ProblemWorkspace() {
                     onClick={handleRunCode}
                     isLoading={isExecuting}
                     variant="primary"
-                    className="flex items-center gap-2 whitespace-nowrap"
+                    className="run-code-button"
+                    startContent={<Play className="h-4 w-4" />}
                   >
-                    <Play className="h-4 w-4" />
                     Run Code
                   </LoadingButton>
                   <LoadingButton
