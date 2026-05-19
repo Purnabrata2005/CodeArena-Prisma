@@ -8,6 +8,19 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Custom animation delays */
+@layer utilities {
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+  .animation-delay-3000 {
+    animation-delay: 3s;
+  }
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+}
+
 :root {
   --background: oklch(0.9842 0.0034 247.8600);
   --foreground: oklch(0.2795 0.0368 260.0300);
@@ -191,6 +204,25 @@
 }
 
 @layer components {
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--background);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--muted-foreground);
+  }
+
   .run-code-button {
     min-width: 10rem;
     border: 1px solid color-mix(in oklab, var(--accent) 55%, transparent);

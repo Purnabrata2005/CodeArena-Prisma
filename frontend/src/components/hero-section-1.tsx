@@ -174,13 +174,13 @@ export function HeroSection() {
                   <div className="ring-background bg-background relative mx-auto max-w-6xl overflow-hidden rounded-2xl border p-4 shadow-lg ring-1 shadow-zinc-950/15 dark:shadow-zinc-950">
                     {/* Dark theme image */}
                     <img
-                      className="bg-background relative hidden w-full aspect-video object-cover rounded-lg dark:block"
+                      className="bg-background relative z-20 hidden w-full mx-auto max-w-full h-auto object-contain rounded-lg dark:block"
                       src="/dark-demo.webp"
                       alt="app screen"
                     />
                     {/* Light theme image */}
                     <img
-                      className="border-border/25 relative w-full aspect-video object-cover rounded-lg border dark:hidden"
+                      className="border-border/25 relative z-20 block dark:hidden w-full mx-auto max-w-full h-auto object-contain rounded-lg border"
                       src="/light-demo.webp"
                       alt="app screen"
                     />
