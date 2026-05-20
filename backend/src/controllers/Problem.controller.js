@@ -309,3 +309,67 @@ export const getSovleProblem = asyncHandler(async (req, res) => {
     }),
   );
 });
+
+export const getUserSolvedRank = asyncHandler(async (req, res) => {
+  if (!req.user) {
+    throw new ApiError(401, "Authentication required", "UNAUTHORIZED");
+  }
+
+  const { id: userId } = req.params;
+  if (!userId) {
+    throw new ApiError(400, "User ID is required", "BAD_REQUEST");
+  }
+
+  // Get user solved count and rank using raw SQL
+  const userRankResult = await db.$queryRaw`
+    SELECT 
+      "userId" as "userId",
+      COUNT(*) as "solvedCount",
+      RANK() OVER (ORDER BY COUNT(*) DESC) as rank
+    FROM "ProblemSolved"
+    WHERE "userId" = ${userId}
+    GROUP BY "userId"
+  `;
+
+  // Get max rank (highest rank number)
+  const maxRankResult = await db.$queryRaw`
+    SELECT MAX(rank) as "maxRank" FROM (
+      SELECT
+        RANK() OVER (ORDER BY COUNT(*) DESC) as rank
+      FROM "ProblemSolved"
+      GROUP BY "userId"
+    ) as ranks
+  `;
+
+  let maxRank = 0;
+  if (maxRankResult && maxRankResult.length > 0) {
+    const maxRankRow = maxRankResult[0];
+    const val = maxRankRow.maxrank || maxRankRow.maxRank;
+    if (typeof val === "number") {
+      maxRank = val;
+    } else if (typeof val === "string") {
+      maxRank = Number(val);
+    }
+  }
+
+  if (!userRankResult || userRankResult.length === 0) {
+    return res.status(200).json(
+      new ApiResponse(200, "User has not solved any problems", {
+        solvedCount: 0,
+        rank: maxRank + 1,
+      }),
+    );
+  }
+
+  const { solvedCount, rank } = userRankResult[0];
+  const parsedSolvedCount =
+    typeof solvedCount === "number" ? solvedCount : Number(solvedCount);
+  const parsedRank = typeof rank === "number" ? rank : Number(rank);
+
+  return res.status(200).json(
+    new ApiResponse(200, "Rank fetched successfully", {
+      solvedCount: parsedSolvedCount,
+      rank: parsedRank,
+    }),
+  );
+});

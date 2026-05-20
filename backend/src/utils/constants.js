@@ -14,7 +14,7 @@ export const options = {
 export class UserResponse  {
   constructor(user,extra = {}) {
     const fields = [
-      "_id",
+      "id",
       "username",
       "email",
       "name",
@@ -30,6 +30,9 @@ export class UserResponse  {
     fields.forEach((field) => {
       this[field] = user[field];
     });
+
+    // Backward-compatibility alias for clients still expecting `_id`.
+    this._id = user.id;
 
     // add extra fields like tokens
     Object.assign(this, extra);
