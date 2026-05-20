@@ -15,9 +15,9 @@ interface SubmissionState {
   submissionStats: UserSubmissionStats | null;
   isSubmissionStatsLoading: boolean;
 
-  hetmapData: SubmissionHeatmapEntry[];
-  isHetmapLoading: boolean;
-  hetmapError: string | null;
+  heatmapData: SubmissionHeatmapEntry[];
+  isHeatmapLoading: boolean;
+  heatmapError: string | null;
   getHeatmapData: () => Promise<void>;
 
   getAllSubmissions: () => Promise<void>;
@@ -33,9 +33,9 @@ export const useSubmissionStore = create<SubmissionState>((set) => ({
   submissionCount: null,
   submissionStats: null,
   isSubmissionStatsLoading: false,
-  hetmapData: [],
-  isHetmapLoading: false,
-  hetmapError: null,
+  heatmapData: [],
+  isHeatmapLoading: false,
+  heatmapError: null,
 
   getAllSubmissions: async () => {
     try {
@@ -106,16 +106,16 @@ export const useSubmissionStore = create<SubmissionState>((set) => ({
   },
   getHeatmapData: async () => {
     try {
-      set({ isHetmapLoading: true });
+      set({ isHeatmapLoading: true });
       const res = (await axiosInstance.get("/submission/heatmap")).data;
       set({
-        hetmapData: res.data.data,
-        isHetmapLoading: false,
+        heatmapData: res.data.data,
+        isHeatmapLoading: false,
       });
     } catch (error) {
       console.log("Error getting heatmap data", error);
       toast.error(getErrorMessage(error));
-      set({ isHetmapLoading: false });
+      set({ isHeatmapLoading: false });
     }
   },
 }));

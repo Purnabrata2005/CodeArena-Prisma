@@ -184,6 +184,11 @@ export function HeroSection() {
                       src="/light-demo.webp"
                       alt="app screen"
                     />
+                    {/* Bottom blur effect overlay */}
+                    <div
+                      aria-hidden
+                      className="absolute bottom-0 left-0 right-0 z-30 h-32 bg-gradient-to-t from-background via-background/60 to-transparent backdrop-blur-l rounded-b-lg"
+                    />
                   </div>
                 </div>
               </div>
