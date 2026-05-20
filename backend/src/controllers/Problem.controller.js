@@ -302,15 +302,6 @@ export const getSovleProblem = asyncHandler(async (req, res) => {
         },
       },
     },
-    include: {
-      where: {
-        solvedBy: {
-          some: {
-            userId,
-          },
-        },
-      },
-    },
   });
   return res.status(200).json(
     new ApiResponse(200, "Problems fetched successfully", {

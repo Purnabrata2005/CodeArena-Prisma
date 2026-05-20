@@ -6,12 +6,12 @@ import { ApiResponse } from "../utils/api-response.js";
 const discussionUserSelect = {
   id: true,
   name: true,
-  avatar: true,
+  avatarUrl: true,
 };
 
 const normalizeDiscussion = (discussion) => ({
   ...discussion,
-  message: discussion.massage,
+  message: discussion.message,
 });
 
 export const createDiscussion = asyncHandler(async (req, res) => {
@@ -31,7 +31,7 @@ export const createDiscussion = asyncHandler(async (req, res) => {
     data: {
       userId,
       problemId,
-      massage: message.trim(),
+      message: message.trim(),
     },
   });
 
@@ -41,7 +41,7 @@ export const createDiscussion = asyncHandler(async (req, res) => {
     },
     select: {
       id: true,
-      massage: true,
+      message: true,
       createdAt: true,
       updatedAt: true,
       user: {
@@ -75,7 +75,7 @@ export const getAllDiscussionsForProblem = asyncHandler(async (req, res) => {
     },
     select: {
       id: true,
-      massage: true,
+      message: true,
       createdAt: true,
       updatedAt: true,
       user: {

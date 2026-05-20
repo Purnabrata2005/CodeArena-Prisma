@@ -2,6 +2,7 @@ import { asyncHandler } from "../utils/async-handler.js";
 import { db } from "../db/db.js";
 import { ApiError } from "../utils/api-error.js";
 import { ApiResponse } from "../utils/api-response.js";
+import crypto from "crypto";
 import {
   getLanguageName,
   pullBatchResults,
@@ -116,7 +117,7 @@ export const executeCode = asyncHandler(async (req, res) => {
 
   //if allTestCasesPassed true then mark problem as solved for the current user
   if (allTestCasesPassed) {
-    await db.ProblemSolved.upsert({
+    await db.problemSolved.upsert({
       where: {
         userId_problemId: {
           userId,
