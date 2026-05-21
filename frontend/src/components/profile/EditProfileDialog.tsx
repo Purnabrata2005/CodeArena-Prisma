@@ -21,14 +21,13 @@ import { Textarea } from "../ui/textarea";
 import LoadingButton from "@/components/landing/LoadingButton";
 import { Label } from "../ui/label";
 import { Camera } from "lucide-react";
-import Resizer from "react-image-file-resizer";
 import type { AuthUser } from "@/types";
 import {
   updateUserProfileSchema,
   type UpdateUserProfileValues,
 } from "@/lib/schemas/profileSchema";
 import CropImageDialog from "@/components/landing/CropImageDialog";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
 interface EditProfileDialogProps {
   user: AuthUser;
@@ -43,6 +42,14 @@ export default function EditProfileDialog({
 }: EditProfileDialogProps) {
   const [croppedAvater, setCroppedAvater] = useState<Blob | null>(null);
   const { updateProfile, isUpdatingUser } = useAuthStore();
+
+  // Clear temporary avatar preview when dialog is closed without saving
+  // so the main profile doesn't show unsaved images.
+  useEffect(() => {
+    if (!open) {
+      setCroppedAvater(null);
+    }
+  }, [open]);
   const form = useForm<UpdateUserProfileValues>({
     resolver: zodResolver(updateUserProfileSchema),
     defaultValues: {
@@ -75,7 +82,7 @@ export default function EditProfileDialog({
             src={
               croppedAvater
                 ? URL.createObjectURL(croppedAvater)
-                : user.avatarUrl || "/public/avatar-placeholder.png"
+                : user.avatarUrl || "/avatar-placeholder.png"
             }
             onImageCroped={setCroppedAvater}
           />
@@ -133,19 +140,9 @@ function AvaterInput({ src, onImageCroped }: AvaterInputProps) {
   const [imageToCrop, setImageToCrop] = useState<File>();
   const fileInputRef = useRef<HTMLInputElement>(null);
   function onImageSelected(image: File | undefined) {
+    console.debug("AvaterInput: image selected", image);
     if (!image) return;
-    Resizer.imageFileResizer(
-      image,
-      1024,
-      1024,
-      "WEBP",
-      100,
-      0,
-      (uri) => {
-        setImageToCrop(uri as File);
-      },
-      "file",
-    );
+    setImageToCrop(image);
   }
   return (
     <>
@@ -154,7 +151,8 @@ function AvaterInput({ src, onImageCroped }: AvaterInputProps) {
         accept="image/*"
         onChange={(e) => onImageSelected(e.target.files?.[0])}
         ref={fileInputRef}
-        className="sr-only hidden"
+        aria-label="Select avatar image"
+        className="sr-only"
       />
       <button
         type="button"
