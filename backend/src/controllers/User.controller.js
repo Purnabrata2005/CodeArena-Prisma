@@ -14,6 +14,9 @@ import { sendEmail } from "../utils/mail.js";
 import { emailVerificationMailgenContent } from "../utils/mail.js";
 import { UserResponse, options } from "../utils/constants.js";
 import crypto from "crypto";
+import fs from "fs";
+import path from "path";
+import { uploadToCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js";
 
 export const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
@@ -140,13 +143,41 @@ export const updateUser = asyncHandler(async (req, res) => {
   }
 
   const { name, bio } = req.body;
+  const updateData = { name, bio };
+
+  if (req.file) {
+    const file = req.file;
+
+    // Upload to Cloudinary
+    const result = await uploadToCloudinary(file.buffer, "avatars");
+    const avatarUrl = result.secure_url;
+    const avatarLocalPath = result.public_id; // Storing public_id for easy deletion
+
+    updateData.avatarLocalPath = avatarLocalPath;
+    updateData.avatarUrl = avatarUrl;
+
+    // Clean up old avatar if it exists
+    if (user.avatarLocalPath) {
+      if (user.avatarLocalPath.startsWith("public/avatars/")) {
+        // Old local file cleanup
+        const oldPath = path.join(process.cwd(), user.avatarLocalPath);
+        try {
+          if (fs.existsSync(oldPath)) {
+            fs.unlinkSync(oldPath);
+          }
+        } catch (err) {
+          console.error("Failed to delete old local avatar file:", err);
+        }
+      } else {
+        // Cloudinary cleanup
+        await deleteFromCloudinary(user.avatarLocalPath);
+      }
+    }
+  }
 
   const updatedUser = await db.user.update({
     where: { email: user.email },
-    data: {
-      name,
-      bio,
-    },
+    data: updateData,
   });
 
   const responseUser = new UserResponse(updatedUser);

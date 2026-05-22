@@ -1,13 +1,13 @@
-import {create} from "zustand";
+import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import { persist } from "zustand/middleware";
 import { toast } from "sonner";
-import type {LoginData,  SignupData,  UpdateUserProfileValues} from "../lib/schemas/authSchema";
+import type { LoginData, SignupData, UpdateUserProfileValues } from "../lib/schemas/authSchema";
 import type { AuthUser } from "../types/index";
 import { getErrorMessage } from "@/lib/utils";
 
 interface AuthState {
-  authUser:  AuthUser | null;
+  authUser: AuthUser | null;
   isSigninUp: boolean;
   isLoggingIn: boolean;
   isFetchingUser: boolean;
@@ -83,7 +83,7 @@ export const useAuthStore = create<AuthState>()(
         set({ isUpdatingUser: true });
         try {
           const res = (
-            await axiosInstance.post("/auth/update", data, {
+            await axiosInstance.patch("/auth/update", data, {
               headers: { "Content-Type": "multipart/form-data" },
             })
           ).data;

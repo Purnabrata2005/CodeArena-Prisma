@@ -1,5 +1,8 @@
 import express from "express";
 import passport from "passport";
+import multer from "multer";
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 import "../googleConfig/google.config.js";
 
@@ -30,7 +33,9 @@ router.route("/verify/:token").get(verifyEmail);
 router.route("/login").post( validate(userLoginSchema),loginUser);
 router.route("/logout").post(verifyToken, logoutUser);
 router.route("/me").get(verifyToken, getUser);
-router.route("/update").patch(verifyToken, validate(userUpdateSchema), updateUser);
+router.route("/update")
+  .patch(verifyToken, upload.single("avatar"), validate(userUpdateSchema), updateUser)
+  .post(verifyToken, upload.single("avatar"), validate(userUpdateSchema), updateUser);
 
 router.get(
   "/google",
