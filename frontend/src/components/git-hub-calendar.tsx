@@ -11,14 +11,19 @@ interface ContributionDay {
 interface GitHubCalendarProps {
   data: ContributionDay[]; // Contribution data
   colors?: string[]; // Custom color scale (default: GitHub-like greens)
+  isLoading?: boolean;
 }
 
-const GitHubCalendar = ({ data, colors = ["#ebedf0", "#9be9a8", "#40c463", "#30a14e", "#216e39"] }: GitHubCalendarProps) => {
-  const [contributions, setContributions] = useState<ContributionDay[]>([]);
+interface ParsedContributionDay {
+  date: Date;
+  count: number;
+}
+
+const GitHubCalendar = ({ data, colors = ["#ebedf0", "#9be9a8", "#40c463", "#30a14e", "#216e39"], isLoading = false }: GitHubCalendarProps) => {
+  const [contributions, setContributions] = useState<ParsedContributionDay[]>([]);
   const today = new Date();
   const startDate = subDays(today, 364); // One year back
   const weeks = 53;
-  const daysInWeek = 7;
 
   // Process data prop
   useEffect(() => {
@@ -48,7 +53,16 @@ const GitHubCalendar = ({ data, colors = ["#ebedf0", "#9be9a8", "#40c463", "#30a
       weeksArray.push(
         <div key={i} className="flex flex-col gap-1">
           {weekDays.map((day, index) => {
-            const contribution = contributions.find((c) => isSameDay(new Date(c.date), day));
+            if (isLoading) {
+              return (
+                <div
+                  key={index}
+                  className="w-3 h-3 rounded-[4px] bg-muted/60 animate-pulse"
+                  style={{ animationDelay: `${(i * 12 + index * 45) % 1000}ms` }}
+                />
+              );
+            }
+            const contribution = contributions.find((c) => isSameDay(c.date, day));
             const color = contribution ? getColor(contribution.count) : colors[0];
 
             return (

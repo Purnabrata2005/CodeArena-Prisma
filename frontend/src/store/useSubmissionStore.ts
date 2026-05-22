@@ -32,9 +32,9 @@ export const useSubmissionStore = create<SubmissionState>((set) => ({
   submissionsForProblem: [],
   submissionCount: null,
   submissionStats: null,
-  isSubmissionStatsLoading: false,
+  isSubmissionStatsLoading: true,
   heatmapData: [],
-  isHeatmapLoading: false,
+  isHeatmapLoading: true,
   heatmapError: null,
 
   getAllSubmissions: async () => {

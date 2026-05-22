@@ -1,5 +1,5 @@
 import HeatmapCalendar from "@/components/profile/CalendarHeatmap";
-import ProfileHeader from "@/components/profile/ProfileHeader";
+import ProfileHeader from "@/components/profile/profileHeader";
 // import ProfileTabSubmissions from "@/components/profile/ProfileTabSubmissions";
 import { useAuthStore, useProblemStore, useSubmissionStore } from "@/store/index";
 import { useEffect } from "react";

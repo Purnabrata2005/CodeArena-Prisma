@@ -137,11 +137,15 @@ function ProfileHeader({
                       {stat.description}
                     </span>
                   </div>
-                  <h3 className="text-2xl font-bold tracking-tight">
-                    {typeof stat.value === "number"
-                      ? stat.value.toLocaleString()
-                      : stat.value}
-                  </h3>
+                  {isLoading ? (
+                    <div className="h-8 w-20 bg-muted/60 animate-pulse rounded my-0.5" />
+                  ) : (
+                    <h3 className="text-2xl font-bold tracking-tight">
+                      {typeof stat.value === "number"
+                        ? stat.value.toLocaleString()
+                        : stat.value}
+                    </h3>
+                  )}
                   <p className="text-muted-foreground mt-1 text-sm">
                     {stat.label}
                   </p>
@@ -159,7 +163,11 @@ function ProfileHeader({
                 <span className="text-muted-foreground text-sm">
                   {stat.metric.label}:
                 </span>
-                <span className="text-sm font-medium">{stat.metric.value}</span>
+                {isLoading ? (
+                  <div className="h-4 w-12 bg-muted/60 animate-pulse rounded" />
+                ) : (
+                  <span className="text-sm font-medium">{stat.metric.value}</span>
+                )}
               </div>
             </div>
 

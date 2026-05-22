@@ -61,8 +61,6 @@ export default function HeatmapCalendar({
     };
   }, [isLoading, data]);
 
-  if (isLoading) return null;
-
   return (
     <section className="mb-4 w-full gap-4 xl:flex">
       <Card className="mt-2 flex-1 min-w-0 rounded-3xl p-6">
@@ -71,14 +69,19 @@ export default function HeatmapCalendar({
             <h3 className="text-foreground mb-1 text-sm font-medium">
               Activity Overview
             </h3>
-            <p className="text-muted-foreground text-xs font-normal">
-              {totalContributions} contributions in the selected period
-            </p>
+            {isLoading ? (
+              <div className="h-4 w-48 bg-muted/60 animate-pulse rounded mt-1" />
+            ) : (
+              <p className="text-muted-foreground text-xs font-normal">
+                {totalContributions} contributions in the selected period
+              </p>
+            )}
           </div>
           <div ref={scrollContainerRef} className="overflow-x-auto w-full pr-2 pb-2">
             <div className="w-max [&>div]:border-0 [&>div]:p-0">
               <GitHubCalendar 
                 data={data} 
+                isLoading={isLoading}
                 colors={[
                   "var(--calendar-bg)", 
                   "var(--calendar-level-1)", 
@@ -97,6 +100,7 @@ export default function HeatmapCalendar({
           solvedQuestions={userRank?.solvedCount || 0}
           userRank={userRank?.rank || undefined}
           streak={data.length}
+          isLoading={isLoading}
         />
       </div>
     </section>
