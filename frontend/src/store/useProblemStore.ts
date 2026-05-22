@@ -138,8 +138,8 @@ export const useProblemStore = create<ProblemStore>((set) => ({
 
   getSolvedProblemsByUser: async () => {
     try {
-      const res = (await axiosInstance.get("/problem/get-solved-problem")).data;
-      set({ solvedProblemsByUser: res.data });
+      const res = (await axiosInstance.get("/problem/solve-problem")).data;
+      set({ solvedProblemsByUser: res.data.data || [] });
     } catch (error) {
       console.error("Error getting solved problems:", error);
       toast.error(getErrorMessage(error));

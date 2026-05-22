@@ -23,7 +23,7 @@ router.route("/get-all-problem").get(verifyToken,getAllProblem);
 router.route("/get-problem/:id").get(verifyToken, getProblemById);
 router.route("/update-problem/:id").put(verifyToken, checkAdmin, updateProblem);
 router.route("/delete-problem/:id").delete(verifyToken, checkAdmin, deleteProblem);
-router.route("/solve-problem").post(verifyToken, getSovleProblem);
+router.route("/solve-problem").get(verifyToken, getSovleProblem);
 router.route("/user-rank/:id").get(verifyToken, getUserSolvedRank);
 router.route("/import-problems").post(verifyToken, checkAdmin, upload.single("file"), importProblemsCSV);
 

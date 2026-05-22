@@ -61,11 +61,10 @@ export const columns: ColumnDef<ProblemWithSolvedStatus>[] = [
     header: "Title",
     accessorKey: "title",
     cell: ({ row }) => {
-      const isSolved = row.original.isSolved;
       return (
         <Link
           to={`/problems/${row.original.id}`}
-          className={`relative font-semibold ${isSolved ? "text-muted-foreground" : "hover:underline"} after:bg-muted-foreground after:absolute after:top-1/2 after:left-0 after:h-px after:w-full after:origin-bottom after:-translate-y-1/2 after:scale-x-0 after:transition-transform after:ease-in-out ${isSolved ? "after:scale-x-100" : ""}`}
+          className="font-semibold hover:underline"
         >
           {row.getValue("title")}
         </Link>
@@ -102,11 +101,11 @@ export const columns: ColumnDef<ProblemWithSolvedStatus>[] = [
         className={cn(
           "text-xs font-semibold text-white",
           row.getValue("difficulty") === "EASY" &&
-            "bg-easy hover:bg-easy/80",
+          "bg-easy hover:bg-easy/80",
           row.getValue("difficulty") === "MEDIUM" &&
-            "bg-medium hover:bg-medium/80",
+          "bg-medium hover:bg-medium/80",
           row.getValue("difficulty") === "HARD" &&
-            "bg-hard hover:bg-hard/80",
+          "bg-hard hover:bg-hard/80",
         )}
       >
         {row.getValue("difficulty")}
