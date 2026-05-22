@@ -323,13 +323,16 @@ export const getUserSolvedRank = asyncHandler(async (req, res) => {
 
   // Get user solved count and rank using raw SQL
   const userRankResult = await db.$queryRaw`
-    SELECT 
-      "userId" as "userId",
-      COUNT(*) as "solvedCount",
-      RANK() OVER (ORDER BY COUNT(*) DESC) as rank
-    FROM "ProblemSolved"
+    SELECT rank, "solvedCount"
+    FROM (
+      SELECT 
+        "userId",
+        COUNT(*) as "solvedCount",
+        RANK() OVER (ORDER BY COUNT(*) DESC) as rank
+      FROM "ProblemSolved"
+      GROUP BY "userId"
+    ) as ranks
     WHERE "userId" = ${userId}
-    GROUP BY "userId"
   `;
 
   // Get max rank (highest rank number)
