@@ -24,19 +24,25 @@ const sendEmail = async (options) => {
   // Generate an HTML email with the provided contents
   const emailHtml = mailGenerator.generate(options.mailgenContent);
 
+  const smtpHost = process.env.SMTP_HOST || process.env.MAILTRAP_HOST;
+  const smtpPort = process.env.SMTP_PORT || process.env.MAILTRAP_PORT;
+  const smtpUser = process.env.SMTP_USER || process.env.MAILTRAP_USERNAME;
+  const smtpPass = process.env.SMTP_PASS || process.env.MAILTRAP_PASSWORD;
+  const senderEmail = process.env.SMTP_SENDEREMAIL || process.env.MAILTRAP_SENDEREMAIL || "noreply@codearena.com";
+
   // Create a nodemailer transporter instance which is responsible to send a mail
   const transporter = nodemailer.createTransport({
-      host: process.env.MAILTRAP_HOST,
-      port: process.env.MAILTRAP_PORT,
-      secure: false, // true for port 465, false for other ports
-      auth: {
-        user: process.env.MAILTRAP_USERNAME,
-        pass: process.env.MAILTRAP_PASSWORD,
-      },
+      host: smtpHost,
+      port: Number(smtpPort) || 587,
+      secure: Number(smtpPort) === 465, // true for port 465, false for other ports
+      auth: smtpUser && smtpPass ? {
+        user: smtpUser,
+        pass: smtpPass,
+      } : undefined,
     });
 
   const mail = {
-    from: process.env.MAILTRAP_SENDEREMAIL, // We can name this anything. The mail will go to your Mailtrap inbox
+    from: senderEmail,
     to: options.email, // receiver's mail
     subject: options.subject, // mail subject
     text: emailTextual, // mailgen content textual variant

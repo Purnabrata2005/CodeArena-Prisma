@@ -1,8 +1,8 @@
 import {
-  genateAccessToken,
-  genateRefreshToken,
+  generateAccessToken,
+  generateRefreshToken,
   generateTemporaryToken,
-  hasPassword,
+  hashPassword,
   comparePassword,
 } from "../utils/tokens.js";
 import { ApiResponse } from "../utils/api-response.js";
@@ -24,7 +24,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "User already exists", []);
   }
 
-  const hashedPassword = await hasPassword(password);
+  const hashedPassword = await hashPassword(password);
   const username = email.split("@")[0];
 
   const user = await db.user.create({
@@ -90,8 +90,8 @@ export const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid credentials", []);
   }
 
-  const accessToken = genateAccessToken(user.id, user.email);
-  const refreshToken = genateRefreshToken(user.id, user.email);
+  const accessToken = generateAccessToken(user.id, user.email);
+  const refreshToken = generateRefreshToken(user.id, user.email);
 
   await db.user.update({
     where: { email },

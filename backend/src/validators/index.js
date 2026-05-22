@@ -50,3 +50,13 @@ export const codeReviewSchema = z.object({
     })
     .min(1, "Problem title cannot be empty"),
 });
+
+export const createDiscussionSchema = z.object({
+  message: z
+    .string({
+      required_error: "Message is required",
+      invalid_type_error: "Message must be a string",
+    })
+    .min(1, "Message cannot be empty")
+    .max(1000, "Message cannot exceed 1000 characters"),
+});

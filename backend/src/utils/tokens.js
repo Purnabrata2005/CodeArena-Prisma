@@ -3,13 +3,13 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
 
-export const genateAccessToken = (userId, email) => {
+export const generateAccessToken = (userId, email) => {
   return jwt.sign({ userId, email }, process.env.ACCESS_TOKEN_SECRET, {
     expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
   });
 };
 
-export const genateRefreshToken = (userId, email) => {
+export const generateRefreshToken = (userId, email) => {
   return jwt.sign({ userId, email }, process.env.REFRESH_TOKEN_SECRET, {
     expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
   });
@@ -27,7 +27,7 @@ export const generateTemporaryToken = () => {
   return { unHashedToken, hashedToken, tokenExpiry };
 };
 
-export const hasPassword = async function (password) {
+export const hashPassword = async function (password) {
   return await bcrypt.hash(password, 10);
 };
 

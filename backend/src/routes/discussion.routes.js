@@ -7,11 +7,11 @@ import {
   getAllDiscussionsForProblem,
 } from "../controllers/Discussion.controller.js";
 import { validate } from "../middlewares/validator.middlewares.js";
-import { codeReviewSchema } from "../validators/index.js";
+import { createDiscussionSchema } from "../validators/index.js";
 
 const router = express.Router();
 
-router.route("/create/:problemId").post(validate(codeReviewSchema),verifyToken, createDiscussion);
+router.route("/create/:problemId").post(validate(createDiscussionSchema), verifyToken, createDiscussion);
 
 router.route("/:problemId").get(verifyToken, getAllDiscussionsForProblem);
 

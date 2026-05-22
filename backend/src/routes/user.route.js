@@ -14,7 +14,7 @@ import {
   verifyEmail,
 } from "../controllers/user.controller.js";
 import { validate } from "../middlewares/validator.middlewares.js";
-import { genateAccessToken } from "../utils/tokens.js";
+import { generateAccessToken } from "../utils/tokens.js";
 import { options, UserResponse } from "../utils/constants.js";
 
 import {
@@ -52,7 +52,7 @@ router.get(
     }
 
     const { id, email } = req.user;
-    const accessToken = genateAccessToken(id, email);
+    const accessToken = generateAccessToken(id, email);
     const responseUser = new UserResponse(req.user, { accessToken });
 
     res.cookie("accessToken", accessToken, options);

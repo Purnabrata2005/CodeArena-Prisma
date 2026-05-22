@@ -54,5 +54,5 @@ ${problemTitle ? `Problem Context: ${problemTitle}` : ""}`;
     `Code review generated - Language: ${language}, Tokens: ${completion.usage?.total_tokens}`,
   );
 
-  new ApiResponse(200, "Code review generated", response).send(res);
+  return res.status(200).json(new ApiResponse(200, "Code review generated", response));
 });
