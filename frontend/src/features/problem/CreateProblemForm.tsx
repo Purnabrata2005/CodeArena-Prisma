@@ -84,11 +84,13 @@ const defaultValues: ProblemValues = {
 interface CreateProblemFormProps {
   action?: "create" | "update";
   problemId?: string;
+  hideHeader?: boolean;
 }
 
 export default function CreateProblemForm({
   action = "create",
   problemId,
+  hideHeader = false,
 }: CreateProblemFormProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
@@ -233,6 +235,61 @@ export default function CreateProblemForm({
       <div className="flex h-screen w-full items-center justify-center text-center">
         <Loader2 className="mt-9 h-6 w-6 animate-spin" />
       </div>
+    );
+  }
+
+  if (hideHeader) {
+    return (
+      <Form {...form}>
+        <form onSubmit={(e) => e.preventDefault()}>
+          {/* Progress */}
+          <div className="mb-8">
+            <WizardProgress
+              currentStep={currentStep}
+              onStepClick={goToStep}
+              completedSteps={completedSteps}
+            />
+          </div>
+
+          {/* Step Content */}
+          <Card className="mb-6">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <StepIcon className="h-5 w-5 text-primary" />
+                {stepInfo.title}
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">{stepInfo.desc}</p>
+            </CardHeader>
+            <CardContent>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentStep}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {currentStep === 0 && <StepBasicInfo />}
+                  {currentStep === 1 && <StepTestCases />}
+                  {currentStep === 2 && <StepCodeTemplates />}
+                  {currentStep === 3 && <StepExamples />}
+                  {currentStep === 4 && <StepAdditional />}
+                </motion.div>
+              </AnimatePresence>
+            </CardContent>
+          </Card>
+
+          <WizardNavigation
+            currentStep={currentStep}
+            totalSteps={TOTAL_STEPS}
+            onNext={handleNext}
+            onBack={handleBack}
+            onSubmit={handleSubmit}
+            isSubmitting={isSubmitting}
+            action={action}
+          />
+        </form>
+      </Form>
     );
   }
 

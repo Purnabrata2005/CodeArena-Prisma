@@ -35,6 +35,7 @@ interface ProblemStore {
   getSolvedProblemsByUser: () => Promise<void>;
   removeProblem: (id: string) => void;
   getUserSolvedProblemsRank: (id: string) => Promise<void>;
+  importProblemsCSV: (file: File) => Promise<ApiResponse>;
 }
 
 export const useProblemStore = create<ProblemStore>((set) => ({
@@ -54,6 +55,25 @@ export const useProblemStore = create<ProblemStore>((set) => ({
       return res.data;
     } catch (error) {
       console.error("Error creating problem:", error);
+      throw error;
+    } finally {
+      set({ isCreatingProblem: false });
+    }
+  },
+
+  importProblemsCSV: async (file) => {
+    try {
+      set({ isCreatingProblem: true });
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await axiosInstance.post("/problem/import-problems", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return res.data;
+    } catch (error) {
+      console.error("Error importing problems from CSV:", error);
       throw error;
     } finally {
       set({ isCreatingProblem: false });
