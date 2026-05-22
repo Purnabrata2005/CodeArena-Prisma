@@ -78,6 +78,11 @@
   --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
+  --calendar-bg: oklch(0.9288 0.0126 255.5100);
+  --calendar-level-1: #9be9a8;
+  --calendar-level-2: #40c463;
+  --calendar-level-3: #30a14e;
+  --calendar-level-4: #216e39;
 }
 
 .dark {
@@ -135,6 +140,11 @@
   --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 4px 6px -1px hsl(0 0% 0% / 0.10);
   --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 8px 10px -1px hsl(0 0% 0% / 0.10);
   --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+  --calendar-bg: oklch(0.2795 0.0204 260.6090);
+  --calendar-level-1: #0e4429;
+  --calendar-level-2: #006d32;
+  --calendar-level-3: #26a641;
+  --calendar-level-4: #39d353;
 }
 
 @theme inline {

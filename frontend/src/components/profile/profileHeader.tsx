@@ -76,7 +76,7 @@ function ProfileHeader({
   }
 
   return (
-    <div className="from-background to-muted/50 border-border mdp-8 relative mb-2 overflow-hidden rounded-2xl border bg-gradient-to-br p-2 md:p-8">
+    <div className="from-background to-muted/50 border-border relative mb-6 overflow-hidden rounded-2xl border bg-gradient-to-br p-2 md:p-8">
       <div className="bg-grid-white/[0.02] absolute inset-0 bg-[size:32px]" />
       <div className="relative flex items-center gap-8">
         <div className="group relative">

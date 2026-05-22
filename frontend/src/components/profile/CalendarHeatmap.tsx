@@ -1,9 +1,11 @@
+import { useEffect, useRef } from "react";
 import type { SubmissionHeatmapEntry } from "@/types";
-
-import { Card, CardContent } from "../ui/card";
+import { GitHubCalendar } from "@/components/git-hub-calendar";
 import QuestionStatistics from "@/components/profile/QuestionStatistics";
 import type { UserRankForSolvedProblems } from "@/lib/schemas/profileSchema";
 import { useProblemStore } from "@/store";
+import { Card, CardContent } from "../ui/card";
+
 interface HeatmapCalendarProps {
   data: SubmissionHeatmapEntry[];
   userRank: UserRankForSolvedProblems | null;
@@ -17,83 +19,86 @@ export default function HeatmapCalendar({
 }: HeatmapCalendarProps) {
   const totalContributions = data.reduce((sum, item) => sum + item.count, 0);
   const { problems } = useProblemStore();
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const scrollToRight = () => {
+      if (container) {
+        container.scrollLeft = container.scrollWidth;
+      }
+    };
+
+    // Scroll immediately
+    scrollToRight();
+
+    // Set up ResizeObserver to scroll when dimensions change (e.g. after layout/render)
+    const resizeObserver = new ResizeObserver(() => {
+      scrollToRight();
+    });
+
+    resizeObserver.observe(container);
+
+    // Also observe the first child of the container if it exists
+    if (container.firstElementChild) {
+      resizeObserver.observe(container.firstElementChild);
+    }
+
+    // Set up multiple timeouts to ensure scrolling works as layout stabilizes
+    const timers = [
+      setTimeout(scrollToRight, 50),
+      setTimeout(scrollToRight, 200),
+      setTimeout(scrollToRight, 500),
+    ];
+
+    return () => {
+      resizeObserver.disconnect();
+      timers.forEach(clearTimeout);
+    };
+  }, [isLoading, data]);
+
   if (isLoading) return null;
 
-  const contributionsByDate = new Map(
-    data.map((entry) => [entry.date, entry.count]),
-  );
-
-  const today = new Date();
-  const startDate = new Date(today);
-  startDate.setDate(startDate.getDate() - 364);
-
-  const days = Array.from({ length: 365 }, (_, index) => {
-    const date = new Date(startDate);
-    date.setDate(startDate.getDate() + index);
-    const dateKey = date.toISOString().slice(0, 10);
-
-    return {
-      dateKey,
-      count: contributionsByDate.get(dateKey) || 0,
-    };
-  });
-
-  const weeks: Array<(typeof days)[number][]> = [];
-
-  for (let index = 0; index < days.length; index += 7) {
-    weeks.push(days.slice(index, index + 7));
-  }
-
-  const getIntensityClass = (count: number) => {
-    if (count === 0) return "bg-muted/40";
-    if (count === 1) return "bg-emerald-200";
-    if (count <= 3) return "bg-emerald-400";
-    if (count <= 6) return "bg-emerald-500";
-    return "bg-emerald-700";
-  };
-
   return (
-    <section className="mb-4 w-full gap-2 xl:flex">
-      <Card className="mt-2 cursor-pointer rounded-3xl p-4">
-        <CardContent className="overflow-auto">
-          <div className="mb-4">
+    <section className="mb-4 w-full gap-4 xl:flex">
+      <Card className="mt-2 flex-1 min-w-0 rounded-3xl p-6">
+        <CardContent className="p-0">
+          <div className="mb-6">
             <h3 className="text-foreground mb-1 text-sm font-medium">
               Activity Overview
             </h3>
-            <p className="text-muted-foreground text-xs">
+            <p className="text-muted-foreground text-xs font-normal">
               {totalContributions} contributions in the selected period
             </p>
           </div>
-          <div className="flex max-w-7xl">
-            <span className="text-muted-foreground flex flex-col justify-around py-2 pr-3 text-right text-xs">
-              <span>Mon</span>
-              <span>Wed</span>
-              <span>Fri</span>
-            </span>
-            <div className="flex gap-1 overflow-x-auto pr-4 pb-2">
-              {weeks.map((week, weekIndex) => (
-                <div key={weekIndex} className="flex flex-col gap-1">
-                  {week.map((day) => (
-                    <div
-                      key={day.dateKey}
-                      title={`${day.dateKey}: ${day.count} submissions`}
-                      className={`h-3 w-3 rounded-[3px] border border-black/5 ${getIntensityClass(
-                        day.count,
-                      )}`}
-                    />
-                  ))}
-                </div>
-              ))}
+          <div ref={scrollContainerRef} className="overflow-x-auto w-full pr-2 pb-2">
+            <div className="w-max [&>div]:border-0 [&>div]:p-0">
+              <GitHubCalendar 
+                data={data} 
+                colors={[
+                  "var(--calendar-bg)", 
+                  "var(--calendar-level-1)", 
+                  "var(--calendar-level-2)", 
+                  "var(--calendar-level-3)", 
+                  "var(--calendar-level-4)"
+                ]} 
+              />
             </div>
           </div>
         </CardContent>
       </Card>
-      <QuestionStatistics
-        totalQuestions={problems.length}
-        solvedQuestions={userRank?.solvedCount || 0}
-        userRank={userRank?.rank || undefined}
-        streak={data.length}
-      />
+      <div className="mt-2 flex flex-col justify-stretch">
+        <QuestionStatistics
+          totalQuestions={problems.length}
+          solvedQuestions={userRank?.solvedCount || 0}
+          userRank={userRank?.rank || undefined}
+          streak={data.length}
+        />
+      </div>
     </section>
   );
 }

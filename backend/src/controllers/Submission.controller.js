@@ -155,7 +155,11 @@ export const getSubmissionHeatMap = asyncHandler(async (req, res) => {
   const countsByDate = new Map();
 
   for (const submission of submissions) {
-    const dateKey = submission.createdAt.toISOString().slice(0, 10);
+    const date = submission.createdAt;
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(date.getUTCDate()).padStart(2, "0");
+    const dateKey = `${year}/${month}/${day}`;
     countsByDate.set(dateKey, (countsByDate.get(dateKey) || 0) + 1);
   }
 

@@ -21,7 +21,7 @@ export default function ProfilePage() {
     getUserSolvedProblemsRank(user?.id || "");
   }, [getSubmissionStats, getHeatmapData, getUserSolvedProblemsRank, user?.id]);
   return (
-    <div className="bg-background mx-auto min-h-screen max-w-7xl pt-16">
+    <div className="bg-background mx-auto min-h-screen max-w-7xl pt-16 px-4 md:px-8 pb-8">
       <ProfileHeader
         isLoading={isSubmissionStatsLoading}
         submissionStats={submissionStats}
