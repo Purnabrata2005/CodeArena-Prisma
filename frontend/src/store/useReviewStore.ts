@@ -20,11 +20,10 @@ export const useReviewStore = create<ReviewStore>((set) => ({
     try {
       set({ isLoading: true });
       const res = (
-        await axiosInstance.get("/code-review", {
-          data,
-        })
+        await axiosInstance.post("/code-review", data)
       ).data;
-      set({ review: res.data });
+      const reviewData = res.data?.data || res.data;
+      set({ review: reviewData });
     } catch (error) {
       console.error("Failed to fetch code review:", error);
       const msg = getErrorMessage(error);

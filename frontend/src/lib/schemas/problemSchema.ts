@@ -88,4 +88,5 @@ export type ProblemWithSolvedStatus = Problem & {
 export interface UserRankForSolvedProblems {
   solvedCount: number;
   rank: number;
+  streak?: number;
 }

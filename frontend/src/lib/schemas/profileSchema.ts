@@ -22,4 +22,5 @@ export type UpdateUserProfileValues = z.infer<typeof updateUserProfileSchema>;
 export interface UserRankForSolvedProblems {
   solvedCount: number;
   rank: number;
+  streak?: number;
 }

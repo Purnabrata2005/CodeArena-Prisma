@@ -8,6 +8,7 @@ import {
   pullBatchResults,
   submitBatch,
 } from "../utils/lib/judge0.js";
+import { incrementUserScore, updateStreak } from "../services/leaderboard.js";
 
 export const executeCode = asyncHandler(async (req, res) => {
   const { source_code, language_id, stdin, expected_outputs, problemId } =
@@ -115,21 +116,45 @@ export const executeCode = asyncHandler(async (req, res) => {
     },
   });
 
+  // Update user's streak in Redis
+  try {
+    await updateStreak(userId);
+  } catch (redisError) {
+    console.error("Failed to update streak in Redis:", redisError);
+  }
+
   //if allTestCasesPassed true then mark problem as solved for the current user
   if (allTestCasesPassed) {
-    await db.problemSolved.upsert({
-      where: {
-        userId_problemId: {
+    try {
+      const alreadySolved = await db.problemSolved.findUnique({
+        where: {
+          userId_problemId: {
+            userId,
+            problemId,
+          },
+        },
+      });
+
+      await db.problemSolved.upsert({
+        where: {
+          userId_problemId: {
+            userId,
+            problemId,
+          },
+        },
+        update: {},
+        create: {
           userId,
           problemId,
         },
-      },
-      update: {},
-      create: {
-        userId,
-        problemId,
-      },
-    });
+      });
+
+      if (!alreadySolved) {
+        await incrementUserScore(userId);
+      }
+    } catch (dbOrRedisError) {
+      console.error("Failed to update problem solved status or rank:", dbOrRedisError);
+    }
   }
 
   //save individual test case results using detailedResults

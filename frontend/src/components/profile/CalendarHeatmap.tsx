@@ -99,7 +99,7 @@ export default function HeatmapCalendar({
           totalQuestions={problems.length}
           solvedQuestions={userRank?.solvedCount || 0}
           userRank={userRank?.rank || undefined}
-          streak={data.length}
+          streak={userRank?.streak ?? data.length}
           isLoading={isLoading}
         />
       </div>

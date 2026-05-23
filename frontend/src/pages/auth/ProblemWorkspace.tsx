@@ -11,6 +11,7 @@ import {
   ThumbsUp,
   Loader2,
   Play,
+  Sparkles,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -41,6 +42,7 @@ import ProblemHeader from "@/components/codeExecution/ProblemHeader";
 import useMediaQuery from "@/hooks/useMediaQuery";
 import { useDiscussionStore } from "@/store/useDiscussionStore";
 import CodeDiscussion from "@/components/codeExecution/CodeDiscussion";
+import AiReview from "@/components/codeExecution/AiReview";
 import type { Difficulty } from "@/constants";
 
 export default function ProblemWorkspace() {
@@ -246,6 +248,14 @@ export default function ProblemWorkspace() {
             problemId={problem.id}
           />
         );
+      case "ai-review":
+        return (
+          <AiReview
+            code={code}
+            language={selectedLanguage}
+            problemTitle={problem.title}
+          />
+        );
       case "hints":
         return problem.hints ? (
           <ScrollArea className="h-[600px]">
@@ -297,34 +307,41 @@ export default function ProblemWorkspace() {
                   onValueChange={setActiveTab}
                   className="w-full"
                 >
-                  <TabsList className="grid w-full grid-cols-4">
+                  <TabsList className="grid w-full grid-cols-5">
                     <TabsTrigger
                       value="description"
-                      className="flex cursor-pointer items-center gap-2 text-xs"
+                      className="flex cursor-pointer items-center gap-1.5 text-[10px] xl:text-xs"
                     >
-                      <FileText className="h-4 w-4" />
+                      <FileText className="h-3.5 w-3.5" />
                       Description
                     </TabsTrigger>
                     <TabsTrigger
                       value="submissions"
-                      className="flex cursor-pointer items-center gap-2 text-xs"
+                      className="flex cursor-pointer items-center gap-1.5 text-[10px] xl:text-xs"
                     >
-                      <Code2 className="h-4 w-4" />
+                      <Code2 className="h-3.5 w-3.5" />
                       Submissions
                     </TabsTrigger>
                     <TabsTrigger
                       value="discussion"
-                      className="flex cursor-pointer items-center gap-2 text-xs"
+                      className="flex cursor-pointer items-center gap-1.5 text-[10px] xl:text-xs"
                     >
-                      <MessageSquare className="h-4 w-4" />
+                      <MessageSquare className="h-3.5 w-3.5" />
                       Discussion
                     </TabsTrigger>
                     <TabsTrigger
                       value="hints"
-                      className="flex cursor-pointer items-center gap-2 text-xs"
+                      className="flex cursor-pointer items-center gap-1.5 text-[10px] xl:text-xs"
                     >
-                      <Lightbulb className="h-4 w-4" />
+                      <Lightbulb className="h-3.5 w-3.5" />
                       Hints
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="ai-review"
+                      className="flex cursor-pointer items-center gap-1.5 text-[10px] xl:text-xs text-primary/95"
+                    >
+                      <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse" />
+                      AI Review
                     </TabsTrigger>
                   </TabsList>
                 </Tabs>

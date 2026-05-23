@@ -8,6 +8,11 @@ import {
   pullBatchResults,
   submitBatch,
 } from "../utils/lib/judge0.js";
+import {
+  getUserRank,
+  getGlobalLeaderboard,
+  getUserStreakDetails,
+} from "../services/leaderboard.js";
 
 export const createProblem = asyncHandler(async (req, res) => {
   //get all required data from req.body
@@ -321,59 +326,14 @@ export const getUserSolvedRank = asyncHandler(async (req, res) => {
     throw new ApiError(400, "User ID is required", "BAD_REQUEST");
   }
 
-  // Get user solved count and rank using raw SQL
-  const userRankResult = await db.$queryRaw`
-    SELECT rank, "solvedCount"
-    FROM (
-      SELECT 
-        "userId",
-        COUNT(*) as "solvedCount",
-        RANK() OVER (ORDER BY COUNT(*) DESC) as rank
-      FROM "ProblemSolved"
-      GROUP BY "userId"
-    ) as ranks
-    WHERE "userId" = ${userId}
-  `;
-
-  // Get max rank (highest rank number)
-  const maxRankResult = await db.$queryRaw`
-    SELECT MAX(rank) as "maxRank" FROM (
-      SELECT
-        RANK() OVER (ORDER BY COUNT(*) DESC) as rank
-      FROM "ProblemSolved"
-      GROUP BY "userId"
-    ) as ranks
-  `;
-
-  let maxRank = 0;
-  if (maxRankResult && maxRankResult.length > 0) {
-    const maxRankRow = maxRankResult[0];
-    const val = maxRankRow.maxrank || maxRankRow.maxRank;
-    if (typeof val === "number") {
-      maxRank = val;
-    } else if (typeof val === "string") {
-      maxRank = Number(val);
-    }
-  }
-
-  if (!userRankResult || userRankResult.length === 0) {
-    return res.status(200).json(
-      new ApiResponse(200, "User has not solved any problems", {
-        solvedCount: 0,
-        rank: maxRank + 1,
-      }),
-    );
-  }
-
-  const { solvedCount, rank } = userRankResult[0];
-  const parsedSolvedCount =
-    typeof solvedCount === "number" ? solvedCount : Number(solvedCount);
-  const parsedRank = typeof rank === "number" ? rank : Number(rank);
+  // Fetch rank, solved count, and streak from Redis (extremely fast)
+  const { solvedCount, rank, streak } = await getUserRank(userId);
 
   return res.status(200).json(
     new ApiResponse(200, "Rank fetched successfully", {
-      solvedCount: parsedSolvedCount,
-      rank: parsedRank,
+      solvedCount,
+      rank,
+      streak,
     }),
   );
 });
@@ -537,6 +497,30 @@ export const importProblemsCSV = asyncHandler(async (req, res) => {
       failedCount,
       results,
     }),
+  );
+});
+
+export const getLeaderboard = asyncHandler(async (req, res) => {
+  const limit = parseInt(req.query.limit || "10", 10);
+  const leaderboard = await getGlobalLeaderboard(limit);
+
+  return res.status(200).json(
+    new ApiResponse(200, "Leaderboard fetched successfully", {
+      leaderboard,
+    })
+  );
+});
+
+export const getUserStreak = asyncHandler(async (req, res) => {
+  const { id: userId } = req.params;
+  if (!userId) {
+    throw new ApiError(400, "User ID is required", "BAD_REQUEST");
+  }
+
+  const streakDetails = await getUserStreakDetails(userId);
+
+  return res.status(200).json(
+    new ApiResponse(200, "User streak stats fetched successfully", streakDetails)
   );
 });
 
