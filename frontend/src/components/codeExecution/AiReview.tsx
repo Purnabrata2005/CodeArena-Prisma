@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useReviewStore } from "@/store/useReviewStore";
 import { Sparkles, Loader2, RefreshCw, Code, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface AiReviewProps {
@@ -204,74 +203,74 @@ export default function AiReview({ code, language, problemTitle }: AiReviewProps
 
   return (
     <ScrollArea className="h-[540px] pr-4">
-        {isLoading ? (
-          <div className="flex flex-col items-center justify-center h-[400px] text-center space-y-4">
-            <div className="relative">
-              <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse" />
-              <Loader2 className="h-10 w-10 text-primary animate-spin relative" />
-            </div>
-            <div className="space-y-2">
-              <h3 className="font-semibold text-foreground">Analyzing Code...</h3>
-              <p className="text-xs text-muted-foreground max-w-xs leading-normal">
-                Our AI model is reviewing correctness, time/space complexity, edge cases, and quality standards.
-              </p>
-            </div>
+      {isLoading ? (
+        <div className="flex flex-col items-center justify-center h-[400px] text-center space-y-4">
+          <div className="relative">
+            <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse" />
+            <Loader2 className="h-10 w-10 text-primary animate-spin relative" />
           </div>
-        ) : review ? (
-          <div className="space-y-4 py-2">
-            <div className="flex items-center justify-between border-b border-border pb-3">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-md bg-primary/10 text-primary">
-                  <Sparkles className="h-4 w-4" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-semibold text-foreground">AI Code Feedback</h4>
-                  <p className="text-xs text-muted-foreground">
-                    Generated on {review?.timestamp ? new Date(review.timestamp).toLocaleTimeString() : new Date().toLocaleTimeString()}
-                  </p>
-                </div>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleRequestReview}
-                className="text-xs flex items-center gap-1 cursor-pointer"
-              >
-                <RefreshCw className="h-3 w-3" />
-                Re-analyze
-              </Button>
-            </div>
-
-            <div className="prose prose-sm dark:prose-invert max-w-none pb-4">
-              {parseMarkdownBlocks(review?.review || "").map((block, index) => renderBlock(block, index))}
-            </div>
+          <div className="space-y-2">
+            <h3 className="font-semibold text-foreground">Analyzing Code...</h3>
+            <p className="text-xs text-muted-foreground max-w-xs leading-normal">
+              Our AI model is reviewing correctness, time/space complexity, edge cases, and quality standards.
+            </p>
           </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center h-[400px] text-center space-y-6 px-4">
-            <div className="p-4 rounded-full bg-primary/10 text-primary ring-8 ring-primary/5 animate-pulse">
-              <Sparkles className="h-12 w-12" />
-            </div>
-            <div className="space-y-2 max-w-sm">
-              <h3 className="text-base font-semibold text-foreground">Get AI Code Review</h3>
-              <p className="text-sm text-muted-foreground leading-normal">
-                Receive detailed mentoring feedback on your current code. We'll analyze bugs, performance optimization, best practices, and boundary test cases.
-              </p>
-            </div>
-            {errorMsg && (
-              <div className="flex items-center gap-2 bg-destructive/10 border border-destructive/20 text-destructive text-xs px-3 py-2 rounded-lg max-w-sm text-left">
-                <AlertCircle className="h-4 w-4 shrink-0" />
-                <span>{errorMsg}</span>
+        </div>
+      ) : review ? (
+        <div className="space-y-4 py-2">
+          <div className="flex items-center justify-between border-b border-border pb-3">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 rounded-md bg-primary/10 text-primary">
+                <Sparkles className="h-4 w-4" />
               </div>
-            )}
+              <div>
+                <h4 className="text-sm font-semibold text-foreground">AI Code Feedback</h4>
+                <p className="text-xs text-muted-foreground">
+                  Generated on {review?.timestamp ? new Date(review.timestamp).toLocaleTimeString() : new Date().toLocaleTimeString()}
+                </p>
+              </div>
+            </div>
             <Button
+              variant="outline"
+              size="sm"
               onClick={handleRequestReview}
-              className="flex items-center gap-2 cursor-pointer bg-primary hover:bg-primary/95 text-primary-foreground font-medium shadow-md shadow-primary/15 transition-all"
+              className="text-xs flex items-center gap-1 cursor-pointer"
             >
-              <Sparkles className="h-4 w-4" />
-              Analyze Current Code
+              <RefreshCw className="h-3 w-3" />
+              Re-analyze
             </Button>
           </div>
-        )}
-      </ScrollArea>
+
+          <div className="prose prose-sm dark:prose-invert max-w-none pb-4">
+            {parseMarkdownBlocks(review?.review || "").map((block, index) => renderBlock(block, index))}
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center h-[400px] text-center space-y-6 px-4">
+          <div className="p-4 rounded-full bg-primary/10 text-primary ring-8 ring-primary/5 animate-pulse">
+            <Sparkles className="h-12 w-12" />
+          </div>
+          <div className="space-y-2 max-w-sm">
+            <h3 className="text-base font-semibold text-foreground">Get AI Code Review</h3>
+            <p className="text-sm text-muted-foreground leading-normal">
+              Receive detailed mentoring feedback on your current code. We'll analyze bugs, performance optimization, best practices, and boundary test cases.
+            </p>
+          </div>
+          {errorMsg && (
+            <div className="flex items-center gap-2 bg-destructive/10 border border-destructive/20 text-destructive text-xs px-3 py-2 rounded-lg max-w-sm text-left">
+              <AlertCircle className="h-4 w-4 shrink-0" />
+              <span>{errorMsg}</span>
+            </div>
+          )}
+          <Button
+            onClick={handleRequestReview}
+            className="flex items-center gap-2 cursor-pointer bg-primary hover:bg-primary/95 text-primary-foreground font-medium shadow-md shadow-primary/15 transition-all"
+          >
+            <Sparkles className="h-4 w-4" />
+            Analyze Current Code
+          </Button>
+        </div>
+      )}
+    </ScrollArea>
   );
 }

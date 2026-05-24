@@ -16,22 +16,15 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import DesktopReqLoti from "@/assets/dextopReqLoti";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { formatNumber, getDifficultyColor, getLanguageId } from "@/lib/utils";
+import { cn, formatNumber, getDifficultyColor, getLanguageId } from "@/lib/utils";
 import SubmissionResults from "@/components/codeExecution/Submission";
 import LoadingButton from "@/components/landing/LoadingButton";
 import { useSubmissionStore } from "@/store/useSubmissionStore";
@@ -48,6 +41,7 @@ import type { Difficulty } from "@/constants";
 export default function ProblemWorkspace() {
   const [code, setCode] = useState("");
   const [activeTab, setActiveTab] = useState("description");
+  const [activeTestCaseIndex, setActiveTestCaseIndex] = useState(0);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const { id } = useParams();
   const { getProblemById, problem, isProblemLoading } = useProblemStore();
@@ -282,8 +276,14 @@ export default function ProblemWorkspace() {
   };
   if (isMobile) {
     return (
-      <div className="bg-background mt-4 min-h-screen px-4">
-        <p className="text-center">Mobile view not supported</p>
+      <div className="bg-background flex min-h-screen flex-col items-center justify-center p-6 text-center">
+        <DesktopReqLoti />
+        <h2 className="text-xl font-bold text-foreground mb-2 mt-6">
+          Desktop Screen Required
+        </h2>
+        <p className="text-sm text-muted-foreground max-w-xs animate-fade-in">
+          This coding workspace is optimized for larger screens. Please switch to a laptop or desktop computer to write and execute code.
+        </p>
       </div>
     );
   }
@@ -387,36 +387,55 @@ export default function ProblemWorkspace() {
 
         {/* Test Results */}
         {testResults ? (
-          <SubmissionResults submission={testResults} />
+          <SubmissionResults submission={testResults} problem={problem} />
         ) : (
-          <Card className="mt-6">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
+          <Card className="mt-6 border-zinc-200 dark:border-zinc-800 shadow-sm">
+            <CardHeader className="border-b border-zinc-100 dark:border-zinc-800/80 pb-3">
+              <CardTitle className="flex items-center gap-2 text-base font-semibold text-foreground">
+                <FileText className="h-4 w-4 text-primary" />
                 Test Cases
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Input</TableHead>
-                    <TableHead>Expected Output</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {problem.testCases.map((testCase, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="font-mono text-sm">
-                        {testCase.input}
-                      </TableCell>
-                      <TableCell className="font-mono text-sm">
-                        {testCase.output}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+            <CardContent className="p-6">
+              {/* Case Selector Tabs */}
+              <div className="flex flex-wrap gap-2 mb-6">
+                {(problem?.testCases || []).map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setActiveTestCaseIndex(index)}
+                    className={cn(
+                      "px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer border",
+                      activeTestCaseIndex === index
+                        ? "bg-zinc-100 dark:bg-zinc-800 text-foreground border-zinc-300 dark:border-zinc-700 font-semibold"
+                        : "bg-zinc-50/50 dark:bg-zinc-900/50 text-muted-foreground border-transparent hover:bg-zinc-100 dark:hover:bg-zinc-800/60"
+                    )}
+                  >
+                    Case {index + 1}
+                  </button>
+                ))}
+              </div>
+
+              {/* Selected Case Content */}
+              {problem?.testCases?.[activeTestCaseIndex] && (
+                <div className="space-y-4">
+                  <div>
+                    <div className="text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">
+                      Input
+                    </div>
+                    <div className="font-mono text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800/80 rounded-lg p-4 text-foreground whitespace-pre-wrap select-all">
+                      {problem.testCases[activeTestCaseIndex].input}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">
+                      Expected Output
+                    </div>
+                    <div className="font-mono text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800/80 rounded-lg p-4 text-foreground whitespace-pre-wrap select-all">
+                      {problem.testCases[activeTestCaseIndex].output}
+                    </div>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         )}
