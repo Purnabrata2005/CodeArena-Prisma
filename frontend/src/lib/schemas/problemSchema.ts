@@ -90,3 +90,16 @@ export interface UserRankForSolvedProblems {
   rank: number;
   streak?: number;
 }
+
+export interface LeaderboardEntry {
+  userId: string;
+  solvedCount: number;
+  rank: number;
+  user: {
+    id: string;
+    name: string;
+    username: string;
+    avatarUrl?: string;
+  };
+}
+

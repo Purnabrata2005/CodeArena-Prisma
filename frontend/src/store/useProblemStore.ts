@@ -6,6 +6,7 @@ import type {
   ProblemValues,
   ProblemWithSolvedStatus,
   UserRankForSolvedProblems,
+  LeaderboardEntry,
 } from "@/lib/schemas/problemSchema";
 import { toast } from "sonner";
 
@@ -19,6 +20,8 @@ interface ProblemStore {
   problem: Problem | null;
   solvedProblemsByUser: Problem[];
   userRank: UserRankForSolvedProblems | null;
+  leaderboard: LeaderboardEntry[];
+  isLeaderboardLoading: boolean;
 
   isProblemsLoading: boolean;
   isProblemLoading: boolean;
@@ -36,6 +39,7 @@ interface ProblemStore {
   removeProblem: (id: string) => void;
   getUserSolvedProblemsRank: (id: string) => Promise<void>;
   importProblemsCSV: (file: File) => Promise<ApiResponse>;
+  getLeaderboard: (limit?: number) => Promise<void>;
 }
 
 export const useProblemStore = create<ProblemStore>((set) => ({
@@ -43,6 +47,8 @@ export const useProblemStore = create<ProblemStore>((set) => ({
   problem: null,
   solvedProblemsByUser: [],
   userRank: null,
+  leaderboard: [],
+  isLeaderboardLoading: false,
   isProblemsLoading: false,
   isProblemLoading: false,
   isCreatingProblem: false,
@@ -158,6 +164,19 @@ export const useProblemStore = create<ProblemStore>((set) => ({
     } catch (error) {
       console.error("Error getting user rank:", error);
       toast.error(getErrorMessage(error));
+    }
+  },
+
+  getLeaderboard: async (limit = 10) => {
+    try {
+      set({ isLeaderboardLoading: true });
+      const res = (await axiosInstance.get(`/problem/leaderboard?limit=${limit}`)).data;
+      set({ leaderboard: res.data.leaderboard || [] });
+    } catch (error) {
+      console.error("Error getting leaderboard:", error);
+      toast.error(getErrorMessage(error));
+    } finally {
+      set({ isLeaderboardLoading: false });
     }
   },
 }));

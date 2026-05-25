@@ -14,6 +14,7 @@ import ProfilePage from "./pages/auth/ProfilePage";
 import ProblemWorkspace from "./pages/auth/ProblemWorkspace";
 import Problems from "./pages/auth/Problems";
 import PlaylistPage from "./pages/auth/PlaylistPage";
+import Leaderboard from "./pages/auth/Leaderboard";
 import AddProblem from "./pages/admin/AddProblem";
 import UpdateProblem from "./pages/admin/UpdateProblem";
 import NotFound from "./pages/root/NotFound";
@@ -54,6 +55,7 @@ function App() {
             <Route path="/problems/:id" element={<ProblemWorkspace />} />
             <Route path="/profile/:id" element={<ProfilePage />} />
             <Route path="/playlist/:id" element={<PlaylistPage />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
           </Route>
         </Route>
 

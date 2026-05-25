@@ -9,10 +9,13 @@ import {
   MobileNavToggle,
   MobileNavMenu,
 } from "@/components/ui/resizable-navbar";
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useState, useEffect } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useProblemStore } from "@/store/useProblemStore";
 import {ThemeToggle} from "@/components/landing/ThemeToggle";
 import UserButton from "@/components/landing/UserButton";
+import StreakLoti from "@/assets/streakLoti";
+import { cn } from "@/lib/utils";
 
 interface NavbarProps {
   children?: ReactNode;
@@ -30,6 +33,10 @@ export default function NavbarDemo({ children }: NavbarProps) {
       link: "/problems",
     },
     {
+      name: "Leaderboard",
+      link: "/leaderboard",
+    },
+    {
       name: "About",
       link: "/about",
     },
@@ -44,6 +51,13 @@ export default function NavbarDemo({ children }: NavbarProps) {
   ];
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { userRank, getUserSolvedProblemsRank } = useProblemStore();
+
+  useEffect(() => {
+    if (user?.id) {
+      getUserSolvedProblemsRank(user.id);
+    }
+  }, [getUserSolvedProblemsRank, user?.id]);
 
   return (
     <div className="relative w-full">
@@ -53,7 +67,28 @@ export default function NavbarDemo({ children }: NavbarProps) {
           <NavbarLogo />
           <NavItems items={navItems} />
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            {user && (
+              <div 
+                className="flex items-center gap-1 px-2.5 py-0.5 rounded-full border bg-card/60 backdrop-blur-sm cursor-help select-none"
+                title={`Active Streak: ${userRank?.streak ?? 0} days`}
+              >
+                <StreakLoti 
+                  className={cn(
+                    "size-7 transition-all duration-300", 
+                    (userRank?.streak ?? 0) > 0 
+                      ? "" 
+                      : "grayscale opacity-50"
+                  )} 
+                />
+                <span className={cn(
+                  "text-sm font-bold",
+                  (userRank?.streak ?? 0) > 0 ? "text-orange-500" : "text-muted-foreground opacity-50"
+                )}>
+                  {userRank?.streak ?? 0}
+                </span>
+              </div>
+            )}
             <ThemeToggle />
             <UserButton />
           </div>
@@ -84,6 +119,27 @@ export default function NavbarDemo({ children }: NavbarProps) {
               </a>
             ))}
             <div className="flex w-full flex-col items-center gap-4">
+              {user && (
+                <div 
+                  className="flex items-center gap-1.5 px-4 py-1 rounded-full border bg-card/60 backdrop-blur-sm select-none"
+                  title={`Active Streak: ${userRank?.streak ?? 0} days`}
+                >
+                  <StreakLoti 
+                    className={cn(
+                      "size-8 transition-all", 
+                      (userRank?.streak ?? 0) > 0 
+                        ? "" 
+                        : "grayscale opacity-50"
+                    )} 
+                  />
+                  <span className={cn(
+                    "text-sm font-bold",
+                    (userRank?.streak ?? 0) > 0 ? "text-orange-500" : "text-muted-foreground opacity-50"
+                  )}>
+                    {userRank?.streak ?? 0} days streak
+                  </span>
+                </div>
+              )}
               <ThemeToggle />
               <UserButton className="self-center" />
             </div>
