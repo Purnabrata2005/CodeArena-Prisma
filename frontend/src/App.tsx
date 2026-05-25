@@ -19,6 +19,7 @@ import AddProblem from "./pages/admin/AddProblem";
 import UpdateProblem from "./pages/admin/UpdateProblem";
 import NotFound from "./pages/root/NotFound";
 import About from "./pages/root/About";
+import StreakCelebration from "./components/profile/StreakCelebration";
 
 /**
  * CodeArena Main Application Shell
@@ -37,6 +38,7 @@ function App() {
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       {/* <div className="min-h-screen bg-background font-sans antialiased"> */}
       <Toaster richColors />
+      <StreakCelebration />
       <Routes>
         {/* Common Public routes */}
         <Route element={<AuthLayout />}>

@@ -6,10 +6,10 @@ const RootLayout = () => {
   return (
    <div className="h-full w-full">
       <Navbar>
-      <div className="mb-4 pt-4 md:pt-4">
-        <Outlet />
-      </div>
-       </Navbar>
+        <div className="mb-4 pt-8 md:pt-12">
+          <Outlet />
+        </div>
+      </Navbar>
       <Footer />
     </div>
   );

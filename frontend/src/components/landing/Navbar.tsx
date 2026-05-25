@@ -12,7 +12,7 @@ import {
 import { type ReactNode, useState, useEffect } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useProblemStore } from "@/store/useProblemStore";
-import {ThemeToggle} from "@/components/landing/ThemeToggle";
+import { ThemeToggle } from "@/components/landing/ThemeToggle";
 import UserButton from "@/components/landing/UserButton";
 import StreakLoti from "@/assets/streakLoti";
 import { cn } from "@/lib/utils";
@@ -42,11 +42,11 @@ export default function NavbarDemo({ children }: NavbarProps) {
     },
     ...(user?.role === "ADMIN"
       ? [
-          {
-            name: "Add Problem",
-            link: "/add-problem",
-          },
-        ]
+        {
+          name: "Add Problem",
+          link: "/add-problem",
+        },
+      ]
       : []),
   ];
 
@@ -69,17 +69,18 @@ export default function NavbarDemo({ children }: NavbarProps) {
 
           <div className="flex items-center gap-3">
             {user && (
-              <div 
+              <div
+                id="navbar-streak-widget"
                 className="flex items-center gap-1 px-2.5 py-0.5 rounded-full border bg-card/60 backdrop-blur-sm cursor-help select-none"
                 title={`Active Streak: ${userRank?.streak ?? 0} days`}
               >
-                <StreakLoti 
+                <StreakLoti
                   className={cn(
-                    "size-7 transition-all duration-300", 
-                    (userRank?.streak ?? 0) > 0 
-                      ? "" 
+                    "size-7 transition-all duration-300",
+                    (userRank?.streak ?? 0) > 0
+                      ? ""
                       : "grayscale opacity-50"
-                  )} 
+                  )}
                 />
                 <span className={cn(
                   "text-sm font-bold",
@@ -120,17 +121,17 @@ export default function NavbarDemo({ children }: NavbarProps) {
             ))}
             <div className="flex w-full flex-col items-center gap-4">
               {user && (
-                <div 
+                <div
                   className="flex items-center gap-1.5 px-4 py-1 rounded-full border bg-card/60 backdrop-blur-sm select-none"
                   title={`Active Streak: ${userRank?.streak ?? 0} days`}
                 >
-                  <StreakLoti 
+                  <StreakLoti
                     className={cn(
-                      "size-8 transition-all", 
-                      (userRank?.streak ?? 0) > 0 
-                        ? "" 
+                      "size-8 transition-all",
+                      (userRank?.streak ?? 0) > 0
+                        ? ""
                         : "grayscale opacity-50"
-                    )} 
+                    )}
                   />
                   <span className={cn(
                     "text-sm font-bold",

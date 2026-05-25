@@ -22,6 +22,8 @@ interface ProblemStore {
   userRank: UserRankForSolvedProblems | null;
   leaderboard: LeaderboardEntry[];
   isLeaderboardLoading: boolean;
+  showStreakCelebration: boolean;
+  celebrationStreakCount: number;
 
   isProblemsLoading: boolean;
   isProblemLoading: boolean;
@@ -40,6 +42,8 @@ interface ProblemStore {
   getUserSolvedProblemsRank: (id: string) => Promise<void>;
   importProblemsCSV: (file: File) => Promise<ApiResponse>;
   getLeaderboard: (limit?: number) => Promise<void>;
+  triggerStreakCelebration: (streak: number) => void;
+  closeStreakCelebration: () => void;
 }
 
 export const useProblemStore = create<ProblemStore>((set) => ({
@@ -49,6 +53,8 @@ export const useProblemStore = create<ProblemStore>((set) => ({
   userRank: null,
   leaderboard: [],
   isLeaderboardLoading: false,
+  showStreakCelebration: false,
+  celebrationStreakCount: 0,
   isProblemsLoading: false,
   isProblemLoading: false,
   isCreatingProblem: false,
@@ -179,4 +185,7 @@ export const useProblemStore = create<ProblemStore>((set) => ({
       set({ isLeaderboardLoading: false });
     }
   },
+  triggerStreakCelebration: (streak) =>
+    set({ showStreakCelebration: true, celebrationStreakCount: streak }),
+  closeStreakCelebration: () => set({ showStreakCelebration: false }),
 }));

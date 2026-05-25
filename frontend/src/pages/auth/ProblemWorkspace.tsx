@@ -1,5 +1,6 @@
 import {  useProblemStore } from "@/store/useProblemStore";
 import {  useExecutionStore } from "@/store/useExecutionStore";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {
@@ -44,7 +45,14 @@ export default function ProblemWorkspace() {
   const [activeTestCaseIndex, setActiveTestCaseIndex] = useState(0);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const { id } = useParams();
-  const { getProblemById, problem, isProblemLoading } = useProblemStore();
+  const { authUser: user } = useAuthStore();
+  const { 
+    getProblemById, 
+    problem, 
+    isProblemLoading,
+    getUserSolvedProblemsRank,
+    triggerStreakCelebration
+  } = useProblemStore();
   const {
     isExecuting,
     submission: testResults,
@@ -127,13 +135,33 @@ export default function ProblemWorkspace() {
     const stdin = problem?.testCases.map((tc) => tc.input);
     const expected_outputs = problem?.testCases.map((tc) => tc.output);
     try {
-      await submitCode({
+      const submissionResult = await submitCode({
         expected_outputs,
         stdin,
         source_code: code,
         language_id: language_id || "",
         problemId: id as string,
       });
+
+      // If submission was successfully accepted, fetch new rank and trigger celebration
+      if (submissionResult && submissionResult.status === "ACCEPTED") {
+        if (user?.id) {
+          // Fetch updated rank/streak from backend
+          await getUserSolvedProblemsRank(user.id);
+          
+          // Check if streak was updated and not celebrated today
+          const updatedRank = useProblemStore.getState().userRank;
+          if (updatedRank && typeof updatedRank.streak === "number" && updatedRank.streak > 0) {
+            const todayStr = new Date().toDateString();
+            const lastCelebration = localStorage.getItem("last_streak_celebration_date");
+            if (lastCelebration !== todayStr || import.meta.env.DEV) {
+              triggerStreakCelebration(updatedRank.streak);
+              localStorage.setItem("last_streak_celebration_date", todayStr);
+            }
+          }
+        }
+      }
+
       if (id) {
         await getSubmissionForProblem(id as string);
         await getSubmissionCountForProblem(id as string);

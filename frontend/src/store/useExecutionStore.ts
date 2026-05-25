@@ -11,7 +11,7 @@ interface ExecutionState {
   isExecuting: boolean;
   isSubmitting: boolean;
   submission: SubmissionWithTestCases | null;
-  submitCode: (data: SubmissionValues) => Promise<void>;
+  submitCode: (data: SubmissionValues) => Promise<SubmissionWithTestCases | null>;
   runCode: (data: SubmissionValues) => Promise<void>;
   clearSubmission: () => void;
 }
@@ -27,9 +27,11 @@ export const useExecutionStore = create<ExecutionState>((set) => ({
         .data;
       set({ submission:res.data ?? null });
       toast.success(res.message);
+      return res.data;
     } catch (error) {
       console.log("Error executing code", error);
       toast.error(getErrorMessage(error));
+      return null;
     } finally {
       set({ isSubmitting: false });
     }
