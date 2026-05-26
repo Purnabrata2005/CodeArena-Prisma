@@ -8,9 +8,9 @@ import { db } from "../db/db.js";
 passport.use(
   new GoogleStrategy(
     {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.GOOGLE_CALLBACK_URL,
+      clientID: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      callbackURL: process.env.GOOGLE_CALLBACK_URL!,
       passReqToCallback: false,
     },
     async (accessToken, refreshToken, profile, done) => {
@@ -28,7 +28,7 @@ passport.use(
         });
 
         if (existingUser) {
-          const updates = {};
+          const updates: Record<string, any> = {};
 
           if (photo && !existingUser.avatarUrl) {
             updates.avatarUrl = photo;
@@ -44,10 +44,10 @@ passport.use(
               data: updates,
             });
 
-            return done(null, updatedUser);
+            return done(null, updatedUser as Express.User);
           }
 
-          return done(null, existingUser);
+          return done(null, existingUser as Express.User);
         }
 
         const username = email.split("@")[0];
@@ -64,7 +64,7 @@ passport.use(
           },
         });
 
-        return done(null, newUser);
+        return done(null, newUser as Express.User);
       } catch (error) {
         return done(
           error instanceof Error ? error : new Error("Authentication failed"),

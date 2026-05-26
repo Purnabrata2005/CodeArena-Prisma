@@ -1,11 +1,11 @@
+import { Request, Response } from "express";
 import OpenAI from "openai";
-import {asyncHandler} from "../utils/async-handler.js";
+import { asyncHandler } from "../utils/async-handler.js";
 import { ApiError } from "../utils/api-error.js";
 import { ApiResponse } from "../utils/api-response.js";
 
-
-export const getCodeReview = asyncHandler(async (req, res) => {
-  const {code, language, problemTitle} = req.body;
+export const getCodeReview = asyncHandler(async (req: Request, res: Response) => {
+  const { code, language, problemTitle } = req.body;
 
   const systemPrompt = `You are a senior code reviewer and expert programming mentor specializing in ${language}. 
 Your job is to analyze submitted code for coding interview problems and provide structured feedback.
@@ -44,7 +44,7 @@ ${problemTitle ? `Problem Context: ${problemTitle}` : ""}`;
   const completion = await client.chat.completions.create({
     model: "gpt-4o",
     messages: [
-      {role: "system", content: systemPrompt},
+      { role: "system", content: systemPrompt },
       {
         role: "user",
         content: `Please review this ${language} code:\n\n\`\`\`${language}\n${code}\n\`\`\``,

@@ -1,3 +1,4 @@
+import { Request, Response } from "express";
 import { asyncHandler } from "../utils/async-handler.js";
 import { db } from "../db/db.js";
 import { ApiError } from "../utils/api-error.js";
@@ -9,15 +10,20 @@ const discussionUserSelect = {
   avatarUrl: true,
 };
 
-const normalizeDiscussion = (discussion) => ({
+const normalizeDiscussion = (discussion: any) => ({
   ...discussion,
   message: discussion.message,
 });
 
-export const createDiscussion = asyncHandler(async (req, res) => {
+export const createDiscussion = asyncHandler(async (req: Request, res: Response) => {
   const message = req.body.message;
-  const { problemId } = req.params;
-  const { id: userId } = req.user;
+  const { problemId } = req.params as { problemId: string };
+  
+  const user = req.user;
+  if (!user) {
+    throw new ApiError(401, "Authentication required", []);
+  }
+  const userId = user.id;
 
   if (!problemId) {
     throw new ApiError(400, "Problem ID is required", []);
@@ -59,8 +65,8 @@ export const createDiscussion = asyncHandler(async (req, res) => {
   );
 });
 
-export const getAllDiscussionsForProblem = asyncHandler(async (req, res) => {
-  const { problemId } = req.params;
+export const getAllDiscussionsForProblem = asyncHandler(async (req: Request, res: Response) => {
+  const { problemId } = req.params as { problemId: string };
 
   if (!problemId) {
     throw new ApiError(400, "Problem ID is required", []);

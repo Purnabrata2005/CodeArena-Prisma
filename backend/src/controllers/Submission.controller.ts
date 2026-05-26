@@ -1,14 +1,19 @@
+import { Request, Response } from "express";
 import { asyncHandler } from "../utils/async-handler.js";
 import { db } from "../db/db.js";
 import { ApiError } from "../utils/api-error.js";
 import { ApiResponse } from "../utils/api-response.js";
 
-export const getAllSubmissions = asyncHandler(async (req, res) => {
-  const usreId = req.user.id;
+export const getAllSubmissions = asyncHandler(async (req: Request, res: Response) => {
+  const user = req.user;
+  if (!user) {
+    throw new ApiError(401, "Authentication required", []);
+  }
+  const userId = user.id;
 
   const submissions = await db.submission.findMany({
     where: {
-      userId: usreId,
+      userId: userId,
     },
   });
 
@@ -19,9 +24,13 @@ export const getAllSubmissions = asyncHandler(async (req, res) => {
   );
 });
 
-export const getAllSubmissionByProblemId = asyncHandler(async (req, res) => {
-  const usreId = req.user.id;
-  const problemId = req.params.problemId;
+export const getAllSubmissionByProblemId = asyncHandler(async (req: Request, res: Response) => {
+  const user = req.user;
+  if (!user) {
+    throw new ApiError(401, "Authentication required", []);
+  }
+  const userId = user.id;
+  const { problemId } = req.params as { problemId: string };
 
   if(!problemId) {
     throw new ApiError(400, "Problem ID is required", []);
@@ -29,7 +38,7 @@ export const getAllSubmissionByProblemId = asyncHandler(async (req, res) => {
 
   const submissions = await db.submission.findMany({
     where: {
-      userId: usreId,
+      userId: userId,
       problemId,
     },
   });
@@ -41,8 +50,8 @@ export const getAllSubmissionByProblemId = asyncHandler(async (req, res) => {
   );
 });
 
-export const getAllSubmissionCount = asyncHandler(async (req, res) => {
-  const problemId = req.params.problemId;
+export const getAllSubmissionCount = asyncHandler(async (req: Request, res: Response) => {
+  const { problemId } = req.params as { problemId: string };
 
   if(!problemId) {
     throw new ApiError(400, "Problem ID is required", []);
@@ -61,12 +70,12 @@ export const getAllSubmissionCount = asyncHandler(async (req, res) => {
   );
 });
 
-export const getAllSubmissionStats = asyncHandler(async (req, res) => {
-  const { id: userId } = req.user;
-
-  if (!userId) {
-    throw new ApiError(400, "User ID is required", "MISSING_USER_ID");
+export const getAllSubmissionStats = asyncHandler(async (req: Request, res: Response) => {
+  const user = req.user;
+  if (!user) {
+    throw new ApiError(401, "Authentication required", []);
   }
+  const userId = user.id;
 
   const now = new Date();
   const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
@@ -95,8 +104,8 @@ export const getAllSubmissionStats = asyncHandler(async (req, res) => {
   const stats = {
     total: submissions.length,
     accepted: 0,
-    byLanguage: {},
-    solvedProblems: new Set(),
+    byLanguage: {} as Record<string, number>,
+    solvedProblems: new Set<string>(),
   };
 
   for (const submission of submissions) {
@@ -133,12 +142,12 @@ export const getAllSubmissionStats = asyncHandler(async (req, res) => {
   );
 });
 
-export const getSubmissionHeatMap = asyncHandler(async (req, res) => {
-  const { id: userId } = req.user;
-
-  if (!userId) {
-    throw new ApiError(400, "User ID is required", "MISSING_USER_ID");
+export const getSubmissionHeatMap = asyncHandler(async (req: Request, res: Response) => {
+  const user = req.user;
+  if (!user) {
+    throw new ApiError(401, "Authentication required", []);
   }
+  const userId = user.id;
 
   const submissions = await db.submission.findMany({
     where: {
@@ -152,7 +161,7 @@ export const getSubmissionHeatMap = asyncHandler(async (req, res) => {
     },
   });
 
-  const countsByDate = new Map();
+  const countsByDate = new Map<string, number>();
 
   for (const submission of submissions) {
     const date = submission.createdAt;

@@ -7,7 +7,7 @@ let isBootstrapping = false;
 /**
  * Bootstrap Redis from PostgreSQL if it is empty
  */
-export async function bootstrapLeaderboard() {
+export async function bootstrapLeaderboard(): Promise<void> {
   const exists = await redis.exists(LEADERBOARD_KEY);
   if (exists) return;
 
@@ -44,7 +44,7 @@ export async function bootstrapLeaderboard() {
       },
     });
 
-    const userSubmissions = {};
+    const userSubmissions: Record<string, any[]> = {};
     for (const sub of submissions) {
       if (!userSubmissions[sub.userId]) {
         userSubmissions[sub.userId] = [];
@@ -55,7 +55,7 @@ export async function bootstrapLeaderboard() {
     for (const [uid, subs] of Object.entries(userSubmissions)) {
       let currentStreak = 0;
       let maxStreak = 0;
-      let lastActiveDate = null;
+      let lastActiveDate: string | null = null;
 
       for (const sub of subs) {
         const dateStr = new Date(sub.createdAt).toISOString().split("T")[0];
@@ -68,7 +68,7 @@ export async function bootstrapLeaderboard() {
         } else {
           const lastDate = new Date(lastActiveDate);
           const nextDate = new Date(dateStr);
-          const diffTime = Math.abs(nextDate - lastDate);
+          const diffTime = Math.abs(nextDate.getTime() - lastDate.getTime());
           const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
           
           if (diffDays === 1) {
@@ -105,7 +105,7 @@ export async function bootstrapLeaderboard() {
 /**
  * Increment user's solved count on successful problem completion
  */
-export async function incrementUserScore(userId) {
+export async function incrementUserScore(userId: string): Promise<void> {
   await bootstrapLeaderboard();
   await redis.zincrby(LEADERBOARD_KEY, 1, userId);
 }
@@ -113,7 +113,7 @@ export async function incrementUserScore(userId) {
 /**
  * Update user's streak when they submit code
  */
-export async function updateStreak(userId) {
+export async function updateStreak(userId: string): Promise<void> {
   await bootstrapLeaderboard();
 
   const today = new Date().toISOString().split("T")[0];
@@ -152,7 +152,7 @@ export async function updateStreak(userId) {
 /**
  * Get user rank, solvedCount, and streak from Redis
  */
-export async function getUserRank(userId) {
+export async function getUserRank(userId: string): Promise<{ solvedCount: number; rank: number; streak: number }> {
   await bootstrapLeaderboard();
 
   const zeroIndexedRank = await redis.zrevrank(LEADERBOARD_KEY, userId);
@@ -187,7 +187,7 @@ export async function getUserRank(userId) {
   }
 
   return {
-    solvedCount: parseInt(scoreString, 10),
+    solvedCount: scoreString ? parseInt(scoreString, 10) : 0,
     rank: zeroIndexedRank + 1,
     streak: currentStreak,
   };
@@ -196,7 +196,7 @@ export async function getUserRank(userId) {
 /**
  * Retrieve the top users from the leaderboard
  */
-export async function getGlobalLeaderboard(limit = 10) {
+export async function getGlobalLeaderboard(limit = 10): Promise<any[]> {
   await bootstrapLeaderboard();
 
   const topUsers = await redis.zrevrange(LEADERBOARD_KEY, 0, limit - 1, "WITHSCORES");
@@ -242,7 +242,7 @@ export async function getGlobalLeaderboard(limit = 10) {
 /**
  * Get detailed streak statistics for a user
  */
-export async function getUserStreakDetails(userId) {
+export async function getUserStreakDetails(userId: string): Promise<{ currentStreak: number; maxStreak: number; lastActiveDate: string | null }> {
   await bootstrapLeaderboard();
 
   const streakKey = `user:streak:${userId}`;

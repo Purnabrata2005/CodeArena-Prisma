@@ -1,18 +1,32 @@
 export const UserRolesEnum = {
   ADMIN: "ADMIN",
   USER: "USER",
-};
+} as const;
 
 export const AvailableUserRoles = Object.values(UserRolesEnum);
 
 export const options = {
   httpOnly: true,
   secure: true,
-  sameSite: "none",
+  sameSite: "none" as const,
 };
 
-export class UserResponse  {
-  constructor(user,extra = {}) {
+export class UserResponse {
+  [key: string]: any;
+  id!: string;
+  username!: string | null;
+  email!: string;
+  name!: string | null;
+  avatarUrl!: string;
+  avatarLocalPath!: string;
+  role!: string;
+  isEmailVerified!: boolean;
+  bio!: string | null;
+  refreshToken!: string | null;
+  accessToken!: string | null;
+  _id!: string;
+
+  constructor(user: any, extra: Record<string, any> = {}) {
     const fields = [
       "id",
       "username",
@@ -25,10 +39,10 @@ export class UserResponse  {
       "bio",
       "refreshToken",
       "accessToken",
-    ];
+    ] as const;
 
     fields.forEach((field) => {
-      this[field] = user[field];
+      (this as any)[field] = user[field];
     });
 
     // Backward-compatibility alias for clients still expecting `_id`.
@@ -38,5 +52,3 @@ export class UserResponse  {
     Object.assign(this, extra);
   }
 }
-
-

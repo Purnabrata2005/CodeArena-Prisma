@@ -1,7 +1,6 @@
 import express from "express";
 import multer from "multer";
 
-import { validate } from "../middlewares/validator.middlewares.js";
 import { checkAdmin, verifyToken } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
@@ -21,7 +20,7 @@ import {
 } from "../controllers/Problem.controller.js";
 
 router.route("/create-problem").post(verifyToken, checkAdmin, createProblem);
-router.route("/get-all-problem").get(verifyToken,getAllProblem);
+router.route("/get-all-problem").get(verifyToken, getAllProblem);
 router.route("/get-problem/:id").get(verifyToken, getProblemById);
 router.route("/update-problem/:id").put(verifyToken, checkAdmin, updateProblem);
 router.route("/delete-problem/:id").delete(verifyToken, checkAdmin, deleteProblem);

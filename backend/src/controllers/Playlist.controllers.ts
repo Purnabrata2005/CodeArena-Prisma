@@ -1,24 +1,23 @@
+import { Request, Response } from "express";
 import { asyncHandler } from "../utils/async-handler.js";
 import { db } from "../db/db.js";
 import { ApiError } from "../utils/api-error.js";
 import { ApiResponse } from "../utils/api-response.js";
 
-export const addProblemToPlaylist = asyncHandler(async (req, res) => {
-  const { playlistId } = req.params;
+export const addProblemToPlaylist = asyncHandler(async (req: Request, res: Response) => {
+  const { playlistId } = req.params as { playlistId: string };
   const { problemIds } = req.body;
 
   if (!playlistId) {
-    throw new ApiError(400, "Playlist ID is required", "BAD_REQUEST");
+    throw new ApiError(400, "Playlist ID is required", ["BAD_REQUEST"]);
   }
 
-  // zod validation for arraay of problemIds
-
   if (!problemIds || !Array.isArray(problemIds) || problemIds.length === 0) {
-    throw new ApiError(400, "Problem IDs are required", "BAD_REQUEST");
+    throw new ApiError(400, "Problem IDs are required", ["BAD_REQUEST"]);
   }
 
   const problemInPlaylist = await db.problemInPlaylist.createMany({
-    data: problemIds.map((problemId) => ({
+    data: problemIds.map((problemId: string) => ({
       playlistId,
       problemId,
     })),
@@ -31,10 +30,14 @@ export const addProblemToPlaylist = asyncHandler(async (req, res) => {
   );
 });
 
-export const createPlaylist = asyncHandler(async (req, res) => {
+export const createPlaylist = asyncHandler(async (req: Request, res: Response) => {
   const { name, description } = req.body;
 
-  const { id: userId } = req.user;
+  const user = req.user;
+  if (!user) {
+    throw new ApiError(401, "Authentication required", []);
+  }
+  const userId = user.id;
 
   const playlist = await db.playlist.create({
     data: {
@@ -51,8 +54,8 @@ export const createPlaylist = asyncHandler(async (req, res) => {
   );
 });
 
-export const deletePlaylist = asyncHandler(async (req, res) => {
-  const { playlistId } = req.params;
+export const deletePlaylist = asyncHandler(async (req: Request, res: Response) => {
+  const { playlistId } = req.params as { playlistId: string };
 
   const playlist = await db.playlist.findUnique({ where: { id: playlistId } });
 
@@ -67,10 +70,14 @@ export const deletePlaylist = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "Playlist deleted successfully", {}));
 });
 
-export const getAllPlaylistsDetails = asyncHandler(async (req, res) => {
+export const getAllPlaylistsDetails = asyncHandler(async (req: Request, res: Response) => {
+  const user = req.user;
+  if (!user) {
+    throw new ApiError(401, "Authentication required", []);
+  }
   const playlists = await db.playlist.findMany({
     where: {
-      userId: req.user.id,
+      userId: user.id,
     },
     include: {
       problems: {
@@ -81,10 +88,6 @@ export const getAllPlaylistsDetails = asyncHandler(async (req, res) => {
     },
   });
 
-//   if (playlists.length === 0) {
-//     throw new ApiError(404, "No playlists found", []);
-//   }
-
   return res.status(200).json(
     new ApiResponse(200, "Playlists fetched successfully", {
       data: playlists,
@@ -92,11 +95,13 @@ export const getAllPlaylistsDetails = asyncHandler(async (req, res) => {
   );
 });
 
-export const getAllPlaylistsForUser = asyncHandler(async (req, res) => {
-  const { id: userId } = req.user;
-  if (!userId) {
-    throw new ApiError(400, "User ID is required", []);
+export const getAllPlaylistsForUser = asyncHandler(async (req: Request, res: Response) => {
+  const user = req.user;
+  if (!user) {
+    throw new ApiError(401, "Authentication required", []);
   }
+  const userId = user.id;
+
   const playlists = await db.playlist.findMany({
     where: {
       userId,
@@ -110,9 +115,13 @@ export const getAllPlaylistsForUser = asyncHandler(async (req, res) => {
   );
 });
 
-export const getPlaylistById = asyncHandler(async (req, res) => {
-  const { playlistId } = req.params;
-  const { id: userId } = req.user;
+export const getPlaylistById = asyncHandler(async (req: Request, res: Response) => {
+  const { playlistId } = req.params as { playlistId: string };
+  const user = req.user;
+  if (!user) {
+    throw new ApiError(401, "Authentication required", []);
+  }
+  const userId = user.id;
 
   if (!playlistId) {
     throw new ApiError(400, "Playlist ID is required", []);
@@ -143,16 +152,16 @@ export const getPlaylistById = asyncHandler(async (req, res) => {
   );
 });
 
-export const removeProblemFromPlaylist = asyncHandler(async (req, res) => {
-  const { playlistId } = req.params;
+export const removeProblemFromPlaylist = asyncHandler(async (req: Request, res: Response) => {
+  const { playlistId } = req.params as { playlistId: string };
   const { problemIds } = req.body;
 
   if (!playlistId) {
-    throw new ApiError(400, "Playlist ID is required", "BAD_REQUEST");
+    throw new ApiError(400, "Playlist ID is required", ["BAD_REQUEST"]);
   }
 
   if (!problemIds || !Array.isArray(problemIds) || problemIds.length === 0) {
-    throw new ApiError(400, "Problem IDs are required", "BAD_REQUEST");
+    throw new ApiError(400, "Problem IDs are required", ["BAD_REQUEST"]);
   }
 
   const problemInPlaylist = await db.problemInPlaylist.deleteMany({
@@ -171,12 +180,12 @@ export const removeProblemFromPlaylist = asyncHandler(async (req, res) => {
   );
 });
 
-export const updatePlaylist = asyncHandler(async (req, res) => {
-  const { playlistId } = req.params;
+export const updatePlaylist = asyncHandler(async (req: Request, res: Response) => {
+  const { playlistId } = req.params as { playlistId: string };
   const { name, description } = req.body;
 
   if (!playlistId) {
-    throw new ApiError(400, "Playlist ID is required", "BAD_REQUEST");
+    throw new ApiError(400, "Playlist ID is required", ["BAD_REQUEST"]);
   }
 
   const playlist = await db.playlist.update({

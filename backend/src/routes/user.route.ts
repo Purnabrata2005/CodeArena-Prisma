@@ -15,7 +15,7 @@ import {
   getUser,
   updateUser,
   verifyEmail,
-} from "../controllers/user.controller.js";
+} from "../controllers/User.controller.js";
 import { validate } from "../middlewares/validator.middlewares.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/tokens.js";
 import { db } from "../db/db.js";
@@ -53,12 +53,12 @@ router.get(
     failureRedirect: `${process.env.CLIENT_URL}/login`,
     session: false,
   }),
-  async (req, res) => {
+  async (req: express.Request, res: express.Response): Promise<any> => {
     if (!req.user) {
       return res.redirect(`${process.env.CLIENT_URL}/login`);
     }
 
-    const { id, email } = req.user;
+    const { id, email } = req.user as any;
     const accessToken = generateAccessToken(id, email);
     const refreshToken = generateRefreshToken(id, email);
 

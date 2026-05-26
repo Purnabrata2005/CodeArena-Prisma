@@ -1,3 +1,4 @@
+import { Request, Response } from "express";
 import { asyncHandler } from "../utils/async-handler.js";
 import { db } from "../db/db.js";
 import { ApiError } from "../utils/api-error.js";
@@ -14,10 +15,7 @@ import {
   getUserStreakDetails,
 } from "../services/leaderboard.js";
 
-export const createProblem = asyncHandler(async (req, res) => {
-  //get all required data from req.body
-  //check user role again
-
+export const createProblem = asyncHandler(async (req: Request, res: Response) => {
   const {
     title,
     description,
@@ -32,7 +30,7 @@ export const createProblem = asyncHandler(async (req, res) => {
     referenceSolutions,
   } = req.body;
 
-  if (req.user.role !== "ADMIN") {
+  if (!req.user || req.user.role !== "ADMIN") {
     throw new ApiError(
       403,
       "Forbidden: only ADMIN users can update problems",
@@ -44,7 +42,7 @@ export const createProblem = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid reference solutions", []);
   }
 
-  const normalizeTextOutput = (value) =>
+  const normalizeTextOutput = (value: any) =>
     typeof value === "string" ? value.trim() : "";
 
   for (const [language, solution] of Object.entries(referenceSolutions)) {
@@ -53,25 +51,20 @@ export const createProblem = asyncHandler(async (req, res) => {
       throw new ApiError(400, `Language ${language} not supported`, []);
     }
 
-    const submissions = testCases.map(({ input, output }) => ({
+    const submissions = (testCases as any[]).map(({ input, output }) => ({
       source_code: solution,
       language_id: languageId,
       stdin: input,
       expected_output: output,
     }));
 
-    // console.log("Submission Data:", submissions);
-
     const submissionResults = await submitBatch(submissions);
 
-    // console.log("Submission Results:", submissionResults);
-
-    const tokens = submissionResults.map((result) => result.token);
+    const tokens = submissionResults.map((result: any) => result.token);
 
     const results = await pullBatchResults(tokens);
 
     for (let i = 0; i < results.length; i++) {
-      // console.log("results.......", results);
       const result = results[i];
       const actualOutput = normalizeTextOutput(result?.stdout);
       const expectedOutput = normalizeTextOutput(testCases[i]?.output);
@@ -82,7 +75,7 @@ export const createProblem = asyncHandler(async (req, res) => {
         throw new ApiError(
           400,
           `Test case ${i + 1} failed in ${language}: Wrong Answer (Output Mismatch). Expected='${expectedOutput}', Actual='${actualOutput}'`,
-          "TEST_CASE_FAILED",
+          ["TEST_CASE_FAILED"]
         );
       }
       if (result.status.id !== 3) {
@@ -98,7 +91,7 @@ export const createProblem = asyncHandler(async (req, res) => {
         throw new ApiError(
           400,
           `Test case ${i + 1} failed in ${language}: ${result.status.description}. ${message}`,
-          "TEST_CASE_FAILED",
+          ["TEST_CASE_FAILED"]
         );
       }
     }
@@ -128,7 +121,7 @@ export const createProblem = asyncHandler(async (req, res) => {
   );
 });
 
-export const getAllProblem = asyncHandler(async (req, res) => {
+export const getAllProblem = asyncHandler(async (req: Request, res: Response) => {
   const problems = await db.problem.findMany();
 
   if (!problems) {
@@ -142,8 +135,8 @@ export const getAllProblem = asyncHandler(async (req, res) => {
   );
 });
 
-export const getProblemById = asyncHandler(async (req, res) => {
-  const { id } = req.params;
+export const getProblemById = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params as { id: string };
 
   const problem = await db.problem.findUnique({ where: { id } });
 
@@ -158,8 +151,8 @@ export const getProblemById = asyncHandler(async (req, res) => {
   );
 });
 
-export const updateProblem = asyncHandler(async (req, res) => {
-  const { id } = req.params;
+export const updateProblem = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params as { id: string };
 
   const problem = await db.problem.findUnique({ where: { id } });
 
@@ -181,7 +174,7 @@ export const updateProblem = asyncHandler(async (req, res) => {
     referenceSolutions,
   } = req.body;
 
-  if (req.user.role !== "ADMIN") {
+  if (!req.user || req.user.role !== "ADMIN") {
     throw new ApiError(403, "You are not authorized to create a problem", []);
   }
 
@@ -189,7 +182,7 @@ export const updateProblem = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid reference solutions", []);
   }
 
-  const normalizeTextOutput = (value) =>
+  const normalizeTextOutput = (value: any) =>
     typeof value === "string" ? value.trim() : "";
 
   for (const [language, solution] of Object.entries(referenceSolutions)) {
@@ -198,25 +191,20 @@ export const updateProblem = asyncHandler(async (req, res) => {
       throw new ApiError(400, `Language ${language} not supported`, []);
     }
 
-    const submissions = testCases.map(({ input, output }) => ({
+    const submissions = (testCases as any[]).map(({ input, output }) => ({
       source_code: solution,
       language_id: languageId,
       stdin: input,
       expected_output: output,
     }));
 
-    // console.log("Submission Data:", submissions);
-
     const submissionResults = await submitBatch(submissions);
 
-    // console.log("Submission Results:", submissionResults);
-
-    const tokens = submissionResults.map((result) => result.token);
+    const tokens = submissionResults.map((result: any) => result.token);
 
     const results = await pullBatchResults(tokens);
 
     for (let i = 0; i < results.length; i++) {
-      // console.log("results.......", results);
       const result = results[i];
       const actualOutput = normalizeTextOutput(result?.stdout);
       const expectedOutput = normalizeTextOutput(testCases[i]?.output);
@@ -227,7 +215,7 @@ export const updateProblem = asyncHandler(async (req, res) => {
         throw new ApiError(
           400,
           `Test case ${i + 1} failed in ${language}: Wrong Answer (Output Mismatch). Expected='${expectedOutput}', Actual='${actualOutput}'`,
-          "TEST_CASE_FAILED",
+          ["TEST_CASE_FAILED"]
         );
       }
       if (result.status.id !== 3) {
@@ -243,7 +231,7 @@ export const updateProblem = asyncHandler(async (req, res) => {
         throw new ApiError(
           400,
           `Test case ${i + 1} failed in ${language}: ${result.status.description}. ${message}`,
-          "TEST_CASE_FAILED",
+          ["TEST_CASE_FAILED"]
         );
       }
     }
@@ -273,8 +261,8 @@ export const updateProblem = asyncHandler(async (req, res) => {
   );
 });
 
-export const deleteProblem = asyncHandler(async (req, res) => {
-  const { id } = req.params;
+export const deleteProblem = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params as { id: string };
 
   const problem = await db.problem.findUnique({ where: { id } });
 
@@ -282,7 +270,7 @@ export const deleteProblem = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Problem not found", []);
   }
 
-  if (req.user.role !== "ADMIN") {
+  if (!req.user || req.user.role !== "ADMIN") {
     throw new ApiError(
       403,
       "Forbidden: only ADMIN users can update problems",
@@ -297,8 +285,12 @@ export const deleteProblem = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "Problem deleted successfully", {}));
 });
 
-export const getSovleProblem = asyncHandler(async (req, res) => {
-  const userId = req.user.id;
+export const getSovleProblem = asyncHandler(async (req: Request, res: Response) => {
+  const user = req.user;
+  if (!user) {
+    throw new ApiError(401, "Authentication required", []);
+  }
+  const userId = user.id;
 
   const problems = await db.problem.findMany({
     where: {
@@ -316,14 +308,14 @@ export const getSovleProblem = asyncHandler(async (req, res) => {
   );
 });
 
-export const getUserSolvedRank = asyncHandler(async (req, res) => {
+export const getUserSolvedRank = asyncHandler(async (req: Request, res: Response) => {
   if (!req.user) {
-    throw new ApiError(401, "Authentication required", "UNAUTHORIZED");
+    throw new ApiError(401, "Authentication required", ["UNAUTHORIZED"]);
   }
 
-  const { id: userId } = req.params;
+  const { id: userId } = req.params as { id: string };
   if (!userId) {
-    throw new ApiError(400, "User ID is required", "BAD_REQUEST");
+    throw new ApiError(400, "User ID is required", ["BAD_REQUEST"]);
   }
 
   // Fetch rank, solved count, and streak from Redis (extremely fast)
@@ -338,7 +330,7 @@ export const getUserSolvedRank = asyncHandler(async (req, res) => {
   );
 });
 
-const safeJsonParse = (value, fallback = null) => {
+const safeJsonParse = (value: any, fallback: any = null) => {
   if (!value || value === "" || value === "NULL") return fallback;
   try {
     return JSON.parse(value);
@@ -347,8 +339,8 @@ const safeJsonParse = (value, fallback = null) => {
   }
 };
 
-export const importProblemsCSV = asyncHandler(async (req, res) => {
-  if (req.user.role !== "ADMIN") {
+export const importProblemsCSV = asyncHandler(async (req: Request, res: Response) => {
+  if (!req.user || req.user.role !== "ADMIN") {
     throw new ApiError(
       403,
       "Forbidden: only ADMIN users can import problems",
@@ -361,17 +353,17 @@ export const importProblemsCSV = asyncHandler(async (req, res) => {
   }
 
   const content = req.file.buffer.toString("utf-8");
-  let records;
+  let records: any[];
   try {
     records = parse(content, { columns: true, skip_empty_lines: true });
-  } catch (parseError) {
+  } catch (parseError: any) {
     throw new ApiError(400, `Failed to parse CSV: ${parseError.message}`, []);
   }
 
-  const normalizeTextOutput = (value) =>
+  const normalizeTextOutput = (value: any) =>
     typeof value === "string" ? value.trim() : "";
 
-  const validateReferenceSolutions = async (referenceSolutions, testCases) => {
+  const validateReferenceSolutions = async (referenceSolutions: any, testCases: any[]) => {
     for (const [language, solution] of Object.entries(referenceSolutions)) {
       const languageId = await getJudge0LanguageId(language);
       if (!languageId) {
@@ -386,7 +378,7 @@ export const importProblemsCSV = asyncHandler(async (req, res) => {
       }));
 
       const submissionResults = await submitBatch(submissions);
-      const tokens = submissionResults.map((r) => r.token);
+      const tokens = submissionResults.map((r: any) => r.token);
       const results = await pullBatchResults(tokens);
 
       for (let i = 0; i < results.length; i++) {
@@ -414,7 +406,7 @@ export const importProblemsCSV = asyncHandler(async (req, res) => {
     }
   };
 
-  const results = [];
+  const results: any[] = [];
   let createdCount = 0;
   let failedCount = 0;
 
@@ -435,7 +427,7 @@ export const importProblemsCSV = asyncHandler(async (req, res) => {
       let tags = safeJsonParse(rec.tags, null);
       if (!Array.isArray(tags)) {
         if (typeof rec.tags === "string" && rec.tags.trim() !== "") {
-          tags = rec.tags.split(",").map((t) => t.trim());
+          tags = rec.tags.split(",").map((t: string) => t.trim());
         } else {
           tags = [];
         }
@@ -466,7 +458,7 @@ export const importProblemsCSV = asyncHandler(async (req, res) => {
           userId: req.user.id,
           title,
           description,
-          difficulty,
+          difficulty: difficulty as any,
           tags,
           examples,
           constraints,
@@ -480,7 +472,7 @@ export const importProblemsCSV = asyncHandler(async (req, res) => {
 
       createdCount++;
       results.push({ title, status: "success" });
-    } catch (err) {
+    } catch (err: any) {
       failedCount++;
       results.push({
         title: title || "Unknown Problem",
@@ -500,8 +492,8 @@ export const importProblemsCSV = asyncHandler(async (req, res) => {
   );
 });
 
-export const getLeaderboard = asyncHandler(async (req, res) => {
-  const limit = parseInt(req.query.limit || "10", 10);
+export const getLeaderboard = asyncHandler(async (req: Request, res: Response) => {
+  const limit = parseInt((req.query.limit as string) || "10", 10);
   const leaderboard = await getGlobalLeaderboard(limit);
 
   return res.status(200).json(
@@ -511,10 +503,10 @@ export const getLeaderboard = asyncHandler(async (req, res) => {
   );
 });
 
-export const getUserStreak = asyncHandler(async (req, res) => {
-  const { id: userId } = req.params;
+export const getUserStreak = asyncHandler(async (req: Request, res: Response) => {
+  const { id: userId } = req.params as { id: string };
   if (!userId) {
-    throw new ApiError(400, "User ID is required", "BAD_REQUEST");
+    throw new ApiError(400, "User ID is required", ["BAD_REQUEST"]);
   }
 
   const streakDetails = await getUserStreakDetails(userId);
@@ -523,4 +515,3 @@ export const getUserStreak = asyncHandler(async (req, res) => {
     new ApiResponse(200, "User streak stats fetched successfully", streakDetails)
   );
 });
-

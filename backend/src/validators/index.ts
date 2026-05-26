@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { UserRolesEnum, AvailableUserRoles } from "../utils/constants.js";
+import { UserRolesEnum } from "../utils/constants.js";
 
 export const userRegisterSchema = z.object({
   name: z
@@ -13,7 +13,7 @@ export const userRegisterSchema = z.object({
     .string()
     .min(8, "Password must be at least 8 characters")
     .max(100),
-  role: z.enum([...AvailableUserRoles]).default(UserRolesEnum.USER),
+  role: z.enum([UserRolesEnum.USER, UserRolesEnum.ADMIN]).default(UserRolesEnum.USER),
 });
 
 export const userLoginSchema = z.object({
@@ -27,36 +27,23 @@ export const userUpdateSchema = z.object({
   avatar: z.any().optional(),
 });
 
-
 export const codeReviewSchema = z.object({
   code: z
-    .string({
-      required_error: "Code is required",
-      invalid_type_error: "Code must be a string",
-    })
+    .string()
     .min(1, "Code cannot be empty"),
 
   language: z
-    .string({
-      required_error: "Language is required",
-      invalid_type_error: "Language must be a string",
-    })
+    .string()
     .min(1, "Language cannot be empty"),
 
   problemTitle: z
-    .string({
-      required_error: "Problem title is required",
-      invalid_type_error: "Problem title must be a string",
-    })
+    .string()
     .min(1, "Problem title cannot be empty"),
 });
 
 export const createDiscussionSchema = z.object({
   message: z
-    .string({
-      required_error: "Message is required",
-      invalid_type_error: "Message must be a string",
-    })
+    .string()
     .min(1, "Message cannot be empty")
     .max(1000, "Message cannot exceed 1000 characters"),
 });

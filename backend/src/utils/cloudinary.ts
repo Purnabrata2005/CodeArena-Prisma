@@ -14,11 +14,11 @@ cloudinary.config({
 
 /**
  * Uploads a file buffer to Cloudinary
- * @param {Buffer} fileBuffer - The file buffer in memory
- * @param {string} folder - The folder destination in Cloudinary
- * @returns {Promise<object>} The Cloudinary upload result
+ * @param fileBuffer - The file buffer in memory
+ * @param folder - The folder destination in Cloudinary
+ * @returns The Cloudinary upload result
  */
-export const uploadToCloudinary = (fileBuffer, folder = "avatars") => {
+export const uploadToCloudinary = (fileBuffer: Buffer, folder: string = "avatars"): Promise<any> => {
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       {
@@ -39,10 +39,10 @@ export const uploadToCloudinary = (fileBuffer, folder = "avatars") => {
 
 /**
  * Deletes a file from Cloudinary by its public ID
- * @param {string} publicId - The public ID of the file to delete
- * @returns {Promise<object>} The Cloudinary deletion result
+ * @param publicId - The public ID of the file to delete
+ * @returns The Cloudinary deletion result
  */
-export const deleteFromCloudinary = async (publicId) => {
+export const deleteFromCloudinary = async (publicId: string): Promise<any> => {
   try {
     const result = await cloudinary.uploader.destroy(publicId);
     return result;

@@ -6,9 +6,9 @@ dotenv.config({
   path: "./.env",
 });
 
-let transporter;
+let transporter: nodemailer.Transporter | undefined;
 
-const getTransporter = () => {
+const getTransporter = (): nodemailer.Transporter => {
   if (transporter) return transporter;
 
   const smtpHost = process.env.SMTP_HOST || process.env.MAILTRAP_HOST;
@@ -27,12 +27,19 @@ const getTransporter = () => {
       user: smtpUser,
       pass: smtpPass,
     } : undefined,
-  });
+  } as any);
 
   return transporter;
 };
 
-const sendEmail = async (options) => {
+interface SendEmailOptions {
+  email: string;
+  subject: string;
+  mailgenContent: any;
+  username?: string;
+}
+
+const sendEmail = async (options: SendEmailOptions): Promise<void> => {
   // Initialize mailgen instance with default theme and brand configuration
   const mailGenerator = new Mailgen({
     theme: "default",
@@ -41,7 +48,6 @@ const sendEmail = async (options) => {
       link: "https://taskmanager.app",
     },
   });
-
 
   // Generate the plaintext version of the e-mail (for clients that do not support HTML)
   const emailTextual = mailGenerator.generatePlaintext(options.mailgenContent);
@@ -52,7 +58,7 @@ const sendEmail = async (options) => {
   const senderEmail = process.env.SMTP_SENDEREMAIL || process.env.MAILTRAP_SENDEREMAIL || "noreply@codearena.com";
 
   // Get or initialize the pooled transporter
-  const transporter = getTransporter();
+  const transporterInstance = getTransporter();
 
   const mail = {
     from: senderEmail,
@@ -63,18 +69,18 @@ const sendEmail = async (options) => {
   };
 
   try {
-    await transporter.sendMail(mail);
+    await transporterInstance.sendMail(mail);
   } catch (error) {
     // As sending email is not strongly coupled to the business logic it is not worth to raise an error when email sending fails
     // So it's better to fail silently rather than breaking the app
     console.error(
-      "Email service failed silently. Make sure you have provided your MAILTRAP credentials in the .env file",
+      "Email service failed silently. Make sure you have provided your MAILTRAP credentials in the .env file"
     );
     console.error("Error: ", error);
   }
 };
 
-const emailVerificationMailgenContent = (username, verificationUrl) => {
+const emailVerificationMailgenContent = (username: string, verificationUrl: string) => {
   return {
     body: {
       name: username,
@@ -94,8 +100,7 @@ const emailVerificationMailgenContent = (username, verificationUrl) => {
   };
 };
 
-
-const forgotPasswordMailgenContent = (username, passwordResetUrl) => {
+const forgotPasswordMailgenContent = (username: string, passwordResetUrl: string) => {
   return {
     body: {
       name: username,

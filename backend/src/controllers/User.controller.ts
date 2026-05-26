@@ -1,3 +1,4 @@
+import { Request, Response } from "express";
 import {
   generateAccessToken,
   generateRefreshToken,
@@ -18,7 +19,7 @@ import fs from "fs";
 import path from "path";
 import { uploadToCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js";
 
-export const registerUser = asyncHandler(async (req, res) => {
+export const registerUser = asyncHandler(async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
 
   const existingUser = await db.user.findUnique({ where: { email } });
@@ -48,15 +49,17 @@ export const registerUser = asyncHandler(async (req, res) => {
       emailVerificationExpiry: new Date(tokenExpiry),
     },
   });
+
   //send email to user with the token
   sendEmail({
     email: user?.email,
-    username: user?.name,
+    username: user?.name || undefined,
+    subject: "Please verify your email",
     mailgenContent: emailVerificationMailgenContent(
-      user?.name,
+      user?.name || user?.email,
       `${req.protocol}://${req.get(
-        "host",
-      )}/api/v1/auth/verify/${unHashedToken}`,
+        "host"
+      )}/api/v1/auth/verify/${unHashedToken}`
     ),
   });
 
@@ -74,7 +77,8 @@ export const registerUser = asyncHandler(async (req, res) => {
     }),
   );
 });
-export const loginUser = asyncHandler(async (req, res) => {
+
+export const loginUser = asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   const user = await db.user.findUnique({ where: { email } });
@@ -115,14 +119,16 @@ export const loginUser = asyncHandler(async (req, res) => {
     }),
   );
 });
-export const logoutUser = asyncHandler(async (req, res) => {
+
+export const logoutUser = asyncHandler(async (req: Request, res: Response) => {
   res.clearCookie("refreshToken", options);
   res.clearCookie("accessToken", options);
   return res
     .status(200)
     .json(new ApiResponse(200, "User logged out successfully", {}));
 });
-export const getUser = asyncHandler(async (req, res) => {
+
+export const getUser = asyncHandler(async (req: Request, res: Response) => {
   const user = req.user;
 
   if (!user) {
@@ -135,7 +141,8 @@ export const getUser = asyncHandler(async (req, res) => {
     }),
   );
 });
-export const updateUser = asyncHandler(async (req, res) => {
+
+export const updateUser = asyncHandler(async (req: Request, res: Response) => {
   const user = req.user;
 
   if (!user) {
@@ -143,7 +150,7 @@ export const updateUser = asyncHandler(async (req, res) => {
   }
 
   const { name, bio } = req.body;
-  const updateData = { name, bio };
+  const updateData: Record<string, any> = { name, bio };
 
   if (req.file) {
     const file = req.file;
@@ -188,8 +195,9 @@ export const updateUser = asyncHandler(async (req, res) => {
     }),
   );
 });
-export const verifyEmail = asyncHandler(async (req, res) => {
-  const { token } = req.params;
+
+export const verifyEmail = asyncHandler(async (req: Request, res: Response) => {
+  const { token } = req.params as { token: string };
 
   if (!token) {
     return res.redirect(`${process.env.CLIENT_URL}/login?verification_error=true`);

@@ -1,3 +1,4 @@
+import { Request, Response } from "express";
 import { asyncHandler } from "../utils/async-handler.js";
 import { db } from "../db/db.js";
 import { ApiError } from "../utils/api-error.js";
@@ -10,7 +11,7 @@ import {
 } from "../utils/lib/judge0.js";
 import { incrementUserScore, updateStreak } from "../services/leaderboard.js";
 
-export const executeCode = asyncHandler(async (req, res) => {
+export const executeCode = asyncHandler(async (req: Request, res: Response) => {
   const { source_code, language_id, stdin, expected_outputs, problemId } =
     req.body;
 
@@ -52,7 +53,7 @@ export const executeCode = asyncHandler(async (req, res) => {
 
   const submissionResults = await submitBatch(submissions);
 
-  const tokens = submissionResults.map((result) => result.token);
+  const tokens = submissionResults.map((result: any) => result.token);
 
   const results = await pullBatchResults(tokens);
 
@@ -175,8 +176,6 @@ export const executeCode = asyncHandler(async (req, res) => {
     data: testCaseResults,
   });
 
-  //
-
   const submissionWithTestCases = await db.submission.findUnique({
     where: {
       id: submission.id,
@@ -201,7 +200,7 @@ export const executeCode = asyncHandler(async (req, res) => {
   );
 });
 
-export const runCode = asyncHandler(async (req, res) => {
+export const runCode = asyncHandler(async (req: Request, res: Response) => {
   const { source_code, language_id, stdin, expected_outputs, problemId } =
     req.body;
 
@@ -243,7 +242,7 @@ export const runCode = asyncHandler(async (req, res) => {
 
   const submissionResults = await submitBatch(submissions);
 
-  const tokens = submissionResults.map((result) => result.token);
+  const tokens = submissionResults.map((result: any) => result.token);
 
   const results = await pullBatchResults(tokens);
 
@@ -301,7 +300,3 @@ export const runCode = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, "Code executed successfully", fakeSubmission));
 });
-
-
-
-

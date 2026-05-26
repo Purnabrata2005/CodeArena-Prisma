@@ -8,7 +8,7 @@ import {
   submitBatch,
 } from "../utils/lib/judge0.js";
 
-const normalizeTextOutput = (value) =>
+const normalizeTextOutput = (value: any) =>
   typeof value === "string" ? value.trim() : "";
 
 async function findAdminUserId() {
@@ -17,7 +17,7 @@ async function findAdminUserId() {
   throw new Error("No ADMIN user found in database. Provide an ADMIN user first.");
 }
 
-async function validateReferenceSolutions(referenceSolutions, testCases) {
+async function validateReferenceSolutions(referenceSolutions: any, testCases: any[]) {
   for (const [language, solution] of Object.entries(referenceSolutions)) {
     const languageId = await getJudge0LanguageId(language);
     if (!languageId) {
@@ -32,7 +32,7 @@ async function validateReferenceSolutions(referenceSolutions, testCases) {
     }));
 
     const submissionResults = await submitBatch(submissions);
-    const tokens = submissionResults.map((r) => r.token);
+    const tokens = submissionResults.map((r: any) => r.token);
     const results = await pullBatchResults(tokens);
 
     for (let i = 0; i < results.length; i++) {
@@ -60,7 +60,7 @@ async function validateReferenceSolutions(referenceSolutions, testCases) {
   }
 }
 
-function safeJsonParse(value, fallback = null) {
+function safeJsonParse(value: any, fallback: any = null) {
   if (!value || value === "" || value === "NULL") return fallback;
   try {
     return JSON.parse(value);
@@ -131,9 +131,8 @@ async function main() {
 
       created++;
       console.log(`Created problem: ${title}`);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to import record:", rec.title || rec.name, "->", err.message);
-      // continue with next
     }
   }
 

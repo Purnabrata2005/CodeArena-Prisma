@@ -1,11 +1,10 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import passport from "passport";
 import helmet from "helmet";
 
 import { errorHandler } from "./middlewares/error.middleware.js";
-
 
 const app = express();
 
@@ -26,14 +25,14 @@ app.use(
 );
 
 import userRouter from "./routes/user.route.js";
-import problemRouter from "./routes/problem.route.js"
-import executionRouter from "./routes/execution.routes.js"
-import submissionRouter from "./routes/submission.routes.js"
-import playlistRouter from "./routes/playlist.routes.js"
-import discussionRoutes from "./routes/discussion.routes.js"
-import codeReviewRoutes from "./routes/codereview.routes.js"
+import problemRouter from "./routes/problem.route.js";
+import executionRouter from "./routes/execution.routes.js";
+import submissionRouter from "./routes/submission.routes.js";
+import playlistRouter from "./routes/playlist.routes.js";
+import discussionRoutes from "./routes/discussion.routes.js";
+import codeReviewRoutes from "./routes/codereview.routes.js";
 
-app.use("/api/v1/health", (req, res) => {
+app.use("/api/v1/health", (req: Request, res: Response) => {
   res.status(200).json({
     status: "success",
     message: "Server is running",
@@ -41,12 +40,12 @@ app.use("/api/v1/health", (req, res) => {
 });
 
 app.use("/api/v1/auth", userRouter);
-app.use("/api/v1/problem",problemRouter)
+app.use("/api/v1/problem", problemRouter);
 app.use("/api/v1/execute-code", executionRouter);
 app.use("/api/v1/submission", submissionRouter);
 app.use("/api/v1/playlist", playlistRouter);
-app.use("/api/v1/discussion",discussionRoutes)
-app.use("/api/v1/code-review",codeReviewRoutes)
+app.use("/api/v1/discussion", discussionRoutes);
+app.use("/api/v1/code-review", codeReviewRoutes);
 
 app.use(errorHandler);
 
