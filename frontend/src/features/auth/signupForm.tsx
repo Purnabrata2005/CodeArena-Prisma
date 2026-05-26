@@ -30,14 +30,14 @@ const signupForm = () => {
   });
 
   // Handle Form Submission
- async function onSubmit(data:SignupData ) {
-     try {
-       await signup(data);
-       navigate("/");
-     } catch (error) {
-       console.error("Error during login:", error);
-     }
-   }
+  async function onSubmit(data:SignupData ) {
+      try {
+        await signup(data);
+        navigate("/verify-email", { state: { email: data.email } });
+      } catch (error) {
+        console.error("Error during signup:", error);
+      }
+    }
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -105,13 +105,13 @@ const signupForm = () => {
         </div>
 
         <Button
-          isDisabled={isSubmitting}
+          isDisabled={isSubmitting || isPending}
           type="submit"
           className="w-full h-12 bg-accent hover:bg-accent/90 text-accent-foreground transition-all"
         >
            <>
           {isPending ? <Spinner color="current" size="sm" /> : null}
-          Uploading...
+          {isPending ? "Creating Account..." : "Create Account"}
         </>
         </Button>
       </form>

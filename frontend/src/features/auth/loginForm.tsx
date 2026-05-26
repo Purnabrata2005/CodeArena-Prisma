@@ -9,6 +9,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import LoadingButton from "@/components/landing/LoadingButton";
+import { getErrorMessage } from "@/lib/utils";
 
 const loginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -30,6 +31,10 @@ const loginForm = () => {
       navigate("/");
     } catch (error) {
       console.error("Error during login:", error);
+      const errorMessage = getErrorMessage(error);
+      if (errorMessage === "Email not verified") {
+        navigate("/verify-email", { state: { email: data.email } });
+      }
     }
   }
   return (

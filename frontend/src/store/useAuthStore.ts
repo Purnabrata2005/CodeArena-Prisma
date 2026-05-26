@@ -47,10 +47,10 @@ export const useAuthStore = create<AuthState>()(
         set({ isSigninUp: true });
         try {
           const res = (await axiosInstance.post("/auth/register", data)).data;
-          set({ authUser: res.data.user, isAuthenticated: true });
           toast.success(res.message);
         } catch (error) {
           toast.error(getErrorMessage(error));
+          throw error;
         } finally {
           set({ isSigninUp: false });
         }
@@ -64,6 +64,7 @@ export const useAuthStore = create<AuthState>()(
           toast.success(res.message);
         } catch (error) {
           toast.error(getErrorMessage(error));
+          throw error;
         } finally {
           set({ isLoggingIn: false });
         }

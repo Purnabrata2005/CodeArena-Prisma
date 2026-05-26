@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import AuthLayout from "./components/shared/AuthLayout";
 import Login from "./pages/root/Login";
 import Signup from "./pages/root/Signup";
+import VerifyEmailPending from "./pages/root/VerifyEmailPending";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Toaster } from "sonner";
 import { useAuthStore } from "./store/useAuthStore";
@@ -44,6 +45,7 @@ function App() {
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/verify-email" element={<VerifyEmailPending />} />
         </Route>
         <Route element={<RootLayout />}>
           <Route path="/" element={<Home />} />

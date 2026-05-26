@@ -192,7 +192,7 @@ export const verifyEmail = asyncHandler(async (req, res) => {
   const { token } = req.params;
 
   if (!token) {
-    throw new ApiError(400, "Token not provided", []);
+    return res.redirect(`${process.env.CLIENT_URL}/login?verification_error=true`);
   }
 
   const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
@@ -205,7 +205,7 @@ export const verifyEmail = asyncHandler(async (req, res) => {
   });
 
   if (!user) {
-    throw new ApiError(400, "Invalid or expired token", []);
+    return res.redirect(`${process.env.CLIENT_URL}/login?verification_error=true`);
   }
 
   await db.user.update({
@@ -217,7 +217,5 @@ export const verifyEmail = asyncHandler(async (req, res) => {
     },
   });
 
-  return res
-    .status(200)
-    .json(new ApiResponse(200, "Email verified successfully", {}));
+  return res.redirect(`${process.env.CLIENT_URL}/login?verified=true`);
 });
