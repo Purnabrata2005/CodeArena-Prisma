@@ -6,6 +6,31 @@ dotenv.config({
   path: "./.env",
 });
 
+let transporter;
+
+const getTransporter = () => {
+  if (transporter) return transporter;
+
+  const smtpHost = process.env.SMTP_HOST || process.env.MAILTRAP_HOST;
+  const smtpPort = process.env.SMTP_PORT || process.env.MAILTRAP_PORT;
+  const smtpUser = process.env.SMTP_USER || process.env.MAILTRAP_USERNAME;
+  const smtpPass = process.env.SMTP_PASS || process.env.MAILTRAP_PASSWORD;
+
+  transporter = nodemailer.createTransport({
+    host: smtpHost,
+    port: Number(smtpPort) || 587,
+    secure: Number(smtpPort) === 465, // true for port 465, false for other ports
+    pool: true, // Enable SMTP connection pooling
+    maxConnections: 5, // Max connections to maintain
+    maxMessages: 100, // Max messages per connection
+    auth: smtpUser && smtpPass ? {
+      user: smtpUser,
+      pass: smtpPass,
+    } : undefined,
+  });
+
+  return transporter;
+};
 
 const sendEmail = async (options) => {
   // Initialize mailgen instance with default theme and brand configuration
@@ -24,22 +49,10 @@ const sendEmail = async (options) => {
   // Generate an HTML email with the provided contents
   const emailHtml = mailGenerator.generate(options.mailgenContent);
 
-  const smtpHost = process.env.SMTP_HOST || process.env.MAILTRAP_HOST;
-  const smtpPort = process.env.SMTP_PORT || process.env.MAILTRAP_PORT;
-  const smtpUser = process.env.SMTP_USER || process.env.MAILTRAP_USERNAME;
-  const smtpPass = process.env.SMTP_PASS || process.env.MAILTRAP_PASSWORD;
   const senderEmail = process.env.SMTP_SENDEREMAIL || process.env.MAILTRAP_SENDEREMAIL || "noreply@codearena.com";
 
-  // Create a nodemailer transporter instance which is responsible to send a mail
-  const transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port: Number(smtpPort) || 587,
-      secure: Number(smtpPort) === 465, // true for port 465, false for other ports
-      auth: smtpUser && smtpPass ? {
-        user: smtpUser,
-        pass: smtpPass,
-      } : undefined,
-    });
+  // Get or initialize the pooled transporter
+  const transporter = getTransporter();
 
   const mail = {
     from: senderEmail,

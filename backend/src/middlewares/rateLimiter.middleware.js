@@ -10,3 +10,14 @@ export const executionLimiter = rateLimit({
     message: "Too many code execution requests from this IP, please try again after 5 minutes.",
   },
 });
+
+export const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 20, // Limit each IP to 20 requests per window
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many authentication attempts from this IP. Please try again after 15 minutes.",
+  },
+});

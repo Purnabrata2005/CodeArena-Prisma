@@ -20,6 +20,7 @@ import { validate } from "../middlewares/validator.middlewares.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/tokens.js";
 import { db } from "../db/db.js";
 import { options, UserResponse } from "../utils/constants.js";
+import { authLimiter } from "../middlewares/rateLimiter.middleware.js";
 
 import {
   userRegisterSchema,
@@ -29,9 +30,9 @@ import {
 
 const router = express.Router();
 
-router.route("/register").post(validate(userRegisterSchema), registerUser);
-router.route("/verify/:token").get(verifyEmail);
-router.route("/login").post( validate(userLoginSchema),loginUser);
+router.route("/register").post(authLimiter, validate(userRegisterSchema), registerUser);
+router.route("/verify/:token").get(authLimiter, verifyEmail);
+router.route("/login").post(authLimiter, validate(userLoginSchema), loginUser);
 router.route("/logout").post(verifyToken, logoutUser);
 router.route("/me").get(verifyToken, getUser);
 router.route("/update")
