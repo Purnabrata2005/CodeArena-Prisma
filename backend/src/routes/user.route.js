@@ -17,7 +17,8 @@ import {
   verifyEmail,
 } from "../controllers/user.controller.js";
 import { validate } from "../middlewares/validator.middlewares.js";
-import { generateAccessToken } from "../utils/tokens.js";
+import { generateAccessToken, generateRefreshToken } from "../utils/tokens.js";
+import { db } from "../db/db.js";
 import { options, UserResponse } from "../utils/constants.js";
 
 import {
@@ -51,15 +52,27 @@ router.get(
     failureRedirect: `${process.env.CLIENT_URL}/login`,
     session: false,
   }),
-  (req, res) => {
+  async (req, res) => {
     if (!req.user) {
       return res.redirect(`${process.env.CLIENT_URL}/login`);
     }
 
     const { id, email } = req.user;
     const accessToken = generateAccessToken(id, email);
-    const responseUser = new UserResponse(req.user, { accessToken });
+    const refreshToken = generateRefreshToken(id, email);
 
+    // Save tokens in the database
+    await db.user.update({
+      where: { email },
+      data: {
+        accessToken,
+        refreshToken,
+      },
+    });
+
+    const responseUser = new UserResponse(req.user, { accessToken, refreshToken });
+
+    res.cookie("refreshToken", refreshToken, options);
     res.cookie("accessToken", accessToken, options);
 
     return res.redirect(`${process.env.CLIENT_URL}`);
