@@ -154,7 +154,7 @@ export default function ProblemWorkspace() {
           if (updatedRank && typeof updatedRank.streak === "number" && updatedRank.streak > 0) {
             const todayStr = new Date().toDateString();
             const lastCelebration = localStorage.getItem("last_streak_celebration_date");
-            if (lastCelebration !== todayStr || import.meta.env.DEV) {
+            if (lastCelebration !== todayStr) {
               triggerStreakCelebration(updatedRank.streak);
               localStorage.setItem("last_streak_celebration_date", todayStr);
             }
