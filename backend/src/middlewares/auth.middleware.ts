@@ -1,8 +1,8 @@
-import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { ApiError } from "../utils/api-error.js";
 import { asyncHandler } from "../utils/async-handler.js";
-import { db } from "../db/db.js";
+import { auth } from "../utils/auth.js";
+import { fromNodeHeaders } from "better-auth/node";
 
 declare global {
   namespace Express {
@@ -23,30 +23,17 @@ declare global {
   }
 }
 
-interface DecodedToken extends jwt.JwtPayload {
-  userId: string;
-  email: string;
-}
-
 export const verifyToken = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  const token =
-    req.cookies?.accessToken ||
-    req.header("Authorization")?.replace("Bearer ", "");
-  if (!token) {
-    throw new ApiError(401, "Unauthorized", []);
-  }
-
   try {
-    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as DecodedToken;
-    const user = await db.user.findUnique({
-      where: { email: decoded.email },
+    const session = await auth.api.getSession({
+      headers: fromNodeHeaders(req.headers),
     });
 
-    if (!user) {
+    if (!session) {
       throw new ApiError(401, "Unauthorized", []);
     }
 
-    req.user = user as Express.User;
+    req.user = session.user as Express.User;
     next();
   } catch (error) {
     throw new ApiError(401, "Unauthorized", []);

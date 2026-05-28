@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import type { LoginData, SignupData, UpdateUserProfileValues } from "../lib/schemas/authSchema";
 import type { AuthUser } from "../types/index";
 import { getErrorMessage } from "@/lib/utils";
+import { authClient } from "../lib/auth-client";
 
 interface AuthState {
   authUser: AuthUser | null;
@@ -33,8 +34,26 @@ export const useAuthStore = create<AuthState>()(
       getCurrentUser: async () => {
         set({ isFetchingUser: true });
         try {
-          const res = (await axiosInstance.get("/auth/me")).data;
-          set({ authUser: res.data.user, isAuthenticated: true });
+          const { data: session, error } = await authClient.getSession();
+          if (error || !session) {
+            set({ authUser: null, isAuthenticated: false });
+            return;
+          }
+          
+          const rawUser = session.user as any;
+          set({
+            authUser: {
+              id: rawUser.id,
+              name: rawUser.name,
+              email: rawUser.email,
+              username: rawUser.username,
+              avatarUrl: rawUser.image || rawUser.avatarUrl,
+              avatarLocalPath: rawUser.avatarLocalPath,
+              bio: rawUser.bio,
+              role: (rawUser.role as "ADMIN" | "USER") || "USER",
+            },
+            isAuthenticated: true,
+          });
         } catch (error) {
           console.log(error);
           set({ authUser: null, isAuthenticated: false });
@@ -46,8 +65,15 @@ export const useAuthStore = create<AuthState>()(
       signup: async (data) => {
         set({ isSigninUp: true });
         try {
-          const res = (await axiosInstance.post("/auth/register", data)).data;
-          toast.success(res.message);
+          const { error } = await authClient.signUp.email({
+            email: data.email,
+            password: data.password,
+            name: data.name,
+          });
+          if (error) {
+            throw new Error(error.message);
+          }
+          toast.success("Registration successful! Please check your email to verify.");
         } catch (error) {
           toast.error(getErrorMessage(error));
           throw error;
@@ -59,9 +85,30 @@ export const useAuthStore = create<AuthState>()(
       login: async (data) => {
         set({ isLoggingIn: true });
         try {
-          const res = (await axiosInstance.post("/auth/login", data)).data;
-          set({ authUser: res.data.user, isAuthenticated: true });
-          toast.success(res.message);
+          const { data: result, error } = await authClient.signIn.email({
+            email: data.email,
+            password: data.password,
+          });
+          if (error) {
+            throw new Error(error.message);
+          }
+          if (result) {
+            const rawUser = result.user as any;
+            set({
+              authUser: {
+                id: rawUser.id,
+                name: rawUser.name,
+                email: rawUser.email,
+                username: rawUser.username,
+                avatarUrl: rawUser.image || rawUser.avatarUrl,
+                avatarLocalPath: rawUser.avatarLocalPath,
+                bio: rawUser.bio,
+                role: (rawUser.role as "ADMIN" | "USER") || "USER",
+              },
+              isAuthenticated: true,
+            });
+            toast.success("Logged in successfully");
+          }
         } catch (error) {
           toast.error(getErrorMessage(error));
           throw error;
@@ -72,7 +119,10 @@ export const useAuthStore = create<AuthState>()(
 
       logout: async () => {
         try {
-          await axiosInstance.post("/auth/logout");
+          const { error } = await authClient.signOut();
+          if (error) {
+            throw new Error(error.message);
+          }
           set({ authUser: null, isAuthenticated: false });
           toast.success("Logout successful");
         } catch (error) {
@@ -88,7 +138,19 @@ export const useAuthStore = create<AuthState>()(
               headers: { "Content-Type": "multipart/form-data" },
             })
           ).data;
-          set({ authUser: res.data.user, isAuthenticated: true });
+          set({
+            authUser: {
+              id: res.data.user.id,
+              name: res.data.user.name,
+              email: res.data.user.email,
+              username: res.data.user.username,
+              avatarUrl: res.data.user.avatarUrl,
+              avatarLocalPath: res.data.user.avatarLocalPath,
+              bio: res.data.user.bio,
+              role: res.data.user.role as "ADMIN" | "USER",
+            },
+            isAuthenticated: true,
+          });
           toast.success(res.message);
         } catch (error) {
           toast.error(getErrorMessage(error));

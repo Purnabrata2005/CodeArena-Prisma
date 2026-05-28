@@ -1,0 +1,75 @@
+import { asyncHandler } from "../utils/async-handler.js";
+import { db } from "../db/db.js";
+import { ApiError } from "../utils/api-error.js";
+import { ApiResponse } from "../utils/api-response.js";
+const discussionUserSelect = {
+    id: true,
+    name: true,
+    avatarUrl: true,
+};
+const normalizeDiscussion = (discussion) => ({
+    ...discussion,
+    message: discussion.message,
+});
+export const createDiscussion = asyncHandler(async (req, res) => {
+    const message = req.body.message;
+    const { problemId } = req.params;
+    const user = req.user;
+    if (!user) {
+        throw new ApiError(401, "Authentication required", []);
+    }
+    const userId = user.id;
+    if (!problemId) {
+        throw new ApiError(400, "Problem ID is required", []);
+    }
+    if (!message || !message.trim()) {
+        throw new ApiError(400, "Message is required", []);
+    }
+    const discussion = await db.discussionTable.create({
+        data: {
+            userId,
+            problemId,
+            message: message.trim(),
+        },
+    });
+    const createdDiscussion = await db.discussionTable.findUnique({
+        where: {
+            id: discussion.id,
+        },
+        select: {
+            id: true,
+            message: true,
+            createdAt: true,
+            updatedAt: true,
+            user: {
+                select: discussionUserSelect,
+            },
+        },
+    });
+    return res.status(201).json(new ApiResponse(201, "Discussion created successfully", normalizeDiscussion(createdDiscussion)));
+});
+export const getAllDiscussionsForProblem = asyncHandler(async (req, res) => {
+    const { problemId } = req.params;
+    if (!problemId) {
+        throw new ApiError(400, "Problem ID is required", []);
+    }
+    const discussions = await db.discussionTable.findMany({
+        where: {
+            problemId,
+        },
+        orderBy: {
+            createdAt: "desc",
+        },
+        select: {
+            id: true,
+            message: true,
+            createdAt: true,
+            updatedAt: true,
+            user: {
+                select: discussionUserSelect,
+            },
+        },
+    });
+    return res.status(200).json(new ApiResponse(200, "Discussions fetched successfully", discussions.map(normalizeDiscussion)));
+});
+//# sourceMappingURL=Discussion.controller.js.map
