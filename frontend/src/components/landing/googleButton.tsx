@@ -1,13 +1,20 @@
 import { Button } from "@/components/ui/button";
-const backendUrl = import.meta.env.VITE_BACKEND_BASE_URL;
+import { authClient } from "@/lib/auth-client";
 
 type GoogleSignInButtonProps = {
   text: string;
 };
 
 export default function GoogleSignInButton({ text }: GoogleSignInButtonProps) {
-  const handleGoogleLogin = () => {
-    window.location.href = `${backendUrl}/api/v1/auth/google`;
+  const handleGoogleLogin = async () => {
+    try {
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: window.location.origin + "/",
+      });
+    } catch (error) {
+      console.error("Google sign in failed:", error);
+    }
   };
   return (
     <div className="w-full  text-center">

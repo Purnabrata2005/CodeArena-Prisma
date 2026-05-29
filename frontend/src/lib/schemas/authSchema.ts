@@ -3,7 +3,7 @@ import { z } from "zod";
 // ─── Auth Schemas ────────────────────────────────────────────────────────────
 
 export const signUpSchema = z.object({
-  name: z.string({ message: "Name is required" }).min(3),
+  name: z.string({ message: "Name is required" }).min(3, "Name must be at least 3 characters"),
   email: z.string({ message: "Email is required" }).email().min(5).max(50),
   password: z
     .string({ message: "Password is required" })
@@ -20,11 +20,7 @@ export const loginSchema = z.object({
   email: z.string({ message: "Email is required" }).email().min(5).max(50),
   password: z
     .string({ message: "Password is required" })
-    .min(8, { message: "Password must be at least 8 characters" })
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number")
-    .regex(/[@#$%^&*]/, "Password must contain at least one special character"),
+    .min(1, { message: "Password is required" }),
 });
 
 export type LoginData = z.infer<typeof loginSchema>;

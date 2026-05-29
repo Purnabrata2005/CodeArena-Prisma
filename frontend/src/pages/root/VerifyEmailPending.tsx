@@ -3,10 +3,37 @@ import { Link, useLocation } from "react-router-dom";
 import { Mail, ArrowRight, CheckCircle2 } from "lucide-react";
 import { ThemeToggle } from "@/components/landing/ThemeToggle";
 import { Button } from "@heroui/react";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
+import { useState } from "react";
+import { getErrorMessage } from "@/lib/utils";
 
 const VerifyEmailPending = () => {
   const location = useLocation();
   const email = location.state?.email || "";
+  const [isResending, setIsResending] = useState(false);
+
+  const handleResend = async () => {
+    if (!email) {
+      toast.error("Email address not found. Please try logging in or signing up again.");
+      return;
+    }
+    setIsResending(true);
+    try {
+      const { error } = await authClient.sendVerificationEmail({
+        email,
+        callbackURL: window.location.origin + "/login?verified=true",
+      });
+      if (error) {
+        throw new Error(error.message);
+      }
+      toast.success("Verification email resent successfully!");
+    } catch (err) {
+      toast.error(getErrorMessage(err));
+    } finally {
+      setIsResending(false);
+    }
+  };
 
   return (
     <motion.div
@@ -72,7 +99,7 @@ const VerifyEmailPending = () => {
           </ul>
         </div>
 
-        <div className="pt-2">
+        <div className="pt-2 space-y-3">
           <Link to="/login">
             <Button
               className="w-full h-12 text-base font-semibold bg-accent hover:bg-accent/90 text-accent-foreground transition-all flex items-center justify-center gap-2"
@@ -81,6 +108,13 @@ const VerifyEmailPending = () => {
               <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
+          <Button
+            isDisabled={isResending}
+            onClick={handleResend}
+            className="w-full h-12 text-base font-semibold border-2 border-accent/20 bg-accent/5 hover:bg-accent/10 text-foreground transition-all flex items-center justify-center gap-2"
+          >
+            {isResending ? "Resending..." : "Resend Verification Email"}
+          </Button>
         </div>
       </div>
     </motion.div>

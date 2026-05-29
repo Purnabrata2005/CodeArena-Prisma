@@ -16,6 +16,6 @@ router.route("/update")
   .post(verifyToken, upload.single("avatar"), validate(userUpdateSchema), updateUser);
 
 // Forward all other authentication requests to Better Auth handler
-router.all("*", toNodeHandler(auth));
+router.all("*any", toNodeHandler(auth));
 
 export default router;
