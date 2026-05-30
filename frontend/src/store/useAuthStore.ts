@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
+import { persist } from "zustand/middleware";
 import { toast } from "sonner";
 import type { LoginData, SignupData, UpdateUserProfileValues } from "../lib/schemas/authSchema";
 import type { AuthUser } from "../types/index";
@@ -21,11 +22,12 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>()(
-  (set) => ({
-    authUser: null,
+  persist(
+    (set) => ({
+      authUser: null,
       isSigninUp: false,
       isLoggingIn: false,
-      isFetchingUser: false,
+      isFetchingUser: true,
       isAuthenticated: false,
       isUpdatingUser: false,
 
@@ -157,5 +159,9 @@ export const useAuthStore = create<AuthState>()(
           set({ isUpdatingUser: false });
         }
       },
-    })
+    }),
+    {
+      name: "auth-storage",
+    },
+  ),
 );

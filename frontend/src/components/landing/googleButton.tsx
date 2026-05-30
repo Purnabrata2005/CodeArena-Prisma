@@ -17,17 +17,14 @@ export default function GoogleSignInButton({ text }: GoogleSignInButtonProps) {
     }
   };
   return (
-    <div className="w-full  text-center">
+    <div className="w-full text-center">
       <Button
         variant="outline"
-        className="max-w-md h-12"
-        asChild
+        className="w-full max-w-md h-12 cursor-pointer gap-2"
         onClick={handleGoogleLogin}
       >
-        <span className="flex w-full items-center gap-2">
-          <GoogleIcon />
-          {text}
-        </span>
+        <GoogleIcon />
+        {text}
       </Button>
     </div>
   );
