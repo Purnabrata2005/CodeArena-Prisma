@@ -106,8 +106,11 @@ export async function bootstrapLeaderboard(): Promise<void> {
  * Increment user's solved count on successful problem completion
  */
 export async function incrementUserScore(userId: string): Promise<void> {
+  const cacheExists = await redis.exists(LEADERBOARD_KEY);
   await bootstrapLeaderboard();
-  await redis.zincrby(LEADERBOARD_KEY, 1, userId);
+  if (cacheExists === 1) {
+    await redis.zincrby(LEADERBOARD_KEY, 1, userId);
+  }
 }
 
 /**
