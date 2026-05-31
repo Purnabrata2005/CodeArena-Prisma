@@ -6,6 +6,7 @@ import { verifyToken } from "../middlewares/auth.middleware.js";
 import { updateUser } from "../controllers/User.controller.js";
 import { validate } from "../middlewares/validator.middlewares.js";
 import { userUpdateSchema } from "../validators/index.js";
+import { authLimiter } from "../middlewares/rateLimiter.middleware.js";
 
 const upload = multer({ storage: multer.memoryStorage() });
 const router = express.Router();
@@ -16,6 +17,6 @@ router.route("/update")
   .post(verifyToken, upload.single("avatar"), validate(userUpdateSchema), updateUser);
 
 // Forward all other authentication requests to Better Auth handler
-router.all("*any", toNodeHandler(auth));
+router.all("*any", authLimiter, toNodeHandler(auth));
 
 export default router;

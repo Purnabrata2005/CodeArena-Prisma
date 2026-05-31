@@ -3,17 +3,18 @@ import { Link } from "react-router-dom";
 import { useProblemStore } from "@/store/useProblemStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import PageLoderLoti from "@/assets/pageLoderLoti";
-import { 
-  Trophy, 
-  Crown, 
-  Search, 
-  ExternalLink, 
-  Medal, 
-  Code2, 
-  Sparkles
+import { motion } from "framer-motion";
+import {
+  Trophy,
+  Crown,
+  Search,
+  Medal,
+  Code2,
+  Sparkles,
+  ArrowUpRight,
+  Award,
 } from "lucide-react";
 import { Avatar } from "@heroui/react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
 export default function Leaderboard() {
@@ -22,366 +23,370 @@ export default function Leaderboard() {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    // Fetch top 50 users for a detailed leaderboard
-    getLeaderboard(50);
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    getLeaderboard(55);
   }, [getLeaderboard]);
 
-  const sortedLeaderboard = useMemo(() => {
-    return [...leaderboard].sort((a, b) => a.rank - b.rank);
-  }, [leaderboard]);
+  const sortedLeaderboard = useMemo(
+    () => [...leaderboard].sort((a, b) => a.rank - b.rank),
+    [leaderboard]
+  );
 
-  // Extract top 3 for the podium
-  const topThree = useMemo(() => {
-    const first = sortedLeaderboard.find(u => u.rank === 1);
-    const second = sortedLeaderboard.find(u => u.rank === 2);
-    const third = sortedLeaderboard.find(u => u.rank === 3);
-    return { first, second, third };
-  }, [sortedLeaderboard]);
+  const topThree = useMemo(() => ({
+    first: sortedLeaderboard.find((u) => u.rank === 1),
+    second: sortedLeaderboard.find((u) => u.rank === 2),
+    third: sortedLeaderboard.find((u) => u.rank === 3),
+  }), [sortedLeaderboard]);
 
-  // Rest of the list
-  const listUsers = useMemo(() => {
-    return sortedLeaderboard.filter(u => u.rank > 3);
-  }, [sortedLeaderboard]);
+  const listUsers = useMemo(
+    () => sortedLeaderboard.filter((u) => u.rank > 3),
+    [sortedLeaderboard]
+  );
 
-  // Filtered lists based on search
   const filteredListUsers = useMemo(() => {
     if (!searchQuery.trim()) return listUsers;
-    const query = searchQuery.toLowerCase();
+    const q = searchQuery.toLowerCase();
     return listUsers.filter(
-      item =>
-        item.user.name?.toLowerCase().includes(query) ||
-        item.user.username?.toLowerCase().includes(query)
+      (i) =>
+        i.user.name?.toLowerCase().includes(q) ||
+        i.user.username?.toLowerCase().includes(q)
     );
   }, [listUsers, searchQuery]);
 
   if (isLeaderboardLoading && leaderboard.length === 0) {
     return (
-      <div className="flex min-h-[80vh] items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-background">
         <PageLoderLoti />
       </div>
     );
   }
 
-  // Fallbacks for names
-  const getInitials = (name: string) => {
-    return name
+  const getInitials = (name: string) =>
+    name
       ?.split(" ")
       .filter(Boolean)
       .slice(0, 2)
-      .map(part => part[0]?.toUpperCase())
+      .map((p) => p[0]?.toUpperCase())
       .join("") ?? "U";
+
+  // ——— Podium card ———
+  const PodiumCard = ({
+    entry,
+    place,
+  }: {
+    entry: any;
+    place: 1 | 2 | 3;
+  }) => {
+    const config = {
+      1: {
+        height: "h-80 md:h-[370px]",
+        order: "md:order-2",
+        icon: <Crown className="h-5 w-5 text-yellow-400 animate-pulse" />,
+        label: "Champion",
+        ring: "ring-2 ring-yellow-400/60 shadow-[0_0_20px_rgba(234,179,8,0.3)]",
+        glow: "shadow-[0_20px_50px_rgba(234,179,8,0.15)]",
+        badge: "bg-gradient-to-r from-yellow-400 via-amber-500 to-yellow-600 text-black border border-yellow-300/30",
+        accent: "text-yellow-400 bg-yellow-500/10 border-yellow-500/20",
+        gradient: "from-yellow-500/10 via-transparent to-transparent",
+        glowColor: "rgba(234, 179, 8, 0.2)",
+        avatarBorder: "border-yellow-400/40",
+      },
+      2: {
+        height: "h-68 md:h-[310px]",
+        order: "md:order-1",
+        icon: <Medal className="h-4 w-4 text-slate-300" />,
+        label: "Runner-up",
+        ring: "ring-2 ring-slate-400/50 shadow-[0_0_15px_rgba(148,163,184,0.2)]",
+        glow: "shadow-[0_15px_35px_rgba(148,163,184,0.15)]",
+        badge: "bg-gradient-to-r from-slate-300 via-slate-400 to-slate-500 text-white border border-slate-300/20",
+        accent: "text-slate-300 bg-slate-300/10 border-slate-300/20",
+        gradient: "from-slate-400/5 via-transparent to-transparent",
+        glowColor: "rgba(148, 163, 184, 0.15)",
+        avatarBorder: "border-slate-400/30",
+      },
+      3: {
+        height: "h-60 md:h-[270px]",
+        order: "md:order-3",
+        icon: <Award className="h-4 w-4 text-amber-600" />,
+        label: "3rd Place",
+        ring: "ring-2 ring-amber-600/40 shadow-[0_0_15px_rgba(217,119,6,0.25)]",
+        glow: "shadow-[0_15px_35px_rgba(217,119,6,0.08)]",
+        badge: "bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 text-white border border-amber-500/20",
+        accent: "text-amber-500 bg-amber-500/10 border-amber-500/20",
+        gradient: "from-amber-600/5 via-transparent to-transparent",
+        glowColor: "rgba(217, 119, 6, 0.1)",
+        avatarBorder: "border-amber-600/30",
+      },
+    }[place];
+
+    if (!entry) {
+      return (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: place * 0.1 }}
+          className={`${config.order} flex flex-col items-center w-full`}
+        >
+          {/* Empty Avatar Slot */}
+          <div className="relative mb-4">
+            <div className="w-20 h-20 md:w-24 md:h-24 rounded-full border-2 border-dashed border-border/50 flex items-center justify-center bg-muted/5 backdrop-blur-xs">
+              <span className="text-xl md:text-2xl font-bold text-muted-foreground/30 font-mono">#{place}</span>
+            </div>
+          </div>
+
+          {/* Empty Pedestal */}
+          <div className={`${config.height} w-full rounded-2xl border border-dashed border-border/60 bg-gradient-to-b from-card/30 to-transparent flex flex-col items-center justify-center p-6 text-center transition-all duration-300 hover:border-border/90 relative overflow-hidden`}>
+            <div className="p-2.5 rounded-full bg-muted/10 text-muted-foreground/30 mb-3">
+              {config.icon}
+            </div>
+            <p className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground/40 mb-1">{config.label}</p>
+            <p className="text-xs font-semibold text-muted-foreground/50">Awaiting Challenger</p>
+            <div className="mt-4 text-[9px] text-muted-foreground/40 px-2.5 py-1 rounded-full bg-muted/5 border border-border/40">
+              Claim this rank
+            </div>
+          </div>
+        </motion.div>
+      );
+    }
+
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: place * 0.1, type: "spring", stiffness: 100 }}
+        className={`${config.order} flex flex-col items-center group w-full`}
+      >
+        {/* Avatar */}
+        <div className="relative mb-4 z-10 group-hover:scale-105 transition-transform duration-300">
+          <div className={`absolute inset-0 rounded-full bg-gradient-to-tr ${config.gradient} blur-xl opacity-60 scale-125 group-hover:scale-150 transition-transform duration-500`} />
+          <div className={`relative rounded-full ${config.ring} p-0.5 bg-background`}>
+            <Avatar className="h-20 w-20 md:h-24 md:w-24 text-lg" color="default" variant="soft">
+              <Avatar.Image src={entry.user.avatarUrl} alt={entry.user.name || "User"} />
+              <Avatar.Fallback delayMs={600}>
+                {getInitials(entry.user.name || "U")}
+              </Avatar.Fallback>
+            </Avatar>
+            <div className={`absolute -top-1 -right-1 ${config.badge} rounded-full h-8 w-8 flex items-center justify-center font-extrabold text-sm shadow-md`}>
+              {place}
+            </div>
+          </div>
+        </div>
+
+        {/* Pedestal */}
+        <div className={`${config.height} w-full rounded-2xl border border-white/5 bg-gradient-to-b from-card via-card/90 to-card/50 ${config.glow} flex flex-col items-center px-4 py-6 transition-all duration-300 group-hover:border-primary/30 group-hover:shadow-[0_25px_60px_rgba(0,0,0,0.5)] relative overflow-hidden`}>
+          <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+          <div className={`absolute -right-20 -top-20 h-40 w-40 rounded-full bg-gradient-to-br ${config.gradient} blur-3xl opacity-30 group-hover:opacity-50 transition-opacity`} />
+
+          <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[10px] uppercase tracking-wider font-bold ${config.accent} mb-4 shadow-sm`}>
+            {config.icon}
+            <span>{config.label}</span>
+          </div>
+
+          <div className="w-full text-center space-y-1 z-10">
+            <h3 className="font-bold text-foreground text-center text-sm md:text-base line-clamp-1 max-w-full">
+              {entry.user.name || entry.user.username}
+            </h3>
+            <p className="text-xs text-muted-foreground/80 line-clamp-1 max-w-full">
+              @{entry.user.username}
+            </p>
+          </div>
+
+          {/* Solved stats widget */}
+          <div className="mt-auto w-full z-10">
+            <div className="flex flex-col gap-1.5 p-3 rounded-xl bg-background/50 border border-border/40 backdrop-blur-xs shadow-inner">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-muted-foreground flex items-center gap-1">
+                  <Code2 className="h-3.5 w-3.5 text-primary/80" />
+                  Problems
+                </span>
+                <span className="font-bold text-foreground tabular-nums">{entry.solvedCount}</span>
+              </div>
+              <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.min((entry.solvedCount / 50) * 100, 100)}%` }}
+                  transition={{ delay: 0.5, duration: 0.8 }}
+                  className={`h-full rounded-full bg-gradient-to-r ${place === 1 ? 'from-yellow-400 to-amber-500' : place === 2 ? 'from-slate-300 to-slate-400' : 'from-amber-600 to-amber-700'}`}
+                />
+              </div>
+              <div className="flex justify-between items-center text-[10px] text-muted-foreground mt-0.5">
+                <span>solved</span>
+                <span>{Math.min((entry.solvedCount / 50) * 100, 100).toFixed(0)}% level</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    );
   };
 
-  return (
-    <div className="relative min-h-screen px-4 py-8 md:px-8 max-w-7xl mx-auto pt-20 overflow-hidden">
-      {/* Animated gradient background blobs */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -left-32 w-[500px] h-[500px] bg-gradient-to-br from-primary/20 via-primary/5 to-transparent rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute -top-20 -right-40 w-[450px] h-[450px] bg-gradient-to-bl from-amber-500/10 via-transparent to-transparent rounded-full blur-3xl animate-pulse animation-delay-2000"></div>
-        <div className="absolute -bottom-40 -right-20 w-[500px] h-[500px] bg-gradient-to-tl from-primary/10 via-transparent to-transparent rounded-full blur-3xl animate-pulse animation-delay-3000"></div>
+  // ——— Row ———
+  const Row = ({ item, idx, isSelf }: any) => (
+    <motion.div
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: Math.min(idx * 0.03, 0.4) }}
+      className={`group relative flex items-center gap-3 md:gap-4 px-4 py-3 rounded-xl border transition-all hover:bg-muted/40 ${isSelf
+        ? "bg-primary/5 border-primary/40 shadow-[0_0_0_1px_hsl(var(--primary)/0.2)]"
+        : "bg-card/50 border-border/60 hover:border-border"
+        }`}
+    >
+      <div className="w-10 text-center font-mono font-semibold text-sm text-muted-foreground tabular-nums">
+        {item.rank}
       </div>
 
-      {/* Header */}
-      <div className="text-center mb-10 z-10 relative">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-semibold mb-4 animate-bounce">
-          <Sparkles className="size-3.5" />
-          Global Rankings
+      <Avatar className="h-10 w-10 flex-shrink-0" color="default" variant="soft">
+        <Avatar.Image src={item.user.avatarUrl} alt={item.user.name || "User"} />
+        <Avatar.Fallback delayMs={600}>
+          {getInitials(item.user.name || "U")}
+        </Avatar.Fallback>
+      </Avatar>
+
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <p className="font-medium text-foreground truncate">
+            {item.user.name || item.user.username}
+          </p>
+          {isSelf && (
+            <span className="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded bg-primary text-primary-foreground">
+              You
+            </span>
+          )}
         </div>
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
-          CodeArena <span className="text-primary">Leaderboard</span>
-        </h1>
-        <p className="mt-3 text-muted-foreground text-md max-w-xl mx-auto">
-          Compete with developers worldwide. Solve problems, climb ranks, and conquer the Arena.
+        <p className="text-xs text-muted-foreground truncate">
+          @{item.user.username}
         </p>
       </div>
 
-      {/* Podium Section (Only render if we have at least one top user) */}
-      {sortedLeaderboard.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end max-w-3xl mx-auto mb-16 relative z-10">
-          
-          {/* Second Place (Silver) */}
-          <div className="order-2 md:order-1 flex flex-col items-center">
-            {topThree.second ? (
-              <div className="flex flex-col items-center group w-full">
-                <div className="relative mb-3 transition-transform duration-300 group-hover:scale-105">
-                  <div className="absolute -top-5 left-1/2 -translate-x-1/2">
-                    <Trophy className="size-6 text-slate-400 drop-shadow-[0_2px_8px_rgba(148,163,184,0.5)] animate-bounce" />
-                  </div>
-                  <div className="size-20 rounded-full border-4 border-slate-300/80 p-0.5 bg-background shadow-lg shadow-slate-300/20 group-hover:border-slate-300 group-hover:shadow-slate-300/40">
-                    <Avatar className="size-full" color="default" variant="soft">
-                      <Avatar.Image src={topThree.second.user.avatarUrl} alt={topThree.second.user.name || "Silver"} />
-                      <Avatar.Fallback>{getInitials(topThree.second.user.name || "S")}</Avatar.Fallback>
-                    </Avatar>
-                  </div>
-                  <div className="absolute -bottom-1 -right-1 size-6 rounded-full bg-slate-400 text-white flex items-center justify-center text-xs font-bold shadow-md">
-                    2
-                  </div>
-                </div>
-                
-                <Card className="w-full bg-card/40 backdrop-blur-md border border-slate-300/20 shadow-lg text-center p-4 rounded-2xl h-36 flex flex-col justify-between">
-                  <CardContent className="p-0 flex flex-col items-center justify-between h-full">
-                    <div>
-                      <h3 className="font-bold text-sm line-clamp-1 group-hover:text-primary transition-colors">
-                        {topThree.second.user.name || topThree.second.user.username}
-                      </h3>
-                      <p className="text-xs text-muted-foreground">@{topThree.second.user.username}</p>
-                    </div>
-                    <div className="mt-2 bg-slate-400/10 text-slate-600 dark:text-slate-300 px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
-                      <Code2 className="size-3.5" />
-                      {topThree.second.solvedCount} Solved
-                    </div>
-                    <Link 
-                      to={`/profile/${topThree.second.userId}`}
-                      className="mt-2 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 flex items-center gap-0.5 transition-colors"
-                    >
-                      View Profile <ExternalLink className="size-2.5" />
-                    </Link>
-                  </CardContent>
-                </Card>
-              </div>
-            ) : (
-              <div className="h-44 w-full border border-dashed rounded-2xl border-muted flex items-center justify-center text-xs text-muted-foreground">
-                No competitor
-              </div>
-            )}
-          </div>
-
-          {/* First Place (Gold) */}
-          <div className="order-1 md:order-2 flex flex-col items-center relative">
-            {topThree.first ? (
-              <div className="flex flex-col items-center group w-full -translate-y-4 md:-translate-y-6">
-                <div className="relative mb-3 transition-transform duration-300 group-hover:scale-105">
-                  <div className="absolute -top-7 left-1/2 -translate-x-1/2 z-10">
-                    <Crown className="size-8 text-amber-500 fill-amber-500 drop-shadow-[0_2px_12px_rgba(245,158,11,0.5)] animate-pulse" />
-                  </div>
-                  <div className="size-24 rounded-full border-4 border-amber-500 p-0.5 bg-background shadow-xl shadow-amber-500/20 group-hover:border-amber-400 group-hover:shadow-amber-500/40">
-                    <Avatar className="size-full" color="warning" variant="soft">
-                      <Avatar.Image src={topThree.first.user.avatarUrl} alt={topThree.first.user.name || "Gold"} />
-                      <Avatar.Fallback>{getInitials(topThree.first.user.name || "G")}</Avatar.Fallback>
-                    </Avatar>
-                  </div>
-                  <div className="absolute -bottom-1 -right-1 size-7 rounded-full bg-amber-500 text-white flex items-center justify-center text-sm font-bold shadow-md">
-                    1
-                  </div>
-                </div>
-
-                <Card className="w-full bg-card/60 backdrop-blur-lg border-2 border-amber-500/30 shadow-xl shadow-amber-500/5 text-center p-5 rounded-2xl h-44 flex flex-col justify-between">
-                  <CardContent className="p-0 flex flex-col items-center justify-between h-full">
-                    <div>
-                      <h3 className="font-extrabold text-md line-clamp-1 group-hover:text-primary transition-colors">
-                        {topThree.first.user.name || topThree.first.user.username}
-                      </h3>
-                      <p className="text-xs text-amber-500 font-semibold flex items-center justify-center gap-0.5">
-                        Arena Champion
-                      </p>
-                    </div>
-                    <div className="mt-2 bg-amber-500/10 text-amber-600 dark:text-amber-400 px-4 py-1.5 rounded-full text-sm font-bold flex items-center gap-1.5 shadow-sm">
-                      <Code2 className="size-4" />
-                      {topThree.first.solvedCount} Solved
-                    </div>
-                    <Link 
-                      to={`/profile/${topThree.first.userId}`}
-                      className="mt-2 text-xs text-amber-500 hover:text-amber-600 dark:hover:text-amber-400 flex items-center gap-0.5 transition-colors font-semibold"
-                    >
-                      View Profile <ExternalLink className="size-2.5" />
-                    </Link>
-                  </CardContent>
-                </Card>
-              </div>
-            ) : (
-              <div className="h-52 w-full border border-dashed rounded-2xl border-muted flex items-center justify-center text-xs text-muted-foreground">
-                No champion yet
-              </div>
-            )}
-          </div>
-
-          {/* Third Place (Bronze) */}
-          <div className="order-3 flex flex-col items-center">
-            {topThree.third ? (
-              <div className="flex flex-col items-center group w-full">
-                <div className="relative mb-3 transition-transform duration-300 group-hover:scale-105">
-                  <div className="absolute -top-5 left-1/2 -translate-x-1/2">
-                    <Trophy className="size-6 text-amber-700 drop-shadow-[0_2px_8px_rgba(180,83,9,0.5)] animate-bounce" />
-                  </div>
-                  <div className="size-20 rounded-full border-4 border-amber-700/80 p-0.5 bg-background shadow-lg shadow-amber-700/20 group-hover:border-amber-700 group-hover:shadow-amber-700/40">
-                    <Avatar className="size-full" color="default" variant="soft">
-                      <Avatar.Image src={topThree.third.user.avatarUrl} alt={topThree.third.user.name || "Bronze"} />
-                      <Avatar.Fallback>{getInitials(topThree.third.user.name || "B")}</Avatar.Fallback>
-                    </Avatar>
-                  </div>
-                  <div className="absolute -bottom-1 -right-1 size-6 rounded-full bg-amber-700 text-white flex items-center justify-center text-xs font-bold shadow-md">
-                    3
-                  </div>
-                </div>
-
-                <Card className="w-full bg-card/40 backdrop-blur-md border border-amber-700/20 shadow-lg text-center p-4 rounded-2xl h-36 flex flex-col justify-between">
-                  <CardContent className="p-0 flex flex-col items-center justify-between h-full">
-                    <div>
-                      <h3 className="font-bold text-sm line-clamp-1 group-hover:text-primary transition-colors">
-                        {topThree.third.user.name || topThree.third.user.username}
-                      </h3>
-                      <p className="text-xs text-muted-foreground">@{topThree.third.user.username}</p>
-                    </div>
-                    <div className="mt-2 bg-amber-700/10 text-amber-800 dark:text-amber-400 px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
-                      <Code2 className="size-3.5" />
-                      {topThree.third.solvedCount} Solved
-                    </div>
-                    <Link 
-                      to={`/profile/${topThree.third.userId}`}
-                      className="mt-2 text-xs text-amber-700 hover:text-amber-800 dark:hover:text-amber-400 flex items-center gap-0.5 transition-colors"
-                    >
-                      View Profile <ExternalLink className="size-2.5" />
-                    </Link>
-                  </CardContent>
-                </Card>
-              </div>
-            ) : (
-              <div className="h-44 w-full border border-dashed rounded-2xl border-muted flex items-center justify-center text-xs text-muted-foreground">
-                No competitor
-              </div>
-            )}
-          </div>
-
+      <div className="hidden sm:flex flex-col items-end">
+        <div className="flex items-center gap-1.5">
+          <Code2 className="h-3.5 w-3.5 text-primary" />
+          <span className="font-semibold text-foreground tabular-nums">
+            {item.solvedCount}
+          </span>
         </div>
-      )}
+        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
+          solved
+        </span>
+      </div>
 
-      {/* Main Leaderboard Table Section */}
-      <div className="z-10 relative max-w-4xl mx-auto">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
-          <h2 className="text-xl font-bold flex items-center gap-2 self-start">
-            <Medal className="size-5 text-primary" />
-            Arena Standings
-          </h2>
-          <div className="relative w-full sm:w-72">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
-            <Input
-              placeholder="Search competitors..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 bg-card/50 backdrop-blur-sm border-muted focus-visible:ring-primary rounded-xl"
-            />
+      <Link
+        to={`/profile/${item.user.username}`}
+        className="opacity-0 group-hover:opacity-100 transition-opacity p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-primary"
+      >
+        <ArrowUpRight className="h-4 w-4" />
+      </Link>
+    </motion.div>
+  );
+
+  const myEntry =
+    currentUser && sortedLeaderboard.find((x) => x.userId === currentUser.id);
+  const showMyPinned = myEntry && myEntry.rank > 3;
+
+  return (
+    <div className="relative min-h-screen bg-background overflow-hidden">
+      {/* Ambient blobs */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -left-40 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
+        <div className="absolute top-1/3 -right-40 h-96 w-96 rounded-full bg-accent/10 blur-3xl" />
+        <div className="absolute bottom-0 left-1/3 h-96 w-96 rounded-full bg-secondary/20 blur-3xl" />
+      </div>
+
+      <div className="relative max-w-5xl mx-auto px-4 sm:px-6 pb-12 md:pb-16 pt-0">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-12 md:mb-16"
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border bg-card/60 backdrop-blur-sm mb-4">
+            <Sparkles className="h-3.5 w-3.5 text-primary" />
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              Global Rankings
+            </span>
           </div>
-        </div>
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-foreground mb-3">
+            <span className="bg-gradient-to-r from-foreground via-foreground to-muted-foreground bg-clip-text text-transparent">
+              CodeArena Leaderboard
+            </span>
+          </h1>
+          <p className="text-muted-foreground max-w-xl mx-auto text-sm md:text-base">
+            Compete with developers worldwide. Solve problems, climb ranks, and conquer the Arena.
+          </p>
+        </motion.div>
 
-        {/* Global Competitor Rows */}
-        <div className="flex flex-col gap-3.5">
-          {/* Currently Logged-in User Profile Row Highlight (if not in top 3 and matches search) */}
-          {currentUser && sortedLeaderboard.find(x => x.userId === currentUser.id) && (
-            (() => {
-              const myEntry = sortedLeaderboard.find(x => x.userId === currentUser.id)!;
-              if (myEntry.rank > 3) {
-                return (
-                  <div className="rounded-2xl p-[1px] bg-gradient-to-r from-primary via-primary/50 to-primary/10 shadow-md">
-                    <div className="flex items-center justify-between gap-4 px-5 py-4 rounded-[15px] bg-primary/10 dark:bg-primary/20 backdrop-blur-md">
-                      <div className="flex items-center gap-4">
-                        <div className="w-8 text-center text-sm font-black text-primary">
-                          #{myEntry.rank}
-                        </div>
-                        <Avatar className="size-11 border-2 border-primary" color="default" variant="soft">
-                          <Avatar.Image src={myEntry.user.avatarUrl} alt={myEntry.user.name || "Me"} />
-                          <Avatar.Fallback>{getInitials(myEntry.user.name || "Me")}</Avatar.Fallback>
-                        </Avatar>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-extrabold text-sm text-foreground">
-                              {myEntry.user.name || myEntry.user.username}
-                            </span>
-                            <span className="px-1.5 py-0.5 rounded bg-primary/20 text-primary text-[10px] font-black uppercase tracking-wider">
-                              You
-                            </span>
-                          </div>
-                          <span className="text-xs text-muted-foreground">@{myEntry.user.username}</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-6">
-                        <div className="text-right">
-                          <div className="text-sm font-extrabold text-primary flex items-center gap-1 justify-end">
-                            <Code2 className="size-4" />
-                            {myEntry.solvedCount}
-                          </div>
-                          <span className="text-[10px] text-muted-foreground">Solved</span>
-                        </div>
-                        <Link 
-                          to={`/profile/${myEntry.userId}`}
-                          className="p-2 rounded-lg bg-background/80 hover:bg-background text-primary transition-colors flex items-center justify-center"
-                        >
-                          <ExternalLink className="size-4" />
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                );
-              }
-              return null;
-            })()
-          )}
+        {/* Podium */}
+        {sortedLeaderboard.length > 0 && (
+          <div className="grid grid-cols-3 gap-3 md:gap-6 mb-16 items-end">
+            <PodiumCard entry={topThree.second} place={2} />
+            <PodiumCard entry={topThree.first} place={1} />
+            <PodiumCard entry={topThree.third} place={3} />
+          </div>
+        )}
 
-          {/* List of other users */}
-          {filteredListUsers.length > 0 ? (
-            filteredListUsers.map((item) => {
-              const isSelf = currentUser && item.userId === currentUser.id;
-              return (
-                <div 
+        {/* List section */}
+        <div className="rounded-2xl border border-border bg-card/40 backdrop-blur-sm overflow-hidden">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 md:p-6 border-b border-border">
+            <div className="flex items-center gap-2">
+              <Trophy className="h-5 w-5 text-primary" />
+              <h2 className="text-lg font-semibold text-foreground">
+                Arena Standings
+              </h2>
+              <span className="text-xs text-muted-foreground ml-1">
+                ({listUsers.length})
+              </span>
+            </div>
+
+            <div className="relative w-full sm:w-72">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search competitors..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 bg-background/60 border-border focus-visible:ring-primary rounded-lg text-sm"
+              />
+            </div>
+          </div>
+
+          <div className="p-3 md:p-4 space-y-2">
+            {showMyPinned && (
+              <>
+                <Row item={myEntry} idx={0} isSelf />
+                <div className="flex items-center gap-3 py-1">
+                  <div className="flex-1 h-px bg-border" />
+                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                    All competitors
+                  </span>
+                  <div className="flex-1 h-px bg-border" />
+                </div>
+              </>
+            )}
+
+            {filteredListUsers.length > 0 ? (
+              filteredListUsers.map((item, idx) => (
+                <Row
                   key={item.userId}
-                  className={`flex items-center justify-between gap-4 px-5 py-4 rounded-2xl border transition-all duration-200 hover:-translate-y-0.5 ${
-                    isSelf 
-                      ? "bg-primary/5 border-primary/30 shadow-md shadow-primary/5" 
-                      : "bg-card/45 backdrop-blur-md border-muted/50 hover:bg-card/70 hover:border-muted hover:shadow-md"
-                  }`}
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="w-8 text-center text-sm font-bold text-muted-foreground">
-                      #{item.rank}
-                    </div>
-                    <Avatar className="size-10" color="default" variant="soft">
-                      <Avatar.Image src={item.user.avatarUrl} alt={item.user.name || "User"} />
-                      <Avatar.Fallback>{getInitials(item.user.name || "U")}</Avatar.Fallback>
-                    </Avatar>
-                    <div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-sm">
-                          {item.user.name || item.user.username}
-                        </span>
-                        {isSelf && (
-                          <span className="px-1.5 py-0.5 rounded bg-primary/20 text-primary text-[9px] font-black uppercase">
-                            You
-                          </span>
-                        )}
-                      </div>
-                      <span className="text-xs text-muted-foreground">@{item.user.username}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-6">
-                    <div className="text-right">
-                      <div className="text-sm font-bold flex items-center gap-1 justify-end">
-                        <Code2 className="size-4 text-muted-foreground" />
-                        {item.solvedCount}
-                      </div>
-                      <span className="text-[10px] text-muted-foreground">Solved</span>
-                    </div>
-                    <Link 
-                      to={`/profile/${item.userId}`}
-                      className="p-2 rounded-lg bg-muted/30 hover:bg-muted/80 text-muted-foreground hover:text-foreground transition-colors flex items-center justify-center"
-                    >
-                      <ExternalLink className="size-4" />
-                    </Link>
-                  </div>
-                </div>
-              );
-            })
-          ) : (
-            searchQuery.trim() ? (
-              <div className="text-center py-10 text-muted-foreground border border-dashed rounded-2xl">
-                No competitors match "{searchQuery}"
+                  item={item}
+                  idx={idx}
+                  isSelf={currentUser && item.userId === currentUser.id}
+                />
+              ))
+            ) : searchQuery.trim() ? (
+              <div className="py-12 text-center text-sm text-muted-foreground">
+                No competitors match{" "}
+                <span className="text-foreground font-medium">
+                  "{searchQuery}"
+                </span>
               </div>
-            ) : (
-              listUsers.length === 0 && sortedLeaderboard.length <= 3 ? null : (
-                <div className="text-center py-10 text-muted-foreground border border-dashed rounded-2xl">
-                  No competitors found
-                </div>
-              )
-            )
-          )}
+            ) : listUsers.length === 0 && sortedLeaderboard.length <= 3 ? null : (
+              <div className="py-12 text-center text-sm text-muted-foreground">
+                No competitors found
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
