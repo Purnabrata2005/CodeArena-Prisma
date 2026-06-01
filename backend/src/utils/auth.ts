@@ -36,6 +36,8 @@ const generateUniqueUsername = async (email: string, name?: string | null): Prom
   return username;
 };
 
+const isProd = process.env.NODE_ENV === "production" || process.env.BETTER_AUTH_URL?.startsWith("https://");
+
 export const auth = betterAuth({
   databaseHooks: {
     user: {
@@ -56,6 +58,14 @@ export const auth = betterAuth({
     provider: "postgresql",
   }),
   trustedOrigins: process.env.CLIENT_URL ? [process.env.CLIENT_URL] : ["http://localhost:5173"],
+  advanced: {
+    defaultCookieAttributes: isProd
+      ? {
+          sameSite: "none",
+          secure: true,
+        }
+      : undefined,
+  },
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
