@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { Prisma } from "../generated/prisma/client.js";
+import { Prisma } from "@prisma/client";
 import { ApiError } from "../utils/api-error.js";
 
 const DB_CONNECTION_ERROR_CODES = new Set([
