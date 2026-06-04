@@ -287,9 +287,9 @@ export default function Leaderboard() {
   const showMyPinned = myEntry && myEntry.rank > 3;
 
   return (
-    <div className="relative min-h-screen bg-background overflow-hidden">
+    <div className="relative min-h-screen overflow-hidden">
       {/* Ambient blobs */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -left-40 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
         <div className="absolute top-1/3 -right-40 h-96 w-96 rounded-full bg-accent/10 blur-3xl" />
         <div className="absolute bottom-0 left-1/3 h-96 w-96 rounded-full bg-secondary/20 blur-3xl" />

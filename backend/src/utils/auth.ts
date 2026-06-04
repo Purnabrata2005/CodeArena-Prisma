@@ -44,10 +44,13 @@ export const auth = betterAuth({
       create: {
         before: async (user) => {
           const username = await generateUniqueUsername(user.email, user.name);
+          const defaultAvatar = "https://res.cloudinary.com/dne79gp38/image/upload/v1779442342/avatar-placeholder_bftjxm.png";
           return {
             data: {
               ...user,
               username,
+              image: user.image || defaultAvatar,
+              avatarUrl: (user as any).avatarUrl || defaultAvatar,
             },
           };
         },
