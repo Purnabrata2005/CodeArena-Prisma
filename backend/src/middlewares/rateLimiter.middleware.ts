@@ -21,3 +21,15 @@ export const authLimiter = rateLimit({
     message: "Too many authentication attempts from this IP. Please try again after 15 minutes.",
   },
 });
+
+export const sessionLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 300, // Limit each IP to 300 requests per 15 minutes (generous for standard page refreshes)
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many session requests from this IP. Please try again after 15 minutes.",
+  },
+});
+
