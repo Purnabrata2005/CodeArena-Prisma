@@ -111,7 +111,7 @@ export default function CSVImport() {
 
     try {
       setImportSummary(null);
-      const res = (await importProblemsCSV(file)) as ImportResponse;
+      const res = (await importProblemsCSV(file)) as unknown as ImportResponse;
       if (res && res.data) {
         setImportSummary(res.data);
         if (res.data.failedCount === 0) {

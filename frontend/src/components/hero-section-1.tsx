@@ -24,7 +24,7 @@ const transitionVariants = {
       },
     },
   },
-};
+} as const;
 
 export function HeroSection() {
   // const { theme } = useTheme();
