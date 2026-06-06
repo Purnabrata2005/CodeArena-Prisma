@@ -51,13 +51,14 @@ export default function NavbarDemo({ children }: NavbarProps) {
   ];
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { userRank, getUserSolvedProblemsRank } = useProblemStore();
+  const userRank = useProblemStore((state) => state.userRank);
+  const getUserSolvedProblemsRank = useProblemStore((state) => state.getUserSolvedProblemsRank);
 
   useEffect(() => {
-    if (user?.id) {
+    if (user?.id && !userRank) {
       getUserSolvedProblemsRank(user.id);
     }
-  }, [getUserSolvedProblemsRank, user?.id]);
+  }, [getUserSolvedProblemsRank, user?.id, userRank]);
 
   return (
     <div className="relative w-full">
@@ -69,26 +70,33 @@ export default function NavbarDemo({ children }: NavbarProps) {
 
           <div className="flex items-center gap-3">
             {user && (
-              <div
-                id="navbar-streak-widget"
-                className="flex items-center gap-1 px-2.5 py-0.5 rounded-full border bg-card/60 backdrop-blur-sm cursor-help select-none"
-                title={`Active Streak: ${userRank?.streak ?? 0} days`}
-              >
-                <StreakLoti
-                  className={cn(
-                    "size-7 transition-all duration-300",
-                    (userRank?.streak ?? 0) > 0
-                      ? ""
-                      : "grayscale opacity-50"
-                  )}
-                />
-                <span className={cn(
-                  "text-sm font-bold",
-                  (userRank?.streak ?? 0) > 0 ? "text-orange-500" : "text-muted-foreground opacity-50"
-                )}>
-                  {userRank?.streak ?? 0}
-                </span>
-              </div>
+              userRank ? (
+                <div
+                  id="navbar-streak-widget"
+                  className="flex items-center gap-1 px-2.5 py-0.5 rounded-full border bg-card/60 backdrop-blur-sm cursor-help select-none animate-fade-in"
+                  title={`Active Streak: ${userRank.streak ?? 0} days`}
+                >
+                  <StreakLoti
+                    className={cn(
+                      "size-7 transition-all duration-300",
+                      (userRank.streak ?? 0) > 0
+                        ? ""
+                        : "grayscale opacity-50"
+                    )}
+                  />
+                  <span className={cn(
+                    "text-sm font-bold",
+                    (userRank.streak ?? 0) > 0 ? "text-orange-500" : "text-muted-foreground opacity-50"
+                  )}>
+                    {userRank.streak ?? 0}
+                  </span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full border bg-card/20 backdrop-blur-sm select-none animate-pulse">
+                  <div className="size-7 rounded-full bg-muted" />
+                  <div className="w-3 h-4 rounded bg-muted" />
+                </div>
+              )
             )}
             <ThemeToggle />
             <UserButton />
@@ -121,25 +129,32 @@ export default function NavbarDemo({ children }: NavbarProps) {
             ))}
             <div className="flex w-full flex-col items-center gap-4">
               {user && (
-                <div
-                  className="flex items-center gap-1.5 px-4 py-1 rounded-full border bg-card/60 backdrop-blur-sm select-none"
-                  title={`Active Streak: ${userRank?.streak ?? 0} days`}
-                >
-                  <StreakLoti
-                    className={cn(
-                      "size-8 transition-all",
-                      (userRank?.streak ?? 0) > 0
-                        ? ""
-                        : "grayscale opacity-50"
-                    )}
-                  />
-                  <span className={cn(
-                    "text-sm font-bold",
-                    (userRank?.streak ?? 0) > 0 ? "text-orange-500" : "text-muted-foreground opacity-50"
-                  )}>
-                    {userRank?.streak ?? 0} days streak
-                  </span>
-                </div>
+                userRank ? (
+                  <div
+                    className="flex items-center gap-1.5 px-4 py-1 rounded-full border bg-card/60 backdrop-blur-sm select-none animate-fade-in"
+                    title={`Active Streak: ${userRank.streak ?? 0} days`}
+                  >
+                    <StreakLoti
+                      className={cn(
+                        "size-8 transition-all",
+                        (userRank.streak ?? 0) > 0
+                          ? ""
+                          : "grayscale opacity-50"
+                      )}
+                    />
+                    <span className={cn(
+                      "text-sm font-bold",
+                      (userRank.streak ?? 0) > 0 ? "text-orange-500" : "text-muted-foreground opacity-50"
+                    )}>
+                      {userRank.streak ?? 0} days streak
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1.5 px-4 py-1 rounded-full border bg-card/20 backdrop-blur-sm select-none animate-pulse">
+                    <div className="size-8 rounded-full bg-muted" />
+                    <div className="w-20 h-4 rounded bg-muted" />
+                  </div>
+                )
               )}
               <ThemeToggle />
               <UserButton className="self-center" />
