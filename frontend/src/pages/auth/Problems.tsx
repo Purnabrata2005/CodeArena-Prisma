@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useProblemStore } from "@/store/useProblemStore"
 import PageLoderLoti from "@/assets/pageLoderLoti"
 import ProblemsTable from "@/components/problemTable/problemsTable"
@@ -8,19 +8,20 @@ import { usePlaylistDialog } from "@/store/usePlaylistDialogStore"
 
 const Problems = () => {
 
-  const {
-    getAllProblems,
-    getSolvedProblemsByUser,
-    problems,
-    solvedProblemsByUser,
-    isProblemsLoading
-  } = useProblemStore()
+  const problems = useProblemStore((state) => state.problems);
+  const solvedProblemsByUser = useProblemStore((state) => state.solvedProblemsByUser);
+  const getAllProblems = useProblemStore((state) => state.getAllProblems);
+  const getSolvedProblemsByUser = useProblemStore((state) => state.getSolvedProblemsByUser);
 
   const { closeDialog, problemId } = usePlaylistDialog()
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   useEffect(() => {
-    getAllProblems()
-    getSolvedProblemsByUser()
+    const fetchData = async () => {
+      await Promise.all([getAllProblems(), getSolvedProblemsByUser()]);
+      setIsInitialLoading(false);
+    };
+    fetchData();
   }, [getAllProblems, getSolvedProblemsByUser])
 
   const problemsWithSolvedStatus = useMemo(() => {
@@ -31,7 +32,7 @@ const Problems = () => {
     }))
   }, [problems, solvedProblemsByUser])
 
-  if (isProblemsLoading) {
+  if (isInitialLoading && problems.length === 0) {
     return (
       <div className="flex min-h-[80vh] items-center justify-center">
         <PageLoderLoti />
