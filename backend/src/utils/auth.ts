@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { db } from "../db/db.js";
-import { sendEmail, emailVerificationMailgenContent } from "./mail.js";
+import { sendEmail, emailVerificationMailgenContent, forgotPasswordMailgenContent } from "./mail.js";
 
 const generateUniqueUsername = async (email: string, name?: string | null): Promise<string> => {
   let baseUsername = (name || email.split("@")[0])
@@ -60,6 +60,11 @@ export const auth = betterAuth({
   database: prismaAdapter(db, {
     provider: "postgresql",
   }),
+  account: {
+    accountLinking: {
+      enabled: true,
+    },
+  },
   trustedOrigins: process.env.CLIENT_URL ? [process.env.CLIENT_URL] : ["http://localhost:5173"],
   advanced: {
     defaultCookieAttributes: isProd
@@ -72,10 +77,22 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
+    resetPasswordTokenExpiresIn: 24 * 3600, // 1 day in seconds
+    sendResetPassword: async ({ user, url, token }) => {
+      await sendEmail({
+        email: user.email,
+        subject: "Reset your password - LeetLab",
+        mailgenContent: forgotPasswordMailgenContent(
+          user.name || user.email,
+          url
+        ),
+      });
+    },
   },
   emailVerification: {
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
+    expiresIn: 7 * 24 * 3600, // 7 days in seconds
     sendVerificationEmail: async ({ user, url }) => {
       await sendEmail({
         email: user.email,

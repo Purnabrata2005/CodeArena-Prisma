@@ -7,6 +7,10 @@ import path from "path";
 import fs from "fs";
 import { uploadToCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js";
 import { UserResponse } from "../utils/constants.js";
+import { auth } from "../utils/auth.js";
+import { fromNodeHeaders } from "better-auth/node";
+// @ts-ignore
+import geoLookup from "offline-geo-from-ip";
 
 export const updateUser = asyncHandler(async (req: Request, res: Response) => {
   const user = req.user;
@@ -59,5 +63,51 @@ export const updateUser = asyncHandler(async (req: Request, res: Response) => {
     new ApiResponse(200, "User updated successfully", {
       user: responseUser,
     }),
+  );
+});
+
+export const getActiveSessions = asyncHandler(async (req: Request, res: Response) => {
+  const sessions = await auth.api.listSessions({
+    headers: fromNodeHeaders(req.headers),
+  });
+
+  const decoratedSessions = sessions.map((s) => {
+    const ip = s.ipAddress;
+    let location = null;
+
+    if (ip) {
+      if (ip === "::1" || ip === "127.0.0.1" || ip.startsWith("fe80")) {
+        location = {
+          city: "Localhost",
+          country: "Localhost",
+          region: "Local",
+        };
+      } else {
+        try {
+          location = {
+            city: geoLookup.city(ip) || "Unknown City",
+            country: geoLookup.country(ip) || "Unknown Country",
+            region: geoLookup.state(ip) || "Unknown Region",
+          };
+        } catch (e) {
+          console.error("GeoIP lookup failed for IP:", ip, e);
+        }
+      }
+    }
+
+    return {
+      id: s.id,
+      ipAddress: s.ipAddress,
+      userAgent: s.userAgent,
+      createdAt: s.createdAt,
+      expiresAt: s.expiresAt,
+      location,
+    };
+  });
+
+  return res.status(200).json(
+    new ApiResponse(200, "Active sessions retrieved successfully", {
+      sessions: decoratedSessions,
+    })
   );
 });

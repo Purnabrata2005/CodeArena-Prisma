@@ -34,20 +34,10 @@ model User {
   password String?
 
   bio String?
-  authProvider String?
 
   role UserRole @default(USER)
 
   isEmailVerified Boolean @default(false)
-
-  refreshToken String?
-  accessToken  String?
-
-  forgotPasswordToken  String?
-  forgotPasswordExpiry DateTime?
-
-  emailVerificationToken  String?
-  emailVerificationExpiry DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

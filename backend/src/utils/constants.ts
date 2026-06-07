@@ -22,8 +22,6 @@ export class UserResponse {
   role!: string;
   isEmailVerified!: boolean;
   bio!: string | null;
-  refreshToken!: string | null;
-  accessToken!: string | null;
   _id!: string;
 
   constructor(user: any, extra: Record<string, any> = {}) {
@@ -37,8 +35,6 @@ export class UserResponse {
       "role",
       "isEmailVerified",
       "bio",
-      "refreshToken",
-      "accessToken",
     ] as const;
 
     fields.forEach((field) => {
