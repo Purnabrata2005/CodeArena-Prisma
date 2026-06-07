@@ -65,7 +65,10 @@ export const auth = betterAuth({
       enabled: true,
     },
   },
-  trustedOrigins: process.env.CLIENT_URL ? [process.env.CLIENT_URL] : ["http://localhost:5173"],
+  trustedOrigins: [
+    "http://localhost:5173",
+    process.env.CLIENT_URL
+  ].filter(Boolean) as string[],
   advanced: {
     defaultCookieAttributes: isProd
       ? {
