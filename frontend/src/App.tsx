@@ -4,6 +4,8 @@ import AuthLayout from "./components/shared/AuthLayout";
 import Login from "./pages/root/Login";
 import Signup from "./pages/root/Signup";
 import VerifyEmailPending from "./pages/root/VerifyEmailPending";
+import ForgotPassword from "./pages/root/ForgotPassword";
+import ResetPassword from "./pages/root/ResetPassword";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Toaster } from "sonner";
 import { useAuthStore } from "./store/useAuthStore";
@@ -46,6 +48,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/verify-email" element={<VerifyEmailPending />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
         </Route>
         <Route element={<RootLayout />}>
           <Route path="/" element={<Home />} />

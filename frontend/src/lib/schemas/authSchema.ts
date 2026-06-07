@@ -25,6 +25,29 @@ export const loginSchema = z.object({
 
 export type LoginData = z.infer<typeof loginSchema>;
 
+export const forgotPasswordSchema = z.object({
+  email: z.string({ message: "Email is required" }).email().min(5).max(50),
+});
+
+export type ForgotPasswordData = z.infer<typeof forgotPasswordSchema>;
+
+export const resetPasswordSchema = z.object({
+  password: z
+    .string({ message: "Password is required" })
+    .min(8, { message: "Password must be at least 8 characters" })
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+    .regex(/[0-9]/, "Password must contain at least one number")
+    .regex(/[@#$%^&*]/, "Password must contain at least one special character"),
+  confirmPassword: z.string({ message: "Confirm password is required" }),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
+});
+
+export type ResetPasswordData = z.infer<typeof resetPasswordSchema>;
+
+
 // ─── Profile Schema ──────────────────────────────────────────────────────────
 
 const imageMimeTypes = ["image/jpeg", "image/png", "image/webp", "image/jpg"];
