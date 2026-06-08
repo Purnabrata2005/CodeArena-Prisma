@@ -44,7 +44,7 @@ const sendEmail = async (options: SendEmailOptions): Promise<void> => {
   const mailGenerator = new Mailgen({
     theme: "default",
     product: {
-      name: "Leet Lab",
+      name: "CodeArena",
       link: "https://taskmanager.app",
     },
   });
@@ -84,7 +84,7 @@ const emailVerificationMailgenContent = (username: string, verificationUrl: stri
   return {
     body: {
       name: username,
-      intro: "Welcome to Leet Lab! We're very excited to have you on board.",
+      intro: "Welcome to CodeArena! We're very excited to have you on board.",
       action: {
         instructions:
           "To verify your email please click on the following button:",

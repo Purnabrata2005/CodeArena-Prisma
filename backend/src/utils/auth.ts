@@ -7,24 +7,24 @@ const generateUniqueUsername = async (email: string, name?: string | null): Prom
   let baseUsername = (name || email.split("@")[0])
     .toLowerCase()
     .replace(/[^a-z0-9_]/g, "");
-  
+
   if (baseUsername.length < 3) {
     baseUsername = "user_" + baseUsername;
   }
-  
+
   if (baseUsername.length > 15) {
     baseUsername = baseUsername.slice(0, 15);
   }
-  
+
   let username = baseUsername;
   let isUnique = false;
   let counter = 0;
-  
+
   while (!isUnique) {
     const existingUser = await db.user.findUnique({
       where: { username },
     });
-    
+
     if (!existingUser) {
       isUnique = true;
     } else {
@@ -32,7 +32,7 @@ const generateUniqueUsername = async (email: string, name?: string | null): Prom
       username = `${baseUsername}${counter}`;
     }
   }
-  
+
   return username;
 };
 
@@ -65,16 +65,13 @@ export const auth = betterAuth({
       enabled: true,
     },
   },
-  trustedOrigins: [
-    "http://localhost:5173",
-    process.env.CLIENT_URL
-  ].filter(Boolean) as string[],
+  trustedOrigins: process.env.CLIENT_URL ? [process.env.CLIENT_URL] : ["http://localhost:5173"],
   advanced: {
     defaultCookieAttributes: isProd
       ? {
-          sameSite: "none",
-          secure: true,
-        }
+        sameSite: "none",
+        secure: true,
+      }
       : undefined,
   },
   emailAndPassword: {
