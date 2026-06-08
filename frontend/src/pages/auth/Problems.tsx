@@ -4,7 +4,7 @@ import PageLoderLoti from "@/assets/pageLoderLoti"
 import ProblemsTable from "@/components/problemTable/problemsTable"
 import AddToPlaylistModal from "@/components/playList/AddToPlaylistPage"
 import { usePlaylistDialog } from "@/store/usePlaylistDialogStore"
-
+import SEO from "@/components/shared/SEO"
 
 const Problems = () => {
 
@@ -43,6 +43,11 @@ const Problems = () => {
 
   return (
     <div className="relative mt-4 flex min-h-screen flex-col items-center px-4 overflow-hidden">
+      <SEO 
+        title="Practice Coding Problems" 
+        description="Browse and solve algorithms, data structures, and competitive programming problems on CodeArena." 
+        keywords="leetcode, algorithm challenges, data structures, interview prep, programming contests"
+      />
       {/* Animated gradient background */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         {/* Primary gradient blob - top left */}

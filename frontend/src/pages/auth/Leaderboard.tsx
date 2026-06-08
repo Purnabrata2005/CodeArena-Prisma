@@ -16,6 +16,7 @@ import {
 import { Avatar } from "@heroui/react";
 import { Input } from "@/components/ui/input";
 import type { LeaderboardEntry } from "@/lib/schemas/problemSchema";
+import SEO from "@/components/shared/SEO";
 
 const getInitials = (name: string) =>
   name
@@ -306,6 +307,11 @@ export default function Leaderboard() {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
+      <SEO 
+        title="Leaderboard" 
+        description="See the top coding competitors on CodeArena. Track rankings, solved problems count, and overall progress."
+        keywords="codearena rankings, top coders, programming leaderboard, competitive coding standings"
+      />
       {/* Ambient blobs */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -left-40 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />

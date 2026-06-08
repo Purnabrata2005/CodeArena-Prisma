@@ -28,10 +28,16 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import SEO from "@/components/shared/SEO";
 
 export default function AboutUsPage() {
   return (
     <div className="from-background to-muted/20 min-h-screen w-full overflow-x-hidden bg-gradient-to-b">
+      <SEO 
+        title="About Us" 
+        description="Learn more about CodeArena's mission to empower developers. Discover our platform features, values, and stats."
+        keywords="about codearena, coding platform, developer mission, programing features"
+      />
       {/* Hero Section */}
       <section className="relative overflow-hidden py-20 md:py-32">
         <div
