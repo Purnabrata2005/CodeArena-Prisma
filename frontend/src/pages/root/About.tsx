@@ -28,10 +28,16 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import SEO from "@/components/shared/SEO";
 
 export default function AboutUsPage() {
   return (
     <div className="from-background to-muted/20 min-h-screen w-full overflow-x-hidden bg-gradient-to-b">
+      <SEO 
+        title="About Us" 
+        description="Learn more about CoderArena, our mission to make coding excellence accessible, and the platform features designed to help you prepare for technical interviews."
+        keywords={["about CoderArena", "our mission", "coding platform", "developers community", "quality programming", "interview preparation"]}
+      />
       {/* Hero Section */}
       <section className="relative overflow-hidden py-20 md:py-32">
         <div
@@ -48,7 +54,7 @@ export default function AboutUsPage() {
           <div className="mx-auto flex max-w-4xl flex-col items-center space-y-6 text-center md:space-y-8">
             <Badge variant="outline" className="px-3 py-2 text-xs font-medium sm:px-4 sm:text-sm">
               <Code2 className="mr-2 h-4 w-4" />
-              About Leet Master
+              About CoderArena
             </Badge>
             <h1 className="from-primary to-primary/60 bg-gradient-to-r bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:text-4xl md:text-6xl">
               Empowering Developers to Excel

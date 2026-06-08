@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Allow: /problems
+Allow: /about
+Allow: /leaderboard
+Disallow: /login
+Disallow: /signup
+Disallow: /verify-email
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /add-problem
+Disallow: /update-problem
+Disallow: /profile/
+
+Sitemap: https://coderarena.tech/sitemap.xml

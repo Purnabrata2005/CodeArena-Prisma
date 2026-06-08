@@ -55,7 +55,7 @@ const cardThemeMap: Record<
   },
 };
 
-export default function CodeArenaFeatures() {
+export default function CoderArenaFeatures() {
   return (
     <section className="relative w-full py-24 px-6 md:px-12 bg-gradient-to-b from-transparent via-slate-50/30 to-background dark:via-zinc-950/20 overflow-hidden">
       {/* Decorative ambient background glows */}
