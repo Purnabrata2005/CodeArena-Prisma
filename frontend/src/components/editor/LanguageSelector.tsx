@@ -72,67 +72,70 @@ export default function LanguageSelector() {
           <DropdownMenuSeparator className="border-muted" />
 
           <div className="max-h-[280px] overflow-x-hidden overflow-y-auto">
-            {Object.values(LANGUAGE_CONFIG).map((lang, index) => (
-              <DropdownMenuItem
-                key={lang.id}
-                className={`group hover:bg-muted focus:bg-muted relative mx-2 flex items-center gap-3 rounded-lg px-3 py-2.5 transition-all duration-200 ${
-                  language === lang.id
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground"
-                }`}
-                onClick={() =>
-                  handleLanguageSelect(lang.id.toUpperCase() as LanguageKey)
-                }
-              >
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="flex w-full items-center gap-3"
+            {Object.values(LANGUAGE_CONFIG).map((lang, index) => {
+              const isSelected = language === lang.id.toUpperCase();
+              return (
+                <DropdownMenuItem
+                  key={lang.id}
+                  className={`group hover:bg-muted focus:bg-muted relative mx-2 flex items-center gap-3 rounded-lg px-3 py-2.5 transition-all duration-200 ${
+                    isSelected
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground"
+                  }`}
+                  onClick={() =>
+                    handleLanguageSelect(lang.id.toUpperCase() as LanguageKey)
+                  }
                 >
-                  {/* hover background effect */}
-                  <div className="from-primary/5 to-secondary/5 absolute inset-0 rounded-lg bg-gradient-to-r opacity-0 transition-opacity group-hover:opacity-100" />
-
-                  {/* logo container */}
-                  <div
-                    className={`relative size-8 rounded-lg p-1.5 transition-transform group-hover:scale-110 ${
-                      language === lang.id ? "bg-primary/10" : "bg-muted"
-                    }`}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="flex w-full items-center gap-3"
                   >
-                    <div className="from-primary/10 to-secondary/10 absolute inset-0 rounded-lg bg-gradient-to-br opacity-0 transition-opacity group-hover:opacity-100" />
-                    <img
-                      width={24}
-                      height={24}
-                      src={lang.logoPath || "/placeholder.svg"}
-                      alt={`${lang.label} logo`}
-                      className="relative z-10 h-full w-full object-contain"
-                    />
-                  </div>
+                    {/* hover background effect */}
+                    <div className="from-primary/5 to-secondary/5 absolute inset-0 rounded-lg bg-gradient-to-r opacity-0 transition-opacity group-hover:opacity-100" />
 
-                  {/* language label */}
-                  <span className="group-hover:text-foreground flex-1 text-left transition-colors">
-                    {lang.label}
-                  </span>
+                    {/* logo container */}
+                    <div
+                      className={`relative size-8 rounded-lg p-1.5 transition-transform group-hover:scale-110 ${
+                        isSelected ? "bg-primary/10" : "bg-muted"
+                      }`}
+                    >
+                      <div className="from-primary/10 to-secondary/10 absolute inset-0 rounded-lg bg-gradient-to-br opacity-0 transition-opacity group-hover:opacity-100" />
+                      <img
+                        width={24}
+                        height={24}
+                        src={lang.logoPath || "/placeholder.svg"}
+                        alt={`${lang.label} logo`}
+                        className="relative z-10 h-full w-full object-contain"
+                      />
+                    </div>
 
-                  {/* selected sparkle */}
-                  {language === lang.id && (
-                    <Sparkles className="text-primary h-4 w-4 animate-pulse" />
-                  )}
+                    {/* language label */}
+                    <span className="group-hover:text-foreground flex-1 text-left transition-colors">
+                      {lang.label}
+                    </span>
 
-                  {/* active border */}
-                  {language === lang.id && (
-                    <motion.div
-                      className="border-primary/30 absolute inset-0 rounded-lg border-2"
-                      transition={{
-                        type: "spring",
-                        bounce: 0.2,
-                        duration: 0.6,
-                      }}
-                    />
-                  )}
-                </motion.div>
-              </DropdownMenuItem>
-            ))}
+                    {/* selected sparkle */}
+                    {isSelected && (
+                      <Sparkles className="text-primary h-4 w-4 animate-pulse" />
+                    )}
+
+                    {/* active border */}
+                    {isSelected && (
+                      <motion.div
+                        className="border-primary/30 absolute inset-0 rounded-lg border-2"
+                        transition={{
+                          type: "spring",
+                          bounce: 0.2,
+                          duration: 0.6,
+                        }}
+                      />
+                    )}
+                  </motion.div>
+                </DropdownMenuItem>
+              );
+            })}
           </div>
         </motion.div>
       </DropdownMenuContent>
