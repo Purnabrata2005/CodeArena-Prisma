@@ -6,6 +6,7 @@ import AddToPlaylistModal from "@/components/playList/AddToPlaylistPage"
 import { usePlaylistDialog } from "@/store/usePlaylistDialogStore"
 import SEO from "@/components/shared/SEO"
 
+
 const Problems = () => {
 
   const problems = useProblemStore((state) => state.problems);
@@ -44,9 +45,9 @@ const Problems = () => {
   return (
     <div className="relative mt-4 flex min-h-screen flex-col items-center px-4 overflow-hidden">
       <SEO 
-        title="Practice Coding Problems" 
-        description="Browse and solve algorithms, data structures, and competitive programming problems on CodeArena." 
-        keywords="leetcode, algorithm challenges, data structures, interview prep, programming contests"
+        title="Problems" 
+        description="Browse and solve coding challenges on CoderArena. Practice algorithms, data structures, and prepare for technical interviews." 
+        keywords={["coding problems", "algorithms challenges", "data structures practice", "leetcode solutions", "CoderArena problems", "practice coding"]}
       />
       {/* Animated gradient background */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
@@ -64,7 +65,7 @@ const Problems = () => {
       </div>
 
       <h1 className="z-10 text-center text-4xl font-extrabold">
-        Welcome to <span className="text-primary">CodeArena</span>
+        Welcome to <span className="text-primary">CoderArena</span>
       </h1>
 
       <p className="z-10 mt-4 text-center text-lg font-semibold text-gray-500 dark:text-gray-400">

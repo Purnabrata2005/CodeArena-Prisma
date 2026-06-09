@@ -25,7 +25,7 @@ import About from "./pages/root/About";
 import StreakCelebration from "./components/profile/StreakCelebration";
 
 /**
- * CodeArena Main Application Shell
+ * CoderArena Main Application Shell
  * Standard routing for Auth and Dashboard flows
  */
 function App() {

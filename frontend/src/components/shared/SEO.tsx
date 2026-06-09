@@ -1,38 +1,52 @@
+import { Helmet } from "react-helmet-async";
+
 interface SEOProps {
-  title: string;
-  description: string;
-  keywords?: string;
+  title?: string;
+  description?: string;
+  keywords?: string[];
   image?: string;
   url?: string;
 }
 
-export default function SEO({ title, description, keywords, image, url }: SEOProps) {
-  const defaultTitle = "CodeArena - Competitive Programming & Coding Challenges";
-  const defaultDesc = "Solve coding problems, compete in real-time leaderboards, track your programming streaks, and master algorithms with CodeArena.";
-  const defaultImage = "/dark-demo.webp";
-  
-  // Safe fallbacks for client-side environments
-  const currentUrl = url || (typeof window !== "undefined" ? window.location.href : "https://coderarena.tech");
-  const currentTitle = title ? `${title} | CodeArena` : defaultTitle;
-  const currentDesc = description || defaultDesc;
-  const currentImage = image || defaultImage;
+const SEO = ({
+  title = "CoderArena",
+  description = "CoderArena is a premium platform for competitive programming, curated challenges, and real-time coding battles.",
+  keywords = ["competitive programming", "coding battle", "leetcode", "codeforces", "learn to code", "interview prep"],
+  image = "/icon.png",
+  url = typeof window !== "undefined" ? window.location.href : "https://coderarena.tech",
+}: SEOProps) => {
+  // Social media crawlers need absolute URLs for og:image
+  const absoluteOgImage = image.startsWith("http")
+    ? image
+    : `https://coderarena.tech${image.startsWith("/") ? "" : "/"}${image}`;
 
   return (
-    <>
-      <title>{currentTitle}</title>
-      <meta name="description" content={currentDesc} />
-      {keywords && <meta name="keywords" content={keywords} />}
+    <Helmet>
+      {/* Title Tag */}
+      <title>{title}</title>
 
-      {/* Open Graph / Facebook */}
-      <meta property="og:title" content={currentTitle} />
-      <meta property="og:description" content={currentDesc} />
-      <meta property="og:image" content={currentImage} />
-      <meta property="og:url" content={currentUrl} />
+      {/* Basic SEO */}
+      <meta name="description" content={description} />
+      {keywords && keywords.length > 0 && (
+        <meta name="keywords" content={keywords.join(", ")} />
+      )}
+      <link rel="canonical" href={url} />
+
+      {/* Open Graph (Facebook/LinkedIn) */}
+      <meta property="og:site_name" content="CoderArena" />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content={url} />
+      <meta property="og:image" content={absoluteOgImage} />
 
       {/* Twitter */}
-      <meta name="twitter:title" content={currentTitle} />
-      <meta name="twitter:description" content={currentDesc} />
-      <meta name="twitter:image" content={currentImage} />
-    </>
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={absoluteOgImage} />
+    </Helmet>
   );
-}
+};
+
+export default SEO;

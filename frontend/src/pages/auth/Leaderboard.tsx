@@ -309,8 +309,8 @@ export default function Leaderboard() {
     <div className="relative min-h-screen overflow-hidden">
       <SEO 
         title="Leaderboard" 
-        description="See the top coding competitors on CodeArena. Track rankings, solved problems count, and overall progress."
-        keywords="codearena rankings, top coders, programming leaderboard, competitive coding standings"
+        description="View the global CoderArena rankings and standings. Compete with programmers worldwide, solve algorithms, and climb the leaderboard." 
+        keywords={["CoderArena leaderboard", "global rankings", "coding standings", "top programmers", "competitive programming ranks"]}
       />
       {/* Ambient blobs */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
@@ -330,7 +330,7 @@ export default function Leaderboard() {
           </div>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-foreground mb-3">
             <span className="bg-gradient-to-r from-foreground via-foreground to-muted-foreground bg-clip-text text-transparent">
-              CodeArena Leaderboard
+              CoderArena Leaderboard
             </span>
           </h1>
           <p className="text-muted-foreground max-w-xl mx-auto text-sm md:text-base">

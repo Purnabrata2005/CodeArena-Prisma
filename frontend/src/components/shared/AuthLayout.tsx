@@ -35,10 +35,10 @@ const AuthLayout = () => {
             
           </h2>
           <p className="text-muted-foreground text-lg max-w-md">
-            Continue your journey mastering Data Structures & Algorithms on LeetLab.
+            Continue your journey mastering Data Structures & Algorithms on CoderArena.
           </p>
         </div>
-        <p className="text-xs text-muted-foreground">© 2026 LeetLab. All rights reserved.</p>
+        <p className="text-xs text-muted-foreground">© 2026 CoderArena. All rights reserved.</p>
       </motion.div>
 
       {/* Right Panel - Dynamic Content */}

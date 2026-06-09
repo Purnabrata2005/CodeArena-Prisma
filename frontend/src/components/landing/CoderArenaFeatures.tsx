@@ -55,7 +55,7 @@ const cardThemeMap: Record<
   },
 };
 
-export default function CodeArenaFeatures() {
+export default function CoderArenaFeatures() {
   return (
     <section className="relative w-full py-24 px-6 md:px-12 bg-gradient-to-b from-transparent via-slate-50/30 to-background dark:via-zinc-950/20 overflow-hidden">
       {/* Decorative ambient background glows */}
@@ -66,7 +66,7 @@ export default function CodeArenaFeatures() {
         <div className="mb-16 text-center">
           <MorphingText texts={texts} />
           <p className="max-w-2xl mx-auto text-muted-foreground mt-4 text-lg md:text-xl font-normal leading-relaxed">
-            Master coding challenges and ace your technical interviews with Leet Master.
+            Master coding challenges and ace your technical interviews with CoderArena.
           </p>
         </div>
 
