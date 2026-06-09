@@ -4,8 +4,6 @@
 @import "@fontsource-variable/geist";
 @import "@heroui/styles"; 
 
-@import "tailwindcss";
-
 @custom-variant dark (&:is(.dark *));
 
 /* Custom animation delays */
