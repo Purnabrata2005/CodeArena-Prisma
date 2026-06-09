@@ -20,7 +20,7 @@ export const SEO: React.FC<SEOProps> = ({
   keywords = ["competitive programming", "coding battle", "leetcode", "codeforces", "learn to code", "interview prep"],
   ogTitle,
   ogDescription,
-  ogImage = "/logo.svg",
+  ogImage = "/icon.png",
   ogType = "website",
   ogUrl = typeof window !== "undefined" ? window.location.href : "",
   twitterCard = "summary_large_image",
