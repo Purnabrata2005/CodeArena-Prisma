@@ -4,7 +4,6 @@ import CoderArenaFeatures from '@/components/landing/CoderArenaFeatures';
 import SEO from '@/components/shared/SEO';
 
 const Home = () => {
-  
   return (
     <>
       <SEO 
