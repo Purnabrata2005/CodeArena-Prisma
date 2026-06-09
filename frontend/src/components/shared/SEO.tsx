@@ -45,17 +45,6 @@ const SEO = ({
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={absoluteOgImage} />
-
-      {/* WebSite Structured Data for Google Search Site Name */}
-      <script type="application/ld+json">
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebSite",
-          "name": "CoderArena",
-          "alternateName": ["coderarena.tech"],
-          "url": "https://coderarena.tech"
-        })}
-      </script>
     </Helmet>
   );
 };

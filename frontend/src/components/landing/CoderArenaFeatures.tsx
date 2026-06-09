@@ -66,7 +66,7 @@ export default function CoderArenaFeatures() {
         <div className="mb-16 text-center">
           <MorphingText texts={texts} />
           <p className="max-w-2xl mx-auto text-muted-foreground mt-4 text-lg md:text-xl font-normal leading-relaxed">
-            Master coding challenges and ace your technical interviews with Leet Master.
+            Master coding challenges and ace your technical interviews with CoderArena.
           </p>
         </div>
 
