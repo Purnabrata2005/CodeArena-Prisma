@@ -36,7 +36,7 @@ export default function AboutUsPage() {
       <SEO 
         title="About Us" 
         description="Learn more about CoderArena, our mission to make coding excellence accessible, and the platform features designed to help you prepare for technical interviews."
-        keywords={["about CoderArena", "our mission", "coding platform", "developers community", "quality programming", "interview preparation"]}
+        keywords={["about CoderArena", "our mission", "coding platform", "developers community", "quality programming", "interview preparation", "coder arena", "coders arena", "codr arena", "code arena"]}
       />
       {/* Hero Section */}
       <section className="relative overflow-hidden py-20 md:py-32">

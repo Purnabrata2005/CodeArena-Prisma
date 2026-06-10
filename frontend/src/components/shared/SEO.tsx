@@ -11,7 +11,19 @@ interface SEOProps {
 const SEO = ({
   title = "CoderArena",
   description = "CoderArena is a premium platform for competitive programming, curated challenges, and real-time coding battles.",
-  keywords = ["competitive programming", "coding battle", "leetcode", "codeforces", "learn to code", "interview prep"],
+  keywords = [
+    "competitive programming",
+    "coding battle",
+    "leetcode",
+    "codeforces",
+    "learn to code",
+    "interview prep",
+    "coder arena",
+    "coders arena",
+    "codr arena",
+    "code arena",
+    "coderarena"
+  ],
   image = "/icon.png",
   url = typeof window !== "undefined" ? window.location.href : "https://coderarena.tech",
 }: SEOProps) => {

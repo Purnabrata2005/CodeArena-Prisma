@@ -7,7 +7,7 @@ const Home = () => {
   return (
     <>
       <SEO 
-        keywords={["competitive programming", "coding battles", "multiplayer coding", "learn algorithms", "data structures", "interview prep", "CoderArena"]}
+        keywords={["competitive programming", "coding battles", "multiplayer coding", "learn algorithms", "data structures", "interview prep", "CoderArena", "coder arena", "coders arena", "codr arena", "code arena"]}
       />
       <HeroSection/>
       <CoderArenaFeatures/>

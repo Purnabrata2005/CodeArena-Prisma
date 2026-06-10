@@ -47,7 +47,7 @@ const Problems = () => {
       <SEO 
         title="Problems" 
         description="Browse and solve coding challenges on CoderArena. Practice algorithms, data structures, and prepare for technical interviews." 
-        keywords={["coding problems", "algorithms challenges", "data structures practice", "leetcode solutions", "CoderArena problems", "practice coding"]}
+        keywords={["coding problems", "algorithms challenges", "data structures practice", "leetcode solutions", "CoderArena problems", "practice coding", "coder arena", "coders arena", "codr arena", "code arena"]}
       />
       {/* Animated gradient background */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">

@@ -310,7 +310,7 @@ export default function Leaderboard() {
       <SEO 
         title="Leaderboard" 
         description="View the global CoderArena rankings and standings. Compete with programmers worldwide, solve algorithms, and climb the leaderboard." 
-        keywords={["CoderArena leaderboard", "global rankings", "coding standings", "top programmers", "competitive programming ranks"]}
+        keywords={["CoderArena leaderboard", "global rankings", "coding standings", "top programmers", "competitive programming ranks", "coder arena", "coders arena", "codr arena", "code arena"]}
       />
       {/* Ambient blobs */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
