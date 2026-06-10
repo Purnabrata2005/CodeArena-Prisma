@@ -32,7 +32,7 @@ export default function PlaylistPage() {
     currentPlaylist: playlistData,
     isLoading,
     removeProblemFromPlaylist,
-    isRemovingPoblem,
+    isRemovingProblem,
   } = usePlaylistStore();
   useEffect(() => {
     getPlaylistDetailsByID(playlistId || "");
@@ -173,7 +173,7 @@ export default function PlaylistPage() {
 
                       <TableCell>
                         <LoadingButton
-                          isLoading={isRemovingPoblem}
+                          isLoading={isRemovingProblem}
                           variant="outline"
                           size="sm"
                           onClick={() =>

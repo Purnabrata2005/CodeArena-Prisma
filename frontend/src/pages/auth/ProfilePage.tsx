@@ -1,5 +1,6 @@
 import HeatmapCalendar from "@/components/profile/CalendarHeatmap";
 import ProfileHeader from "@/components/profile/profileHeader";
+import ProfilePlaylists from "@/components/profile/ProfilePlaylists";
 // import ProfileTabSubmissions from "@/components/profile/ProfileTabSubmissions";
 import { useAuthStore, useProblemStore, useSubmissionStore } from "@/store/index";
 import { useEffect } from "react";
@@ -34,6 +35,8 @@ export default function ProfilePage() {
         userRank={userRank}
       />
       {/* <ProfileTabSubmissions /> */}
+
+      <ProfilePlaylists />
     </div>
   );
 }
