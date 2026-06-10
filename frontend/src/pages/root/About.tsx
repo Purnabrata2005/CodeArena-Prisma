@@ -125,11 +125,18 @@ export default function AboutUsPage() {
             <div className="relative mx-auto w-full max-w-md lg:max-w-none">
               <div className="from-primary/20 to-secondary/20 absolute inset-0 rounded-2xl bg-gradient-to-r blur-2xl sm:blur-3xl"></div>
               <img
-                src="/images/problem.webp"
-                alt="Mission illustration"
+                src="/light-problem.webp"
+                alt="CoderArena Problem Workspace - Light Theme"
                 width={500}
                 height={400}
-                className="relative h-auto w-full rounded-2xl object-cover shadow-2xl"
+                className="relative h-auto w-full rounded-2xl object-cover shadow-2xl block dark:hidden"
+              />
+              <img
+                src="/dark-problem.webp"
+                alt="CoderArena Problem Workspace - Dark Theme"
+                width={500}
+                height={400}
+                className="relative h-auto w-full rounded-2xl object-cover shadow-2xl hidden dark:block"
               />
             </div>
           </div>
@@ -372,11 +379,18 @@ export default function AboutUsPage() {
             <div className="relative mx-auto w-full max-w-md lg:max-w-none">
               <div className="from-primary/20 to-secondary/20 absolute inset-0 rounded-2xl bg-gradient-to-r blur-2xl sm:blur-3xl"></div>
               <img
-                src="/images/editor.webp"
-                alt="Auto-save feature illustration"
+                src="/light-editor.webp"
+                alt="CoderArena Code Editor - Light Theme"
                 width={500}
                 height={400}
-                className="relative h-auto w-full rounded-2xl object-cover shadow-2xl"
+                className="relative h-auto w-full rounded-2xl object-cover shadow-2xl block dark:hidden"
+              />
+              <img
+                src="/dark-editor.webp"
+                alt="CoderArena Code Editor - Dark Theme"
+                width={500}
+                height={400}
+                className="relative h-auto w-full rounded-2xl object-cover shadow-2xl hidden dark:block"
               />
             </div>
           </div>
@@ -385,11 +399,18 @@ export default function AboutUsPage() {
             <div className="relative order-2 mx-auto w-full max-w-md overflow-hidden rounded-2xl lg:order-1 lg:max-w-none">
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 blur-3xl"></div>
               <img
-                src="/images/profile.webp"
-                alt="Analytics dashboard illustration"
+                src="/light-profile.webp"
+                alt="CoderArena User Profile - Light Theme"
                 width={500}
                 height={400}
-                className="relative h-auto w-full rounded-2xl object-cover shadow-2xl"
+                className="relative h-auto w-full rounded-2xl object-cover shadow-2xl block dark:hidden"
+              />
+              <img
+                src="/dark-profile.webp"
+                alt="CoderArena User Profile - Dark Theme"
+                width={500}
+                height={400}
+                className="relative h-auto w-full rounded-2xl object-cover shadow-2xl hidden dark:block"
               />
             </div>
             <div className="order-1 space-y-6 text-center lg:order-2 lg:text-left">
