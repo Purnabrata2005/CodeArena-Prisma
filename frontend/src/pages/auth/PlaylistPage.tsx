@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/table";
 
 import { Badge } from "@/components/ui/badge";
-import { Trash2, Calendar, Loader2 } from "lucide-react";
+import { Trash2, Calendar } from "lucide-react";
 import { usePlaylistStore } from "@/store/usePlaylistStore";
 import { useProblemStore } from "@/store/useProblemStore";
 import { useParams, Link } from "react-router-dom";
@@ -24,6 +24,7 @@ import { formatDate } from "date-fns";
 import { cn } from "@/lib/utils";
 import LoadingButton from "@/components/landing/LoadingButton";
 import { Checkbox } from "@/components/ui/checkbox";
+import PageLoderLoti from "@/assets/pageLoderLoti";
 
 const truncateText = (text: string, maxLength: number) => {
   return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
@@ -48,8 +49,8 @@ export default function PlaylistPage() {
   if (!playlistId) return null;
   if (isLoading || !playlistData) {
     return (
-      <div className="mt-10 w-full text-center">
-        <Loader2 className="size-6 animate-spin" />
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <PageLoderLoti />
       </div>
     );
   }

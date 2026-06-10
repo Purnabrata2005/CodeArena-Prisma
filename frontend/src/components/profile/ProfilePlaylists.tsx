@@ -17,8 +17,28 @@ import CreatePlaylistDialog from "@/components/playList/CreatePlaylistDialogPage
 import { AnimatedGroup } from "@/components/ui/animated-group";
 import { formatDate } from "date-fns";
 import { capitalizeWord } from "@/lib/utils";
-import PageLoderLoti from "@/assets/pageLoderLoti";
 
+// Skeleton Loader for Playlists
+const PlaylistSkeleton = () => (
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {[1, 2, 3].map((i) => (
+      <Card key={i} className="animate-pulse border border-muted-foreground/10 bg-muted/20">
+        <CardHeader className="space-y-2">
+          <div className="h-6 w-2/3 bg-muted rounded" />
+          <div className="h-4 w-1/3 bg-muted/80 rounded" />
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="h-4 w-full bg-muted rounded" />
+          <div className="h-4 w-5/6 bg-muted rounded" />
+          <div className="flex justify-between items-center pt-4 border-t border-muted-foreground/10">
+            <div className="h-5 w-16 bg-muted rounded" />
+            <div className="h-8 w-16 bg-muted rounded" />
+          </div>
+        </CardContent>
+      </Card>
+    ))}
+  </div>
+);
 // Empty State for Playlists
 const PlaylistEmptyState = () => (
   <Card className="border border-dashed border-muted-foreground/30 bg-muted/10 p-8 text-center flex flex-col items-center justify-center space-y-4 max-w-md mx-auto rounded-3xl shadow-sm">
@@ -86,9 +106,7 @@ export default function ProfilePlaylists() {
       </div>
 
       {isLoading && validPlaylists.length === 0 ? (
-        <div className="flex justify-center items-center py-12 w-full">
-          <PageLoderLoti />
-        </div>
+        <PlaylistSkeleton />
       ) : validPlaylists.length === 0 ? (
         <PlaylistEmptyState />
       ) : (
