@@ -18,13 +18,17 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Trash2, Calendar, Loader2 } from "lucide-react";
 import { usePlaylistStore } from "@/store/usePlaylistStore";
-import { useParams } from "react-router-dom";
+import { useProblemStore } from "@/store/useProblemStore";
+import { useParams, Link } from "react-router-dom";
 import { formatDate } from "date-fns";
-import { getDifficultyColor } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import LoadingButton from "@/components/landing/LoadingButton";
+import { Checkbox } from "@/components/ui/checkbox";
+
 const truncateText = (text: string, maxLength: number) => {
   return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
 };
+
 export default function PlaylistPage() {
   const { id: playlistId } = useParams();
   const {
@@ -34,9 +38,13 @@ export default function PlaylistPage() {
     removeProblemFromPlaylist,
     isRemovingProblem,
   } = usePlaylistStore();
+  const { solvedProblemsByUser, getSolvedProblemsByUser } = useProblemStore();
+
   useEffect(() => {
     getPlaylistDetailsByID(playlistId || "");
-  }, [playlistId, getPlaylistDetailsByID]);
+    getSolvedProblemsByUser();
+  }, [playlistId, getPlaylistDetailsByID, getSolvedProblemsByUser]);
+
   if (!playlistId) return null;
   if (isLoading || !playlistData) {
     return (
@@ -97,95 +105,117 @@ export default function PlaylistPage() {
             </div>
           ) : (
             <div className="rounded-md border">
-              <Table>
+              <Table className="w-full">
                 <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[300px]">Problem</TableHead>
-                    <TableHead>Difficulty</TableHead>
-                    <TableHead>Tags</TableHead>
-                    <TableHead className="w-[400px]">Description</TableHead>
-                    <TableHead>Test Cases</TableHead>
-                    <TableHead>Added</TableHead>
-                    <TableHead className="w-[100px]">Actions</TableHead>
+                  <TableRow className="bg-muted/50 hover:bg-transparent">
+                    <TableHead className="w-[80px] text-center">Solved</TableHead>
+                    <TableHead className="w-[250px] text-left">Problem</TableHead>
+                    <TableHead className="w-[120px] text-center">Difficulty</TableHead>
+                    <TableHead className="w-[200px] text-left">Tags</TableHead>
+                    <TableHead className="w-[350px] text-left">Description</TableHead>
+                    <TableHead className="w-[120px] text-center">Test Cases</TableHead>
+                    <TableHead className="w-[120px] text-center">Added</TableHead>
+                    <TableHead className="w-[100px] text-center">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {playlistData.problems.map((problemItem) => (
-                    <TableRow
-                      key={problemItem.id}
-                      className="hover:bg-muted/50"
-                    >
-                      <TableCell>
-                        <div className="line-clamp-1 font-medium">
-                          {problemItem.problem.title}
-                        </div>
-                      </TableCell>
+                  {playlistData.problems.map((problemItem) => {
+                    const solvedIds = new Set((solvedProblemsByUser || []).map((p) => p.id));
+                    const isSolved = solvedIds.has(problemItem.problem.id);
 
-                      <TableCell>
-                        <Badge
-                          variant="secondary"
-                          className={getDifficultyColor(
-                            problemItem.problem.difficulty,
-                          )}
-                        >
-                          {problemItem.problem.difficulty}
-                        </Badge>
-                      </TableCell>
+                    return (
+                      <TableRow
+                        key={problemItem.id}
+                        className="hover:bg-muted/50"
+                      >
+                        <TableCell className="py-4 text-center">
+                          <div className="flex justify-center w-full">
+                            <Checkbox
+                              checked={isSolved}
+                              aria-label="Problem solved status"
+                              className="size-5 rounded-full data-[state=checked]:border-easy data-[state=checked]:bg-easy cursor-default"
+                              disabled
+                            />
+                          </div>
+                        </TableCell>
 
-                      <TableCell>
-                        <div className="flex flex-wrap gap-1">
-                          {problemItem.problem.tags
-                            .slice(0, 3)
-                            .map((tag, index) => (
-                              <Badge
-                                key={index}
-                                variant="secondary"
-                                className="text-[10px]"
-                              >
-                                {tag.toLocaleLowerCase()}
+                        <TableCell className="py-4 font-semibold text-left">
+                          <Link
+                            to={`/problems/${problemItem.problem.id}`}
+                            className="hover:underline hover:text-primary transition-colors line-clamp-1 block"
+                          >
+                            {problemItem.problem.title}
+                          </Link>
+                        </TableCell>
+
+                        <TableCell className="py-4 text-center">
+                          <Badge
+                            className={cn(
+                              "text-xs font-semibold text-white",
+                              problemItem.problem.difficulty === "EASY" && "bg-easy hover:bg-easy/80",
+                              problemItem.problem.difficulty === "MEDIUM" && "bg-medium hover:bg-medium/80",
+                              problemItem.problem.difficulty === "HARD" && "bg-hard hover:bg-hard/80",
+                            )}
+                          >
+                            {problemItem.problem.difficulty}
+                          </Badge>
+                        </TableCell>
+
+                        <TableCell className="py-4 text-left">
+                          <div className="flex flex-wrap gap-1">
+                            {problemItem.problem.tags
+                              .slice(0, 3)
+                              .map((tag, index) => (
+                                <Badge
+                                  key={index}
+                                  variant="default"
+                                  className="text-xs font-bold"
+                                >
+                                  {tag.toLowerCase()}
+                                </Badge>
+                              ))}
+                            {problemItem.problem.tags.length > 3 && (
+                              <Badge variant="outline" className="text-xs">
+                                +{problemItem.problem.tags.length - 3}
                               </Badge>
-                            ))}
-                          {problemItem.problem.tags.length > 3 && (
-                            <Badge variant="outline" className="text-xs">
-                              +{problemItem.problem.tags.length - 3}
-                            </Badge>
-                          )}
-                        </div>
-                      </TableCell>
+                            )}
+                          </div>
+                        </TableCell>
 
-                      <TableCell>
-                        <div className="line-clamp-1 text-sm">
-                          {truncateText(problemItem.problem.description, 80)}
-                        </div>
-                      </TableCell>
+                        <TableCell className="py-4 text-left text-muted-foreground text-sm">
+                          <div className="line-clamp-1">
+                            {truncateText(problemItem.problem.description, 80)}
+                          </div>
+                        </TableCell>
 
-                      <TableCell>
-                        <Badge variant="outline">
-                          {problemItem.problem.testCases?.length || 0} cases
-                        </Badge>
-                      </TableCell>
+                        <TableCell className="py-4 text-center">
+                          <Badge variant="outline">
+                            {problemItem.problem.testCases?.length || 0} cases
+                          </Badge>
+                        </TableCell>
 
-                      <TableCell>
-                        <div className="text-muted-foreground text-sm">
-                          {formatDate(problemItem.createdAt, "yyyy-MM-dd")}
-                        </div>
-                      </TableCell>
+                        <TableCell className="py-4 text-center">
+                          <div className="text-muted-foreground text-sm">
+                            {formatDate(problemItem.createdAt, "yyyy-MM-dd")}
+                          </div>
+                        </TableCell>
 
-                      <TableCell>
-                        <LoadingButton
-                          isLoading={isRemovingProblem}
-                          variant="outline"
-                          size="sm"
-                          onClick={() =>
-                            handleRemoveProblem(problemItem.problem.id)
-                          }
-                          className="text-red-600 hover:bg-red-50 hover:text-red-700"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </LoadingButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                        <TableCell className="py-4 text-center">
+                          <LoadingButton
+                            isLoading={isRemovingProblem}
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              handleRemoveProblem(problemItem.problem.id)
+                            }
+                            className="text-red-600 hover:bg-red-50 hover:text-red-700"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </LoadingButton>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </div>
