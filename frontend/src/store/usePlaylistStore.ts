@@ -9,7 +9,7 @@ import type {
 import { toast } from "sonner";
 
 interface PlaylistStore {
-  playlists: BasicPlaylist[];
+  playlists: PlaylistWithProblems[];
   currentPlaylist: PlaylistWithProblems | null;
   isLoading: boolean;
   error: string | null;
@@ -25,8 +25,7 @@ interface PlaylistStore {
     playlistId: string,
     problemIds: string[],
   ) => Promise<void>;
-  isRemovingPoblem: boolean;
-  deletePlaylist: (playlistId: string) => Promise<void>;
+  isRemovingProblem: boolean; deletePlaylist: (playlistId: string) => Promise<void>;
 
   getAllPlaylistsForUser: () => Promise<void>;
   userPlaylists: BasicPlaylist[];
@@ -45,14 +44,14 @@ export const usePlaylistStore = create<PlaylistStore>((set, get) => ({
   error: null,
   userPlaylists: [],
   isLoadingUserPlaylists: false,
-  isRemovingPoblem: false,
+  isRemovingProblem: false,
 
   createPlaylist: async (playlistData) => {
     try {
       set({ isLoading: true });
       const res = (await axiosInstance.post("/playlist/create", playlistData)).data;
       set((state) => ({
-        playlists: [...state.playlists, res.data.data],
+        playlists: [...state.playlists, { ...res.data.data, problems: [] }],
       }));
 
       toast.success("Playlist created successfully");
@@ -128,7 +127,7 @@ export const usePlaylistStore = create<PlaylistStore>((set, get) => ({
   },
   removeProblemFromPlaylist: async (playlistId, problemIds) => {
     try {
-      set({ isRemovingPoblem: true });
+      set({ isRemovingProblem: true });
       await axiosInstance.post(`/playlist/${playlistId}/remove-problems`, {
         problemIds,
       });
@@ -140,7 +139,7 @@ export const usePlaylistStore = create<PlaylistStore>((set, get) => ({
       console.error("Error removing problem from playlist:", error);
       toast.error(getErrorMessage(error));
     } finally {
-      set({ isRemovingPoblem: false });
+      set({ isRemovingProblem: false });
     }
   },
 
