@@ -37,6 +37,7 @@ export type UserSubmissionStats = {
   successRate: number;
   totalLanguagesUsed: number;
   totalSuccesses: number;
+  problemsSolved: number;
 };
 export type SubmissionHeatmapEntry = {
   date: string; // Format: YYYY-MM-DD

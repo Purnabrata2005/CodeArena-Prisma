@@ -53,7 +53,7 @@ function ProfileHeader({
       description: "Percentage of successful runs",
       metric: {
         label: "Total solved",
-        value: submissionStats?.totalSuccesses ?? "N/A",
+        value: submissionStats?.problemsSolved ?? "N/A",
         icon: Trophy,
       },
     },

@@ -88,10 +88,10 @@ async function getOrComputeStreak(userId: string): Promise<{ currentStreak: numb
  * Bootstrap Redis leaderboard from PostgreSQL if it is empty.
  * Implements double-checked locking via a Redis lock key.
  */
-export async function bootstrapLeaderboard(): Promise<void> {
+export async function bootstrapLeaderboard(): Promise<boolean> {
   try {
     const exists = await redis.exists(LEADERBOARD_KEY);
-    if (exists) return;
+    if (exists) return false;
 
     const lockKey = "lock:bootstrap:leaderboard";
     const acquired = await redis.set(lockKey, "true", "PX", 15000, "NX"); // 15s lock
@@ -100,14 +100,14 @@ export async function bootstrapLeaderboard(): Promise<void> {
       for (let i = 0; i < 5; i++) {
         await new Promise((resolve) => setTimeout(resolve, 500));
         const checkExists = await redis.exists(LEADERBOARD_KEY);
-        if (checkExists) return;
+        if (checkExists) return false;
       }
-      return;
+      return false;
     }
 
     try {
       const checkExists = await redis.exists(LEADERBOARD_KEY);
-      if (checkExists) return;
+      if (checkExists) return false;
 
       console.log("Redis cache is empty. Bootstrapping leaderboard from database...");
 
@@ -124,11 +124,13 @@ export async function bootstrapLeaderboard(): Promise<void> {
       }
       await pipeline.exec();
       console.log("Redis leaderboard successfully bootstrapped.");
+      return true;
     } finally {
       await redis.del(lockKey);
     }
   } catch (error) {
     console.error("Failed to bootstrap Redis leaderboard:", error);
+    return false;
   }
 }
 
@@ -137,7 +139,12 @@ export async function bootstrapLeaderboard(): Promise<void> {
  */
 export async function incrementUserScore(userId: string): Promise<void> {
   try {
-    await bootstrapLeaderboard();
+    const bootstrapped = await bootstrapLeaderboard();
+    if (bootstrapped) {
+      // If the leaderboard was bootstrapped during this execution, the database records
+      // were already parsed and set in Redis. The score is already correct.
+      return;
+    }
     const cacheExists = await redis.exists(LEADERBOARD_KEY);
     if (cacheExists === 1) {
       await redis.zincrby(LEADERBOARD_KEY, 1, userId);
