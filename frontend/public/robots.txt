@@ -1,15 +1,15 @@
 User-agent: *
 User-agent: GPTBot
-User-agent:Googlebot
-User-agent:Googlebot-Mobile
-User-agent:Googlebot-Image
-User-agent:Googlebot-News
-User-agent:bingbot
-User-agent:bingbot-Image
-User-agent:bingbot-News
-User-agent:bingbot-Mobile
-User-agent:ClaudeBot
-User-agent:ClaudeBot-Mobile
+User-agent: Googlebot
+User-agent: Googlebot-Mobile
+User-agent: Googlebot-Image
+User-agent: Googlebot-News
+User-agent: bingbot
+User-agent: bingbot-Image
+User-agent: bingbot-News
+User-agent: bingbot-Mobile
+User-agent: ClaudeBot
+User-agent: ClaudeBot-Mobile
 Allow: /
 Allow: /problems
 Allow: /about
